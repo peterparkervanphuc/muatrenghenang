@@ -8,7 +8,7 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.RED);
+        g.setColor(Color.WHITE);
         g.drawString("Arkanoid go",350,300);
     }
 }
