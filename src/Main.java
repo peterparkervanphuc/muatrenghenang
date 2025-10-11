@@ -2,7 +2,7 @@ import javax.swing.*;
 public class Main extends JFrame {
     public Main(){
         setTitle("Arkanoid Game");
-        setSize(800, 600);
+        setSize(800, 600);//chỉnh bé thôi//
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         //add(new GamePanel());
@@ -17,4 +17,4 @@ public class Main extends JFrame {
 
     }
 
-}
+}//giang la thang beo//
