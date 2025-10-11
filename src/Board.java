@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.*; //béo béo béo
 public class Board extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
     private int ballX=100,ballY=100;
