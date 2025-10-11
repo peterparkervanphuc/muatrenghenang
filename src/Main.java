@@ -2,9 +2,10 @@ import javax.swing.*;
 public class Main extends JFrame {
     public Main(){
         setTitle("Arkanoid Game");
-        setSize(800,600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
+        add(new GamePanel());
+        pack();
         setLocationRelativeTo(null);
         setVisible(true);
     }
