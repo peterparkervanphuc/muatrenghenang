@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*; //béo béo béo
+import java.awt.event.*;
 public class Board extends JPanel implements ActionListener, KeyListener {
     private Timer timer;
     private int ballX=100,ballY=100;
@@ -14,6 +14,11 @@ public class Board extends JPanel implements ActionListener, KeyListener {
        paddle =new Paddle(350,550);
        timer=new Timer(10,this);
        timer.start();
+    }
+    public void startGame() {
+        setFocusable(true); // Cho phép panel này nhận focus
+        requestFocusInWindow(); // Yêu cầu focus ngay lập tức để nhận sự kiện phím
+        timer.start(); // Bắt đầu vòng lặp game
     }
     @Override
     public void actionPerformed(ActionEvent e) {
