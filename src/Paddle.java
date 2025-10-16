@@ -3,7 +3,7 @@ public class Paddle {
     private int x,y;
     private final int WIDTH = 100;
     private final int HEIGHT = 10;
-    private final int SPEED = 6;
+    private final int SPEED = 12; // Tăng tốc độ từ 6 lên 12
     public Paddle(int x, int y) {
         this.x = x;
         this.y = y;
@@ -27,4 +27,7 @@ public class Paddle {
     public int getY() {return y;}
     public int getWidth() {return WIDTH;}
     public int getHeight() {return HEIGHT;}
+    public void setPosition(int newX) {
+        this.x = newX;
+    }
 }

@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-public class Board extends JPanel implements ActionListener, KeyListener {
+public class Board extends JPanel implements ActionListener, MouseMotionListener {
     private Timer timer;
     private int ballX=100,ballY=100;
     private int ballDX=2,ballDY=2;
@@ -16,8 +16,8 @@ public class Board extends JPanel implements ActionListener, KeyListener {
     public Board() {
        setBackground(Color.white);
        setFocusable(true);
-       addKeyListener(this);
-       paddle =new Paddle(350,550);
+       addMouseMotionListener(this); // Thêm MouseMotionListener thay vì KeyListener
+       paddle = new Paddle(350,550);
        score = 0;
 
        bricks = new Brick[BRICK_ROWS][BRICK_COLS];
@@ -27,7 +27,7 @@ public class Board extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-       timer=new Timer(10,this);
+       timer = new Timer(10,this);
        timer.start();
     }
     public void startGame() {
@@ -161,15 +161,25 @@ public class Board extends JPanel implements ActionListener, KeyListener {
             }
         }
     }
+
     @Override
-    public void keyPressed(KeyEvent e){
-        int key=e.getKeyCode();
-        if (key==KeyEvent.VK_LEFT){
-            paddle.moveLeft();
-        }else if (key==KeyEvent.VK_RIGHT){
-            paddle.moveRight(getWidth());
+    public void mouseMoved(MouseEvent e) {
+        int mouseX = e.getX();
+        // Di chuyển paddle theo vị trí chuột, trừ đi nửa chiều rộng paddle để chuột ở giữa
+        int newX = mouseX - paddle.getWidth() / 2;
+        // Giới hạn paddle trong khung game
+        if (newX < 0) {
+            newX = 0;
         }
+        if (newX > getWidth() - paddle.getWidth()) {
+            newX = getWidth() - paddle.getWidth();
+        }
+        paddle.setPosition(newX);
+        repaint();
     }
-    @Override public void keyReleased(KeyEvent e){}
-    @Override public void keyTyped(KeyEvent e){}
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        mouseMoved(e); // Xử lý giống với mouseMoved
+    }
 }

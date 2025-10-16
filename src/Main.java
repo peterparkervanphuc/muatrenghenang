@@ -31,19 +31,21 @@ public class Main extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
+                System.out.println("Key pressed: " + e.getKeyCode()); // Debug log
                 // Nếu màn hình lobby đang hiển thị và người dùng nhấn SPACE...
                 if (lobbyPanel.isShowing() && e.getKeyCode() == KeyEvent.VK_SPACE) {
                     // ...chuyển sang màn hình game
-                    cardLayout.show(mainPanel, "GAME");
+                    cardLayout.show(mainPanel, "Game");
                     // Và yêu cầu game panel bắt đầu chạy
                     gamePanel.startGame();
+                    gamePanel.requestFocusInWindow();
                 }
             }
         });
         setFocusable(true);//cnay để JFrame nhận Keylistener
         setLocationRelativeTo(null);
         setVisible(true);
-        requestFocusInWindow();
+        requestFocus(); // Request focus khi window mở
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Main::new);
