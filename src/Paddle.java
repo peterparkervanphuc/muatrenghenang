@@ -1,33 +1,35 @@
 import java.awt.*;
-public class Paddle {
-    private int x,y;
-    private final int WIDTH = 100;
-    private final int HEIGHT = 10;
-    private final int SPEED = 12; // Tăng tốc độ từ 6 lên 12
+
+// Chú thích: Lớp Paddle giờ cũng kế thừa từ GameObject.
+public class Paddle extends GameObject {
+
+    // Chú thích: Các hằng số (constants) định nghĩa thuộc tính của Paddle.
+    private static final int PADDLE_WIDTH = 100;
+    private static final int PADDLE_HEIGHT = 10;
+    private final int SPEED = 12;
+
     public Paddle(int x, int y) {
-        this.x = x;
-        this.y = y;
+        // Chú thích: Gọi constructor của lớp cha (GameObject) để gán vị trí và kích thước.
+        super(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
     }
+
     public void moveLeft() {
         x -= SPEED;
-        if(x<0)x=0;
+        if (x < 0) x = 0;
     }
     public void moveRight(int boardWidth) {
-        x+=SPEED;
-        if(x>boardWidth-WIDTH)x=boardWidth-WIDTH;
+        x += SPEED;
+        if (x > boardWidth - width) x = boardWidth - width; // 'width' giờ là thuộc tính kế thừa
     }
-    public  void draw(Graphics g) {
+
+    // Chú thích: Ghi đè (Override) phương thức 'draw' từ GameObject.
+    @Override
+    public void draw(Graphics g) {
         g.setColor(Color.pink);
-        g.fillRect(x, y, WIDTH, HEIGHT);
+        g.fillRect(x, y, width, height);
     }
-    public Rectangle getBounds() {
-        return new Rectangle(x, y, WIDTH, HEIGHT);
-    }
-    public int getX() {return x;}
-    public int getY() {return y;}
-    public int getWidth() {return WIDTH;}
-    public int getHeight() {return HEIGHT;}
+
     public void setPosition(int newX) {
-        this.x = newX;
+        this.x = newX; //đây là di chuyển theo chuột sau này update di chuyển theo bàn phím
     }
 }

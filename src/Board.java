@@ -1,103 +1,112 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+// Lớp Board giờ đóng vai trò gần giống như GameManager và Renderer (tạm thời)
+// Quản lý các đối tượng (Ball, Paddle, Bricks) và điều khiển luồng game (Timer).
 public class Board extends JPanel implements ActionListener, MouseMotionListener {
     private Timer timer;
-    private int ballX=100,ballY=100;
-    private int ballDX=2,ballDY=2;
-    private final int BALL_SIZE=20;
+    private Ball ball;
     private Paddle paddle;
     private Brick[][] bricks;
     private final int BRICK_ROWS = 5;
     private final int BRICK_COLS = 10;
     private int score;
     private boolean inGame = true;
-    private int bricksRemaining; // Thêm biến đếm để tránh duyệt mảng mỗi frame
-    private Timer closeTimer; // Timer để đóng game sau khi kết thúc
+    private int bricksRemaining;
+    private Timer closeTimer;
 
     public Board() {
-       setBackground(Color.white);
-       setFocusable(true);
-       setDoubleBuffered(true); // Bật double buffering để giảm lag
-       addMouseMotionListener(this);
-       paddle = new Paddle(350,550);
-       score = 0;
+        setBackground(Color.white);
+        setFocusable(true);
+        setDoubleBuffered(true);
+        addMouseMotionListener(this);
+        score = 0;
 
-       bricks = new Brick[BRICK_ROWS][BRICK_COLS];
-       bricksRemaining = BRICK_ROWS * BRICK_COLS; // Đếm tổng số gạch
+        // Chú thích: Khởi tạo các đối tượng thay vì các biến riêng lẻ.
+        paddle = new Paddle(350, 550);
+        ball = new Ball(100, 100, 2, 2); // Khởi tạo đối tượng Ball
+
+        bricks = new Brick[BRICK_ROWS][BRICK_COLS];
+        bricksRemaining = BRICK_ROWS * BRICK_COLS;
         for (int i = 0; i < BRICK_ROWS; i++) {
             for (int j = 0; j < BRICK_COLS; j++) {
                 bricks[i][j] = new Brick(j * 75 + 45, i * 25 + 50);
             }
         }
 
-       timer = new Timer(10,this);
-       timer.start();
+        timer = new Timer(10, this);
+        timer.start();
     }
+
     public void startGame() {
-        setFocusable(true); // Cho phép panel này nhận focus
-        requestFocusInWindow(); // Yêu cầu focus ngay lập tức để nhận sự kiện phím
-        timer.start(); // Bắt đầu vòng lặp game
+        setFocusable(true);
+        requestFocusInWindow();
+        timer.start();
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (inGame) {
-            ballX += ballDX;
-            ballY += ballDY;
+            // Chú thích: Logic di chuyển giờ được đóng gói trong lớp Ball.
+            // Board chỉ cần gọi ball.move().
+            ball.move();
 
-            if (ballX <= 0 || ballX >= getWidth() - BALL_SIZE) {
-                ballDX = -ballDX;
+            // Chú thích: Logic va chạm tường
+            // Chúng ta gọi getter của Ball thay vì dùng biến local.
+            if (ball.getX() <= 0 || ball.getX() >= getWidth() - ball.getWidth()) {
+                ball.reverseDX(); // Yêu cầu Ball tự đổi hướng
             }
-            if (ballY <= 0) { // Top wall only
-                ballDY = -ballDY;
+            if (ball.getY() <= 0) {
+                ball.reverseDY(); // Yêu cầu Ball tự đổi hướng
             }
 
-            Rectangle ballRect = new Rectangle(ballX, ballY, BALL_SIZE, BALL_SIZE);
-            if (ballRect.intersects(paddle.getBounds())) {
-                // More dynamic bounce
+            // Chú thích: Logic va chạm với Paddle
+            if (ball.getBounds().intersects(paddle.getBounds())) {
                 int paddleCenter = paddle.getX() + paddle.getWidth() / 2;
-                int ballCenter = ballX + BALL_SIZE / 2;
+                int ballCenter = ball.getX() + ball.getWidth() / 2;
                 int intersect = ballCenter - paddleCenter;
 
-                // Normalize the intersect value and scale it
                 double normalizedIntersect = (double) intersect / (paddle.getWidth() / 2);
-                ballDX = (int) (normalizedIntersect * 5); // Max horizontal speed of 5
 
-                ballDY = -ballDY; // Reverse vertical direction
-                ballY = paddle.getY() - BALL_SIZE; // Place ball above the paddle
+                // Cập nhật tốc độ mới cho Ball
+                ball.setDX((int) (normalizedIntersect * 5));
+                ball.reverseDY();
+
+                // Đặt lại vị trí Ball để tránh kẹt
+                ball.setPosition(ball.getX(), paddle.getY() - ball.getHeight());
             }
 
-            // Loss condition
-            if (ballY > getHeight()) {
+            // Chú thích: Logic thua
+            if (ball.getY() > getHeight()) {
                 inGame = false;
                 timer.stop();
-                scheduleGameClose(); // Đóng game sau 2 giây
+                scheduleGameClose();
             }
 
-            checkCollisions();
+            checkCollisions(); // Kiểm tra va chạm với gạch
             repaint();
         }
     }
 
     private void checkCollisions() {
-        Rectangle ballRect = new Rectangle(ballX, ballY, BALL_SIZE, BALL_SIZE);
+        // Chú thích: Lấy Rectangle từ đối tượng Ball
+        Rectangle ballRect = ball.getBounds();
 
         for (int i = 0; i < BRICK_ROWS; i++) {
             for (int j = 0; j < BRICK_COLS; j++) {
                 if (bricks[i][j].isVisible()) {
                     if (ballRect.intersects(bricks[i][j].getBounds())) {
                         bricks[i][j].setVisible(false);
-                        ballDY = -ballDY;
+                        ball.reverseDY(); // Yêu cầu Ball đổi hướng
                         score += 10;
-                        bricksRemaining--; // Giảm số gạch còn lại
+                        bricksRemaining--;
 
-                        // Kiểm tra win condition chỉ khi phá gạch
                         if (bricksRemaining == 0) {
                             inGame = false;
                             timer.stop();
-                            scheduleGameClose(); // Đóng game sau 2 giây
+                            scheduleGameClose();
                         }
-                        return; // Thoát sớm sau khi va chạm để tránh xử lý nhiều va chạm cùng lúc
+                        return;
                     }
                 }
             }
@@ -105,8 +114,7 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
     }
 
     private void scheduleGameClose() {
-        // Đóng game sau 2 giây
-        closeTimer = new Timer(2000, e -> {
+        closeTimer = new Timer(2000, ev -> {
             Window window = SwingUtilities.getWindowAncestor(this);
             if (window != null) {
                 window.dispose();
@@ -118,45 +126,27 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
     }
 
     @Override
-    protected void paintComponent(Graphics g){
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        // Tối ưu hóa rendering
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
 
-        g2d.setColor(Color.black);
-        g2d.fillOval(ballX,ballY,BALL_SIZE,BALL_SIZE);
-        paddle.draw(g2d);
-        drawBricks(g2d);
+        // Chú thích: Board yêu cầu các đối tượng TỰ VẼ chính chúng (Tính đa hình)
+        ball.draw(g2d);     // Gọi hàm draw() của Ball
+        paddle.draw(g2d);   // Gọi hàm draw() của Paddle
+        drawBricks(g2d);    // Hàm này gọi draw() của từng Brick
+
         drawHUD(g2d);
 
         if (!inGame) {
             drawEndGameMessage(g2d);
         }
-
-        Toolkit.getDefaultToolkit().sync(); // Đồng bộ hóa vẽ
+        Toolkit.getDefaultToolkit().sync();
     }
 
     private void drawEndGameMessage(Graphics g) {
-        String msg;
-        boolean allBricksDestroyed = true;
-        for (int i = 0; i < BRICK_ROWS; i++) {
-            for (int j = 0; j < BRICK_COLS; j++) {
-                if (bricks[i][j].isVisible()) {
-                    allBricksDestroyed = false;
-                    break;
-                }
-            }
-        }
-
-        if (allBricksDestroyed) {
-            msg = "You Win!";
-        } else {
-            msg = "Game Over";
-        }
-
+        String msg = (bricksRemaining == 0) ? "You Win!" : "Game Over";
         Font font = new Font("Helvetica", Font.BOLD, 30);
         FontMetrics fm = getFontMetrics(font);
         g.setColor(Color.RED);
@@ -173,6 +163,7 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
     private void drawBricks(Graphics g) {
         for (int i = 0; i < BRICK_ROWS; i++) {
             for (int j = 0; j < BRICK_COLS; j++) {
+                // Chú thích: Yêu cầu từng viên gạch tự vẽ
                 bricks[i][j].draw(g);
             }
         }
@@ -181,21 +172,16 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
     @Override
     public void mouseMoved(MouseEvent e) {
         int mouseX = e.getX();
-        // Di chuyển paddle theo vị trí chuột, trừ đi nửa chiều rộng paddle để chuột ở giữa
         int newX = mouseX - paddle.getWidth() / 2;
-        // Giới hạn paddle trong khung game
-        if (newX < 0) {
-            newX = 0;
-        }
-        if (newX > getWidth() - paddle.getWidth()) {
-            newX = getWidth() - paddle.getWidth();
-        }
+        if (newX < 0) newX = 0;
+        if (newX > getWidth() - paddle.getWidth()) newX = getWidth() - paddle.getWidth();
+
+        // Chú thích: Ra lệnh cho paddle di chuyển, thay vì đổi 'x' trực tiếp
         paddle.setPosition(newX);
-        // KHÔNG gọi repaint() ở đây - Timer đã xử lý việc này mỗi 10ms
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        mouseMoved(e); // Xử lý giống với mouseMoved
+        mouseMoved(e);
     }
 }
