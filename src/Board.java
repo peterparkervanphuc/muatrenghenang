@@ -12,15 +12,19 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
     private final int BRICK_COLS = 10;
     private int score;
     private boolean inGame = true;
+    private int bricksRemaining; // Thêm biến đếm để tránh duyệt mảng mỗi frame
+    private Timer closeTimer; // Timer để đóng game sau khi kết thúc
 
     public Board() {
        setBackground(Color.white);
        setFocusable(true);
-       addMouseMotionListener(this); // Thêm MouseMotionListener thay vì KeyListener
+       setDoubleBuffered(true); // Bật double buffering để giảm lag
+       addMouseMotionListener(this);
        paddle = new Paddle(350,550);
        score = 0;
 
        bricks = new Brick[BRICK_ROWS][BRICK_COLS];
+       bricksRemaining = BRICK_ROWS * BRICK_COLS; // Đếm tổng số gạch
         for (int i = 0; i < BRICK_ROWS; i++) {
             for (int j = 0; j < BRICK_COLS; j++) {
                 bricks[i][j] = new Brick(j * 75 + 45, i * 25 + 50);
@@ -67,6 +71,7 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
             if (ballY > getHeight()) {
                 inGame = false;
                 timer.stop();
+                scheduleGameClose(); // Đóng game sau 2 giây
             }
 
             checkCollisions();
@@ -84,43 +89,54 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
                         bricks[i][j].setVisible(false);
                         ballDY = -ballDY;
                         score += 10;
+                        bricksRemaining--; // Giảm số gạch còn lại
+
+                        // Kiểm tra win condition chỉ khi phá gạch
+                        if (bricksRemaining == 0) {
+                            inGame = false;
+                            timer.stop();
+                            scheduleGameClose(); // Đóng game sau 2 giây
+                        }
+                        return; // Thoát sớm sau khi va chạm để tránh xử lý nhiều va chạm cùng lúc
                     }
                 }
             }
         }
+    }
 
-        // Win condition
-        boolean allBricksDestroyed = true;
-        for (int i = 0; i < BRICK_ROWS; i++) {
-            for (int j = 0; j < BRICK_COLS; j++) {
-                if (bricks[i][j].isVisible()) {
-                    allBricksDestroyed = false;
-                    break;
-                }
+    private void scheduleGameClose() {
+        // Đóng game sau 2 giây
+        closeTimer = new Timer(2000, e -> {
+            Window window = SwingUtilities.getWindowAncestor(this);
+            if (window != null) {
+                window.dispose();
+                System.exit(0);
             }
-            if (!allBricksDestroyed) {
-                break;
-            }
-        }
-
-        if (allBricksDestroyed) {
-            inGame = false;
-            timer.stop();
-        }
+        });
+        closeTimer.setRepeats(false);
+        closeTimer.start();
     }
 
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
-        g.setColor(Color.black);
-        g.fillOval(ballX,ballY,BALL_SIZE,BALL_SIZE);
-        paddle.draw(g);
-        drawBricks(g);
-        drawHUD(g);
+
+        // Tối ưu hóa rendering
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+
+        g2d.setColor(Color.black);
+        g2d.fillOval(ballX,ballY,BALL_SIZE,BALL_SIZE);
+        paddle.draw(g2d);
+        drawBricks(g2d);
+        drawHUD(g2d);
 
         if (!inGame) {
-            drawEndGameMessage(g);
+            drawEndGameMessage(g2d);
         }
+
+        Toolkit.getDefaultToolkit().sync(); // Đồng bộ hóa vẽ
     }
 
     private void drawEndGameMessage(Graphics g) {
@@ -175,7 +191,7 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
             newX = getWidth() - paddle.getWidth();
         }
         paddle.setPosition(newX);
-        repaint();
+        // KHÔNG gọi repaint() ở đây - Timer đã xử lý việc này mỗi 10ms
     }
 
     @Override
