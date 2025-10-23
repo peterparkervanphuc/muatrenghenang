@@ -9,8 +9,7 @@ public class Main extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private Lobby lobbyPanel;
-    private Board gamePanel; //quản lý//
-
+    private GamePanel gamePanel; //quản lý//
     public Main(){
         setTitle("Arkanoid Game");
         setSize(800, 600);//chỉnh bé thôi//
@@ -21,7 +20,7 @@ public class Main extends JFrame {
           mainPanel = new JPanel(cardLayout);
           //tạo panel riêng biệt cho cardlayout quản lý
           lobbyPanel = new Lobby();
-          gamePanel = new Board();
+          gamePanel = new GamePanel();
 
           mainPanel.add(lobbyPanel, "Lobby");
           mainPanel.add(gamePanel, "Game");
