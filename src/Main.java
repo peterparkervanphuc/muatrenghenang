@@ -8,7 +8,7 @@ public class Main extends JFrame {
 
     private CardLayout cardLayout;
     private JPanel mainPanel;
-    private Lobby lobbyPanel;
+    private MainMenu menuPanel;
     private GamePanel gamePanel; //quản lý//
     public Main(){
         setTitle("Arkanoid Game");
@@ -19,10 +19,10 @@ public class Main extends JFrame {
           cardLayout = new CardLayout();
           mainPanel = new JPanel(cardLayout);
           //tạo panel riêng biệt cho cardlayout quản lý
-          lobbyPanel = new Lobby();
+          menuPanel = new MainMenu();
           gamePanel = new GamePanel();
 
-          mainPanel.add(lobbyPanel, "Lobby");
+          mainPanel.add(menuPanel, "Lobby");
           mainPanel.add(gamePanel, "Game");
 
           //thêm panel chính vào JFrame
@@ -33,7 +33,7 @@ public class Main extends JFrame {
             public void keyPressed(KeyEvent e) {
                 System.out.println("Key pressed: " + e.getKeyCode()); // Debug log
                 // Nếu màn hình lobby đang hiển thị và người dùng nhấn SPACE...
-                if (lobbyPanel.isShowing() && e.getKeyCode() == KeyEvent.VK_SPACE) {
+                if (menuPanel.isShowing() && e.getKeyCode() == KeyEvent.VK_SPACE) {
                     // ...chuyển sang màn hình game
                     cardLayout.show(mainPanel, "Game");
                     // Và yêu cầu game panel bắt đầu chạy
