@@ -12,6 +12,7 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
     private final int BRICK_ROWS = 5;
     private final int BRICK_COLS = 10;
     private int score;
+    private int lives;
     private boolean inGame = true;
     private boolean isStarted = false; // Biến kiểm soát trạng thái bắt đầu
     private int bricksRemaining;
@@ -24,6 +25,7 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
         addMouseMotionListener(this);
         addKeyListener(this); // Thêm KeyListener
         score = 0;
+        lives = 3;
 
         // Khởi tạo các đối tượng
         paddle = new Paddle(350, 550);
@@ -101,9 +103,12 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
     private void checkGameStatus() {
         // Logic thua
         if (ball.getY() > getHeight()) {
-            inGame = false;
+            lives--;
+            if (lives <= 0) {
+                inGame = false;
             timer.stop();
-            scheduleGameClose();
+            scheduleGameClose();}
+            else { isStarted = false; }
         }
 
         // Logic thắng
@@ -177,6 +182,11 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
         g.setColor(Color.BLACK);
         g.setFont(new Font("Helvetica", Font.BOLD, 20));
         g.drawString("Score: " + score, 10, 20);
+
+        String livesStr = "Lives: " + lives;
+        FontMetrics fm = getFontMetrics(g.getFont());
+        int livesWidth = fm.stringWidth(livesStr);
+        g.drawString(livesStr, getWidth() - livesWidth - 10, 20);
     }
 
     private void drawBricks(Graphics g) {
