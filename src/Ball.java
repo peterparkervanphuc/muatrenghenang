@@ -52,4 +52,14 @@ public class Ball extends GameObject {
         this.x = x;
         this.y = y;
     }
+
+    // =======================================================
+    // === HÀM ĐƯỢC THÊM VÀO ĐỂ SỬA LỖI ===
+    /**
+     * Trả về kích cỡ của bóng để Board.java có thể tính toán
+     */
+    public static int getBallSize() {
+        return BALL_SIZE;
+    }
+    // =======================================================
 }
