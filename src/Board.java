@@ -6,6 +6,8 @@ import java.awt.Image;        // <-- IMPORT ĐƯỢC THÊM
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.io.File;
+import javax.imageio.ImageIO;
 
 // Lớp Board giờ đóng vai trò gần giống như GameManager và Renderer (tạm thời)
 // Quản lý các đối tượng (Ball, Paddle, Bricks) và điều khiển luồng game (Timer).
@@ -27,21 +29,16 @@ public class Board extends JPanel implements ActionListener, MouseMotionListener
     private int bricksRemaining;
     private Timer closeTimer;
 
-    private Image backgroundImage; // <-- BIẾN MỚI ĐỂ LƯU ẢNH NỀN
+    private Image backgroundImage;
     private List<PowerUp> activePowerUps = new ArrayList<>();
 
     public Board() {
-        // === KHỐI CODE TẢI ẢNH NỀN (MỚI) ===
         try {
-            // Tải ảnh từ thư mục (dấu / nghĩa là bắt đầu từ thư mục src)
-            backgroundImage = new ImageIcon(getClass().getResource("/background.png")).getImage();
+            backgroundImage = ImageIO.read(new File("assets/background.png"));
         } catch (Exception e) {
             System.out.println("Error loading background image!");
             e.printStackTrace();
         }
-        // ===================================
-
-        // setBackground(Color.white); // Bạn có thể xóa dòng này
         setFocusable(true);
         setDoubleBuffered(true);
         addMouseMotionListener(this);
