@@ -10,7 +10,6 @@ target/
 
 # IntelliJ IDEA
 .idea/
-*.iml
 *.iws
 *.ipr
 
@@ -28,8 +27,7 @@ target/
 *.tar.gz
 *.rar
 
-# Log files
-*.log
+# Log files (runtime only, arkanoid.log is kept for debugging)
 
 # OS specific
 .DS_Store
