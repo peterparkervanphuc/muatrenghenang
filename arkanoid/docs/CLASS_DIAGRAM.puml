@@ -1,0 +1,447 @@
+@startuml Arkanoid Game - Class Diagram
+
+!define ABSTRACT_CLASS abstract class
+!theme plain
+
+title Arkanoid Game - OOP Class Diagram
+
+' ============================================
+' ABSTRACT BASE CLASSES
+' ============================================
+
+abstract class GameObject {
+    # x: double
+    # y: double
+    # width: int
+    # height: int
+
+    + GameObject(x, y, width, height)
+    + {abstract} update(): void
+    + {abstract} render(g2d: Graphics2D): void
+    + getBounds(): Rectangle
+    + intersects(rect: Rectangle): boolean
+    + getX(): double
+    + getY(): double
+    + setX(x: double): void
+    + setY(y: double): void
+    + getWidth(): int
+    + getHeight(): int
+}
+
+abstract class MovableObject {
+    # velocityX: double
+    # velocityY: double
+    # speed: double
+
+    + MovableObject(x, y, width, height, speed)
+    + update(): void
+    + getVelocityX(): double
+    + getVelocityY(): double
+    + setVelocityX(vx: double): void
+    + setVelocityY(vy: double): void
+    + getDx(): double
+    + getDy(): double
+}
+
+GameObject <|-- MovableObject
+
+' ============================================
+' GAME ENTITIES
+' ============================================
+
+class Ball {
+    - BALL_SIZE: int {static, final}
+    - INITIAL_SPEED: double {static, final}
+    - radius: int
+    - attached: boolean
+    - attachedPaddle: Paddle
+    - ballImage: BufferedImage
+    - speedMultiplier: double
+    - levelSpeedBonus: double
+
+    + Ball(x, y)
+    + Ball(x, y, level)
+    + attachToPaddle(paddle: Paddle): void
+    + launch(): void
+    + bounceOffPaddle(paddle: Paddle): void
+    + bounceOffBrick(brick: Brick): void
+    + slow(): void
+    + restoreNormalSpeed(): void
+    + isAttached(): boolean
+    + update(): void
+    + render(g2d: Graphics2D): void
+}
+
+class Paddle {
+    - SPEED: int {static, final}
+    - NORMAL_WIDTH: int {static, final}
+    - ENLARGED_WIDTH: int {static, final}
+    - LASER_COOLDOWN: long {static, final}
+    - enlarged: boolean
+    - hasLaser: boolean
+    - hasCatch: boolean
+    - paddleImage: BufferedImage
+    - laserBeams: ArrayList<LaserBeam>
+    - lastLaserTime: long
+
+    + Paddle(x, y, enlarged)
+    + moveLeft(): void
+    + moveRight(): void
+    + enlarge(): void
+    + shrink(): void
+    + enableLaser(): void
+    + disableLaser(): void
+    + enableCatch(): void
+    + disableCatch(): void
+    + fireLaser(): void
+    + isEnlarged(): boolean
+    + hasLaser(): boolean
+    + hasCatch(): boolean
+    + update(): void
+    + render(g2d: Graphics2D): void
+}
+
+class Powerup {
+    - POWERUP_WIDTH: int {static, final}
+    - POWERUP_HEIGHT: int {static, final}
+    - FALL_SPEED: int {static, final}
+    - type: PowerupType
+    - powerupImage: BufferedImage
+
+    + Powerup(x, y)
+    + Powerup(x, y, type)
+    + getType(): PowerupType
+    + render(g2d: Graphics2D): void
+}
+
+class LaserBeam {
+    - LASER_WIDTH: int {static, final}
+    - LASER_HEIGHT: int {static, final}
+    - LASER_SPEED: int {static, final}
+    - active: boolean
+    - laserImage: BufferedImage
+
+    + LaserBeam(x, y)
+    + isActive(): boolean
+    + setActive(active: boolean): void
+    + render(g2d: Graphics2D): void
+}
+
+class Brick {
+    - BRICK_WIDTH: int {static, final}
+    - BRICK_HEIGHT: int {static, final}
+    - type: BrickType
+    - hits: int
+    - brickImage: BufferedImage
+
+    + Brick(x, y, type)
+    + hit(): void
+    + isDestroyed(): boolean
+    + isSilver(): boolean
+    + getPoints(): int
+    + update(): void
+    + render(g2d: Graphics2D): void
+}
+
+MovableObject <|-- Ball
+MovableObject <|-- Paddle
+MovableObject <|-- Powerup
+MovableObject <|-- LaserBeam
+GameObject <|-- Brick
+
+' ============================================
+' ENUMS
+' ============================================
+
+enum BrickType {
+    WHITE(1, 50, "path")
+    ORANGE(1, 60, "path")
+    LIGHT_BLUE(1, 70, "path")
+    GREEN(1, 80, "path")
+    RED(1, 90, "path")
+    BLUE(1, 100, "path")
+    PURPLE(1, 110, "path")
+    YELLOW(1, 120, "path")
+    SILVER(3, 50, "path")
+    --
+    - maxHits: int
+    - points: int
+    - imagePath: String
+    --
+    + getMaxHits(): int
+    + getPoints(): int
+    + getImagePath(): String
+}
+
+enum PowerupType {
+    ENLARGE("path")
+    LASER("path")
+    CATCH("path")
+    SLOW("path")
+    DUPLICATE("path")
+    BREAK("path")
+    PLAYER("path")
+    --
+    - imagePath: String
+    --
+    + getImagePath(): String
+}
+
+Brick +-- BrickType
+Powerup +-- PowerupType
+
+' ============================================
+' FACTORY CLASSES
+' ============================================
+
+class BrickFactory {
+    + {static} createBrick(type, x, y): Brick
+    + {static} createSilverBrick(x, y): Brick
+    + {static} createRandomBrick(x, y): Brick
+}
+
+class PowerUpFactory {
+    + {static} createPowerUp(type, x, y): Powerup
+    + {static} createRandomPowerUp(x, y): Powerup
+    + {static} createPowerUpFromBrick(x, y, chance): Powerup
+}
+
+class LevelManager {
+    + {static} loadLevel(level: int): ArrayList<Brick>
+    - {static} createLevel1(): ArrayList<Brick>
+    - {static} createLevel2(): ArrayList<Brick>
+    - {static} createLevel3(): ArrayList<Brick>
+    - {static} createLevel4(): ArrayList<Brick>
+    - {static} createLevel5(): ArrayList<Brick>
+}
+
+BrickFactory ..> Brick : creates
+PowerUpFactory ..> Powerup : creates
+LevelManager ..> Brick : creates
+
+' ============================================
+' MANAGER CLASSES (Singleton)
+' ============================================
+
+class GameManager {
+    - score: int
+    - lives: int
+    - currentLevel: int
+    - gameOver: boolean
+    - paddleEnlarged: boolean
+
+    + GameManager()
+    + resetGame(): void
+    + addScore(points: int): void
+    + getScore(): int
+    + loseLife(): void
+    + addLife(): void
+    + getLives(): int
+    + nextLevel(): void
+    + getCurrentLevel(): int
+    + isGameOver(): boolean
+    + setGameOver(gameOver: boolean): void
+}
+
+class SoundManager {
+    - {static} instance: SoundManager
+    - soundClips: HashMap<String, Clip>
+    - soundEnabled: boolean
+
+    - SoundManager()
+    + {static} getInstance(): SoundManager
+    + playMenuMusic(): void
+    + stopMenuMusic(): void
+    + playGameStartSound(): void
+    + playWallHitSound(): void
+    + playShipHitSound(): void
+    + playDeathSound(): void
+    + playLaserBeamSound(): void
+    + playEnlargePowerupSound(): void
+    + toggleSound(): void
+}
+
+class ConfigManager {
+    - {static} instance: ConfigManager
+    - properties: Properties
+
+    - ConfigManager()
+    + {static} getInstance(): ConfigManager
+    + getWindowWidth(): int
+    + getWindowHeight(): int
+    + isSoundEnabled(): boolean
+    + setSoundEnabled(enabled: boolean): void
+}
+
+class HighScoreManager {
+    + {static} loadHighScores(): ArrayList<ScoreEntry>
+    + {static} saveHighScore(name, score): void
+    + {static} isHighScore(score): boolean
+}
+
+class GameLogger {
+    - {static} LOG_FILE: String
+
+    + {static} info(message: String): void
+    + {static} warning(message: String): void
+    + {static} error(message: String): void
+}
+
+class FontManager {
+    - {static} gameFont: Font
+
+    + {static} getGameFont(size: float): Font
+    + {static} getGameFont(style, size): Font
+}
+
+' ============================================
+' UI CLASSES
+' ============================================
+
+class ArkanoidGame {
+    - currentPanel: JPanel
+    - menuPanel: MenuPanel
+    - gamePanel: GamePanel
+    - highScorePanel: HighScorePanel
+
+    + ArkanoidGame()
+    + showMenu(): void
+    + startGame(): void
+    + showHighScores(): void
+    + main(args: String[]): void
+}
+
+class GamePanel {
+    - mainFrame: ArkanoidGame
+    - gameManager: GameManager
+    - gameTimer: Timer
+    - paddle: Paddle
+    - balls: ArrayList<Ball>
+    - bricks: ArrayList<Brick>
+    - powerups: ArrayList<Powerup>
+    - cameraShake: CameraShake
+
+    + GamePanel(mainFrame)
+    + startNewGame(): void
+    - update(): void
+    - checkBallBrickCollision(ball): void
+    - applyPowerup(powerup): void
+    + paintComponent(g: Graphics): void
+    + keyPressed(e: KeyEvent): void
+    + keyReleased(e: KeyEvent): void
+}
+
+class MenuPanel {
+    - mainFrame: ArkanoidGame
+    - selectedOption: int
+    - menuOptions: String[]
+
+    + MenuPanel(mainFrame)
+    + paintComponent(g: Graphics): void
+    + keyPressed(e: KeyEvent): void
+}
+
+class HighScorePanel {
+    - mainFrame: ArkanoidGame
+    - scores: ArrayList<ScoreEntry>
+
+    + HighScorePanel(mainFrame)
+    + refreshScores(): void
+    + paintComponent(g: Graphics): void
+    + keyPressed(e: KeyEvent): void
+}
+
+ArkanoidGame *-- MenuPanel
+ArkanoidGame *-- GamePanel
+ArkanoidGame *-- HighScorePanel
+GamePanel *-- GameManager
+GamePanel *-- Paddle
+GamePanel o-- Ball
+GamePanel o-- Brick
+GamePanel o-- Powerup
+
+' ============================================
+' UTILITY CLASSES
+' ============================================
+
+class GameBounds {
+    + {static} WINDOW_WIDTH: int
+    + {static} WINDOW_HEIGHT: int
+    + {static} PLAY_LEFT: int
+    + {static} PLAY_RIGHT: int
+    + {static} PLAY_TOP: int
+    + {static} PLAY_BOTTOM: int
+    + {static} PLAY_WIDTH: int
+    + {static} PLAY_HEIGHT: int
+}
+
+class CameraShake {
+    - shakeIntensity: int
+    - shakeDuration: int
+    - shakeTimer: int
+    - offsetX: int
+    - offsetY: int
+
+    + shake(intensity, duration): void
+    + update(): void
+    + getOffsetX(): int
+    + getOffsetY(): int
+    + isShaking(): boolean
+}
+
+class PerformanceMonitor {
+    - frameCount: int
+    - fps: int
+    - lastFpsTime: long
+
+    + update(): void
+    + getFPS(): int
+}
+
+GamePanel *-- CameraShake
+GamePanel *-- PerformanceMonitor
+
+' ============================================
+' RELATIONSHIPS & DEPENDENCIES
+' ============================================
+
+Ball ..> Paddle : uses
+Ball ..> Brick : uses
+Paddle ..> LaserBeam : creates
+GamePanel ..> BrickFactory : uses
+GamePanel ..> PowerUpFactory : uses
+GamePanel ..> LevelManager : uses
+GamePanel ..> SoundManager : uses
+GamePanel ..> FontManager : uses
+ArkanoidGame ..> ConfigManager : uses
+HighScorePanel ..> HighScoreManager : uses
+
+note right of GameObject
+  Abstract base class
+  Encapsulation: private fields
+  Abstraction: abstract methods
+end note
+
+note right of MovableObject
+  Inherits from GameObject
+  Adds velocity and movement
+end note
+
+note right of BrickFactory
+  Factory Pattern
+  Creates different brick types
+end note
+
+note right of SoundManager
+  Singleton Pattern
+  Manages all game sounds
+end note
+
+note bottom of GamePanel
+  MVC Controller
+  Main game loop (60 FPS)
+  Handles all game logic
+end note
+
+@enduml
+
