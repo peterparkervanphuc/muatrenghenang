@@ -1,9 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class MainMenu extends JPanel {
+public class Lobby extends JPanel {
 
-    public MainMenu() {
+    public Lobby() {
         setBackground(Color.WHITE);
     }
 

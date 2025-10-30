@@ -6,6 +6,9 @@ public class Ball extends GameObject {
     private int dx;
     private int dy;
     private static final int BALL_SIZE = 20;
+    private boolean isFireball = false;
+    private long fireballStartTime; // Thêm biến để theo dõi thời gian
+    private static final long FIREBALL_DURATION = 4000; // 4 seconds in milliseconds
 
     public Ball(int x, int y, int dx, int dy) {
         super(x, y, BALL_SIZE, BALL_SIZE);
@@ -23,7 +26,11 @@ public class Ball extends GameObject {
     // Đây là cách Ball tự vẽ chính nó.
     @Override
     public void draw(Graphics g) {
-        g.setColor(Color.black);
+        if (isFireball) {
+            g.setColor(Color.RED);
+        } else {
+            g.setColor(Color.BLACK);
+        }
         g.fillOval(x, y, width, height);
     }
 
@@ -51,6 +58,23 @@ public class Ball extends GameObject {
     public void setPosition(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public void setFireball(boolean active) {
+        this.isFireball = active;
+        if (active) {
+            fireballStartTime = System.currentTimeMillis();
+        }
+    }
+
+    public void updateFireballStatus() {
+        if (isFireball && System.currentTimeMillis() - fireballStartTime > FIREBALL_DURATION) {
+            isFireball = false;
+        }
+    }
+
+    public boolean isFireball() {
+        return this.isFireball;
     }
 
     // =======================================================
