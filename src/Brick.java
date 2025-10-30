@@ -13,7 +13,7 @@ public class Brick extends GameObject {
         this.isVisible = true;
         this.type = type;
     }
-// GHI đè (Override) phương thức 'draw' từ GameObject để vẽ viên gạch.
+    // GHI đè (Override) phương thức 'draw' từ GameObject để vẽ viên gạch.
     @Override
     public void draw(Graphics g) {
         if (isVisible) {

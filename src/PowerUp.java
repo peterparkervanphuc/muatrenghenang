@@ -33,4 +33,3 @@ public class PowerUp extends GameObject {
         return y > screenHeight;
     }
 }
-
