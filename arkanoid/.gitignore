@@ -1,3 +1,7 @@
+# ===================================
+# Arkanoid Game - Local GitIgnore
+# ===================================
+
 # Compiled class files
 *.class
 bin/
@@ -31,9 +35,6 @@ target/
 .DS_Store
 Thumbs.db
 
-# High scores (optional - remove if you want to track it)
-# High Scores/
-
-# Build scripts output
-*.class
+# High scores (user-specific data)
+High Scores/
 

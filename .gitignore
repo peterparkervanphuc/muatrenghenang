@@ -1,20 +1,58 @@
-# IDE
+# ===================================
+# Arkanoid Game - GitIgnore Rules
+# Repository: muatrenghenang
+# ===================================
+
+# IDE - IntelliJ IDEA
 .idea/
-*.iml
+arkanoid/*.iml
+*.iws
+*.ipr
 out/
+
+# IDE - Eclipse
+.classpath
+.project
+.settings/
+
+# IDE - VS Code
+.vscode/
 
 # Compiled files
 *.class
 bin/
 target/
 
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
 # Logs
 *.log
+*.log.*
 
 # OS specific
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+Desktop.ini
 
-# High Scores
+# High Scores (user data)
 High Scores/
+arkanoid/High Scores/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
 

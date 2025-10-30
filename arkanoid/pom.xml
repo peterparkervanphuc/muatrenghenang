@@ -12,6 +12,21 @@
 
     <name>Arkanoid Game</name>
     <description>Classic Arkanoid brick-breaker game in Java</description>
+    <url>https://github.com/peterparkervanphuc/muatrenghenang</url>
+
+    <scm>
+        <connection>scm:git:git://github.com/peterparkervanphuc/muatrenghenang.git</connection>
+        <developerConnection>scm:git:ssh://github.com:peterparkervanphuc/muatrenghenang.git</developerConnection>
+        <url>https://github.com/peterparkervanphuc/muatrenghenang/tree/main</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>peterparkervanphuc</id>
+            <name>Peter Parker Van Phuc</name>
+            <url>https://github.com/peterparkervanphuc</url>
+        </developer>
+    </developers>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>

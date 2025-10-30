@@ -2,6 +2,12 @@
 
 Classic brick-breaker game xây dựng bằng Java Swing với thiết kế OOP chuyên nghiệp.
 
+[![GitHub](https://img.shields.io/badge/GitHub-muatrenghenang-blue)](https://github.com/peterparkervanphuc/muatrenghenang)
+[![Java](https://img.shields.io/badge/Java-11+-orange)](https://www.oracle.com/java/)
+
+> 📦 **Repository:** [peterparkervanphuc/muatrenghenang](https://github.com/peterparkervanphuc/muatrenghenang)  
+> 📂 **Project Location:** `/arkanoid/`
+
 ---
 
 ## 🚀 Cách Chạy Game
