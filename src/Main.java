@@ -16,16 +16,16 @@ public class Main extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         //cardlayou quản lý chuyển các màn sảnh với game nhé
-          cardLayout = new CardLayout();
-          mainPanel = new JPanel(cardLayout);
-          //tạo panel riêng biệt cho cardlayout quản lý
-          lobbyPanel = new Lobby();
-          gamePanel = new Board();
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+        //tạo panel riêng biệt cho cardlayout quản lý
+        lobbyPanel = new Lobby();
+        gamePanel = new Board();
 
-          mainPanel.add(lobbyPanel, "Lobby");
-          mainPanel.add(gamePanel, "Game");
+        mainPanel.add(lobbyPanel, "Lobby");
+        mainPanel.add(gamePanel, "Game");
 
-          //thêm panel chính vào JFrame
+        //thêm panel chính vào JFrame
         add(mainPanel);
         //addKeylistener dùng để nhấn phím chuyển giữa các panel nhé t đang để space sau này dùng chuột hay gì đổi sau
         addKeyListener(new KeyAdapter() {

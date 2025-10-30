@@ -1,15 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 
 public class Lobby extends JPanel {
+    private Image backgroundImage;
 
     public Lobby() {
+        try {
+            backgroundImage = ImageIO.read(new File("assets/sanhcho.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         setBackground(Color.WHITE);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
         drawLobbyScreen(g);
     }
 
@@ -20,7 +32,7 @@ public class Lobby extends JPanel {
         String title = "Arkanoid";
         String message = "Press SPACE to Start";
 
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.WHITE); // Đổi màu chữ thành trắng để dễ nhìn trên nền
         g2d.setFont(new Font("Helvetica", Font.BOLD, 60));
 
         FontMetrics fmTitle = g2d.getFontMetrics();
