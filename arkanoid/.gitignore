@@ -18,6 +18,9 @@ target/
 .project
 .settings/
 
+# Maven dependencies
+lib/
+
 # Package files
 *.jar
 *.war
