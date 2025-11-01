@@ -447,6 +447,8 @@ public class GamePanel extends JPanel implements KeyListener {
         // Disable all paddle powerups
         if (paddle.hasLaser()) {
             paddle.disableLaser();
+            // Clear all laser beams to prevent frozen lasers
+            paddle.getLasers().clear();
         }
         if (paddle.hasCatch()) {
             paddle.disableCatch();
