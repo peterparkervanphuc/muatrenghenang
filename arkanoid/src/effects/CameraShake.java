@@ -1,3 +1,5 @@
+package effects;
+
 /**
  * Camera shake effect for game feel
  * Creates screen shake effect when triggered

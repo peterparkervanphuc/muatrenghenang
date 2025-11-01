@@ -1,3 +1,12 @@
+package main;
+
+import managers.ConfigManager;
+import managers.SoundManager;
+import ui.GamePanel;
+import ui.HighScorePanel;
+import ui.MenuPanel;
+import utils.GameLogger;
+
 import javax.swing.*;
 import java.awt.*;
 

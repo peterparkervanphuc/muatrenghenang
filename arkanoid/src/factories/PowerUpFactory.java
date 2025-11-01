@@ -1,3 +1,7 @@
+package factories;
+
+import entities.Powerup;
+
 /**
  * Factory Pattern for creating different types of power-ups
  * Design Pattern: Factory Method
@@ -10,7 +14,7 @@ public class PowerUpFactory {
      * @param type The type of power-up to create
      * @param x The x-coordinate
      * @param y The y-coordinate
-     * @return A new Powerup instance of the specified type
+     * @return A new entities.Powerup instance of the specified type
      */
     public static Powerup createPowerUp(Powerup.PowerupType type, double x, double y) {
         if (type == null) {
@@ -28,7 +32,7 @@ public class PowerUpFactory {
      *
      * @param x The x-coordinate
      * @param y The y-coordinate
-     * @return A new random Powerup instance with weighted probability
+     * @return A new random entities.Powerup instance with weighted probability
      */
     public static Powerup createRandomPowerUp(double x, double y) {
         double random = Math.random() * 100; // 0-100 for percentage calculation
@@ -60,7 +64,7 @@ public class PowerUpFactory {
      * @param brickX The x-coordinate of the destroyed brick
      * @param brickY The y-coordinate of the destroyed brick
      * @param dropChance The probability (0.0 to 1.0) of dropping a power-up
-     * @return A new Powerup instance or null if no drop
+     * @return A new entities.Powerup instance or null if no drop
      */
     public static Powerup createPowerUpFromBrick(double brickX, double brickY, double dropChance) {
         if (Math.random() < dropChance) {
@@ -73,7 +77,7 @@ public class PowerUpFactory {
      * Create a specific beneficial power-up (for bonus/special events)
      * @param x The x-coordinate
      * @param y The y-coordinate
-     * @return A beneficial Powerup instance (ENLARGE, PLAYER, or LASER)
+     * @return A beneficial entities.Powerup instance (ENLARGE, PLAYER, or LASER)
      */
     public static Powerup createBonusPowerUp(double x, double y) {
         Powerup.PowerupType[] beneficialTypes = {

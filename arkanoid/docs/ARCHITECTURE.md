@@ -25,15 +25,21 @@ arkanoid/
 
 ### Core Game Files (5 files)
 
-#### 1. **ArkanoidGame.java** (Main Entry Point)
+#### 1. **main.ArkanoidGame.java** (Main Entry Point)
 **Chức năng:**
 - Main class của game, extends JFrame
 - Khởi tạo cửa sổ game (800x600)
 - Quản lý CardLayout để chuyển đổi giữa các màn hình
-- Chứa 3 panels: MenuPanel, GamePanel, HighScorePanel
+- Chứa 3 panels: ui.MenuPanel, ui.GamePanel, ui.HighScorePanel
 
 ```java
-public class ArkanoidGame extends JFrame {
+import ui.GamePanel;
+import ui.HighScorePanel;
+import ui.MenuPanel;
+
+public class main.ArkanoidGame extends
+
+JFrame {
     private CardLayout cardLayout;
     private MenuPanel menuPanel;
     private GamePanel gamePanel;
@@ -41,14 +47,14 @@ public class ArkanoidGame extends JFrame {
 }
 ```
 
-#### 2. **GamePanel.java** (Gameplay Engine)
+#### 2. **ui.GamePanel.java** (Gameplay Engine)
 **Chức năng:**
 - Panel chính chứa toàn bộ gameplay
 - Implements game loop với Timer (60 FPS)
-- Quản lý tất cả game objects (Paddle, Balls, Bricks, Powerups)
+- Quản lý tất cả game objects (entities.Paddle, Balls, Bricks, Powerups)
 - Xử lý input (keyboard: ←→ Space ESC)
 - Collision detection và physics
-- Powerup logic (7 types)
+- entities.Powerup logic (7 types)
 - Level progression (5 levels)
 - Lives system (3 lives)
 
@@ -62,20 +68,20 @@ checkBallBrickCollision()   // Collision detection
 applyPowerup()             // Xử lý powerup effects
 ```
 
-#### 3. **MenuPanel.java** (Main Menu)
+#### 3. **ui.MenuPanel.java** (Main Menu)
 **Chức năng:**
 - Panel menu chính với 4 options
 - START GAME, HIGH SCORES, HELP, EXIT
 - Keyboard navigation (↑↓ Enter)
 - Load và hiển thị logo, background
 
-#### 4. **HighScorePanel.java** (High Scores Display)
+#### 4. **ui.HighScorePanel.java** (High Scores Display)
 **Chức năng:**
 - Hiển thị bảng xếp hạng top 10
 - Format: RANK | NAME | SCORE
 - ESC để quay về menu
 
-#### 5. **GameManager.java** (Game State Manager)
+#### 5. **core.GameManager.java** (Game State Manager)
 **Chức năng:**
 - Quản lý trạng thái game (Score, Lives, Level)
 - Methods: addScore(), loseLife(), addLife(), nextLevel()
@@ -86,9 +92,9 @@ applyPowerup()             // Xử lý powerup effects
 
 ### Abstract Base Classes:
 
-#### **GameObject.java** (Abstract Base)
+#### **entities.GameObject.java** (Abstract Base)
 ```java
-public abstract class GameObject {
+public abstract class entities.GameObject {
     private double x, y;
     private int width, height;
     
@@ -98,11 +104,14 @@ public abstract class GameObject {
 }
 ```
 
-#### **MovableObject.java** (Abstract Movable)
+#### **entities.MovableObject.java** (Abstract Movable)
+
 ```java
+import entities.GameObject;
+
 public abstract class MovableObject extends GameObject {
     private double velocityX, velocityY, speed;
-    
+
     @Override
     public void update() {
         x += velocityX;
@@ -113,31 +122,31 @@ public abstract class MovableObject extends GameObject {
 
 ### Concrete Game Objects:
 
-#### **Paddle.java** (extends MovableObject)
+#### **entities.Paddle.java** (extends entities.MovableObject)
 - Player paddle điều khiển bởi ←→ keys
 - Width: 80 (normal) hoặc 120 (enlarged)
-- Powerup states: hasLaser, hasCatch, enlarged
+- entities.Powerup states: hasLaser, hasCatch, enlarged
 - Methods: moveLeft(), moveRight(), enlarge(), shrink(), fireLaser()
 
-#### **Ball.java** (extends MovableObject)
+#### **entities.Ball.java** (extends entities.MovableObject)
 - Bóng chính của game (radius: 8px)
 - Attachment to paddle
 - Launch với random angle
 - Bounce physics (walls, paddle, bricks)
 - Slow powerup support
 
-#### **Brick.java** (extends GameObject)
+#### **entities.Brick.java** (extends entities.GameObject)
 - 9 types: WHITE, ORANGE, LIGHT_BLUE, GREEN, RED, BLUE, PURPLE, YELLOW, SILVER
 - Points: 50-120 points
 - SILVER brick cần 2 hits
 - Methods: hit(), isDestroyed(), isSilver()
 
-#### **Powerup.java** (extends MovableObject)
+#### **entities.Powerup.java** (extends entities.MovableObject)
 - 7 types: ENLARGE, LASER, CATCH, SLOW, DUPLICATE, BREAK, PLAYER
 - Auto falling với velocity
 - Size: 40x20
 
-#### **LaserBeam.java** (extends MovableObject)
+#### **entities.LaserBeam.java** (extends entities.MovableObject)
 - Laser bắn từ paddle
 - Auto upward movement (velocityY = -10)
 - Size: 4x15
@@ -147,31 +156,31 @@ public abstract class MovableObject extends GameObject {
 ## 🏗️ INHERITANCE HIERARCHY
 
 ```
-GameObject (abstract)
-├── MovableObject (abstract)
-│   ├── Paddle ✅
-│   ├── Ball ✅
-│   ├── Powerup ✅
-│   └── LaserBeam ✅
-└── Brick ✅
+entities.GameObject (abstract)
+├── entities.MovableObject (abstract)
+│   ├── entities.Paddle ✅
+│   ├── entities.Ball ✅
+│   ├── entities.Powerup ✅
+│   └── entities.LaserBeam ✅
+└── entities.Brick ✅
 
 JFrame
-└── ArkanoidGame ✅
+└── main.ArkanoidGame ✅
 
 JPanel + KeyListener
-├── GamePanel ✅
-├── MenuPanel ✅
-└── HighScorePanel ✅
+├── ui.GamePanel ✅
+├── ui.MenuPanel ✅
+└── ui.HighScorePanel ✅
 ```
 
 ---
 
 ## 🔧 MANAGER CLASSES
 
-### **LevelManager.java** (Factory Pattern)
+### **core.LevelManager.java** (Factory Pattern)
 - Static utility class
 - Tạo brick layouts cho 5 levels
-- Method: `loadLevel(int level)` → `ArrayList<Brick>`
+- Method: `loadLevel(int level)` → `ArrayList<entities.Brick>`
 
 **Level Patterns:**
 - Level 1: Simple rows (6x11)
@@ -180,23 +189,23 @@ JPanel + KeyListener
 - Level 4: Checkerboard
 - Level 5: Complex spiral
 
-### **SoundManager.java** (Singleton Pattern)
+### **managers.SoundManager.java** (Singleton Pattern)
 - Load và play tất cả sound effects
 - HashMap<String, Clip> để cache sounds
 - Methods: playMenuMusic(), playWallHitSound(), etc.
 
-### **HighScoreManager.java** (Utility)
+### **managers.HighScoreManager.java** (Utility)
 - File I/O cho high scores
 - File: "High Scores/High Scores.txt"
 - Format: NAME:SCORE
 - Keep top 10 scores
 
-### **FontManager.java** (Utility)
+### **managers.FontManager.java** (Utility)
 - Load custom font "Emulogic.ttf"
 - Fallback to "Monospaced"
 - Methods: getGameFont(size), getGameFont(style, size)
 
-### **ConfigManager.java** (Singleton)
+### **managers.ConfigManager.java** (Singleton)
 - Load config từ config.properties
 - Centralized configuration
 - Methods: getInt(), getBoolean(), getString()
@@ -211,18 +220,30 @@ JPanel + KeyListener
 ## 🏭 FACTORY CLASSES
 
 ### **BrickFactory.java**
+
 ```java
+import entities.Brick;
+
 public static Brick createBrick(BrickType type, int x, int y)
+
 public static Brick createBrick(String typeName, int x, int y)
+
 public static Brick createRandomBrick(int x, int y)
+
 public static Brick createSilverBrick(int x, int y)
 ```
 
 ### **PowerUpFactory.java**
+
 ```java
+import entities.Powerup;
+
 public static Powerup createPowerUp(PowerupType type, int x, int y)
+
 public static Powerup createRandomPowerUp(int x, int y)
+
 public static Powerup createPowerUpFromBrick(int x, int y, double dropChance)
+
 public static Powerup createBonusPowerUp(int x, int y)
 ```
 
@@ -230,7 +251,7 @@ public static Powerup createBonusPowerUp(int x, int y)
 
 ## 🛠️ UTILITY CLASSES
 
-### **GameBounds.java** (Constants)
+### **core.GameBounds.java** (Constants)
 ```java
 public static final int LEFT_BORDER = 26;
 public static final int RIGHT_BORDER = 40;
@@ -239,7 +260,7 @@ public static final int BOTTOM_BORDER = 0;
 // ... play area calculations
 ```
 
-### **CameraShake.java**
+### **effects.CameraShake.java**
 - Screen shake effect
 - Methods: shake(intensity, duration), update(), getOffsetX(), getOffsetY()
 
@@ -254,41 +275,41 @@ public static final int BOTTOM_BORDER = 0;
 
 ### 1. Game Start:
 ```
-main() → ArkanoidGame()
+main() → main.ArkanoidGame()
 → Create Panels (Menu, Game, HighScore)
-→ Show MenuPanel
+→ Show ui.MenuPanel
 → Play menu music
 ```
 
 ### 2. Start Game:
 ```
-MenuPanel: Enter on "START GAME"
-→ ArkanoidGame.startGame()
-→ GamePanel.startNewGame()
+ui.MenuPanel: Enter on "START GAME"
+→ main.ArkanoidGame.startGame()
+→ ui.GamePanel.startNewGame()
 → initializeLevel()
-→ LevelManager.loadLevel(1)
-→ Create Paddle, Ball, Bricks
+→ core.LevelManager.loadLevel(1)
+→ Create entities.Paddle, entities.Ball, Bricks
 → Start Timer (60 FPS)
 ```
 
 ### 3. Game Loop (60 FPS):
 ```
 Timer tick every 16ms
-→ GamePanel.update()
+→ ui.GamePanel.update()
   → Update paddle (keyboard)
   → Update balls (physics)
   → Check collisions
   → Update powerups
   → Update lasers
-→ GamePanel.paintComponent()
+→ ui.GamePanel.paintComponent()
   → Draw all objects
   → Draw UI
 ```
 
-### 4. Ball Lost:
+### 4. entities.Ball Lost:
 ```
-Ball.y > PLAY_BOTTOM
-→ GameManager.loseLife()
+entities.Ball.y > PLAY_BOTTOM
+→ core.GameManager.loseLife()
 → Reset powerups
 → Respawn ball (attached)
 → If lives == 0: Game Over
@@ -297,7 +318,7 @@ Ball.y > PLAY_BOTTOM
 ### 5. Level Complete:
 ```
 All bricks destroyed
-→ GameManager.nextLevel()
+→ core.GameManager.nextLevel()
 → Wait 2s
 → initializeLevel()
 → Continue
@@ -338,7 +359,7 @@ assets/
 - Access through getters/setters
 
 ### 2. Inheritance ✅
-- GameObject → MovableObject → Game entities
+- entities.GameObject → entities.MovableObject → Game entities
 - JFrame/JPanel for UI
 - Code reuse and hierarchy
 
@@ -348,7 +369,7 @@ assets/
 - Polymorphic rendering
 
 ### 4. Abstraction ✅
-- Abstract classes: GameObject, MovableObject
+- Abstract classes: entities.GameObject, entities.MovableObject
 - Abstract methods force implementation
 - Hide complex logic
 
@@ -357,18 +378,18 @@ assets/
 ## 🎯 DESIGN PATTERNS
 
 ### Singleton:
-- SoundManager
-- ConfigManager
+- managers.SoundManager
+- managers.ConfigManager
 - GameLogger (static methods)
 
 ### Factory:
 - BrickFactory
 - PowerUpFactory
-- LevelManager
+- core.LevelManager
 
 ### MVC-like:
-- GamePanel = Controller
-- GameObject = Model
+- ui.GamePanel = Controller
+- entities.GameObject = Model
 - render() = View
 
 ---
@@ -391,7 +412,7 @@ assets/
 ### Gameplay:
 - 5 Progressive levels
 - 7 Types of powerups
-- 9 Brick types
+- 9 entities.Brick types
 - Physics-based ball movement
 - Laser shooting
 - Camera shake effects

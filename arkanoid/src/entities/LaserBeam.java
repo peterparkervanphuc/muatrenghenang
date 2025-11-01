@@ -1,12 +1,13 @@
+package entities;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.File;
 
 /**
  * Represents a laser beam fired by the paddle
  * OOP Principles Applied:
- * - Inheritance: Extends MovableObject for automatic upward movement
+ * - Inheritance: Extends entities.MovableObject for automatic upward movement
  * - Encapsulation: Private constants and controlled access
  * - Polymorphism: Overrides render() method
  * - Abstraction: Hides movement logic in velocity
@@ -47,7 +48,7 @@ public class LaserBeam extends MovableObject {
     }
     
     /**
-     * Polymorphism: Uses inherited update() method from MovableObject
+     * Polymorphism: Uses inherited update() method from entities.MovableObject
      * Movement (upward) is automatically handled by velocity
      */
     
@@ -69,7 +70,7 @@ public class LaserBeam extends MovableObject {
     
     /**
      * Check collision with rectangle
-     * Abstraction: Uses inherited getBounds() from GameObject
+     * Abstraction: Uses inherited getBounds() from entities.GameObject
      */
     public boolean intersects(Rectangle rect) {
         return getBounds().intersects(rect);
@@ -78,10 +79,10 @@ public class LaserBeam extends MovableObject {
     /**
      * Abstraction: Uses inherited getBounds() method
      */
-    // Removed: getBounds() is inherited from GameObject
+    // Removed: getBounds() is inherited from entities.GameObject
     
     // Encapsulation: Public getters
-    // Removed: getY() is inherited from GameObject (returns double)
+    // Removed: getY() is inherited from entities.GameObject (returns double)
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
 }

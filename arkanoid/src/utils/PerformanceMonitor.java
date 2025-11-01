@@ -1,3 +1,7 @@
+package utils;
+
+import managers.ConfigManager;
+
 /**
  * Performance monitoring utility for game optimization
  * Tracks FPS, memory usage, and game metrics

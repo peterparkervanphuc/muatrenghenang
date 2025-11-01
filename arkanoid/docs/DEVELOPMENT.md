@@ -9,43 +9,43 @@
 ### Current Structure (Flat):
 ```
 src/
-├── ArkanoidGame.java
-├── GamePanel.java
-├── Ball.java
+├── main.ArkanoidGame.java
+├── ui.GamePanel.java
+├── entities.Ball.java
 └── ... (all in root)
 ```
 
 ### Recommended Structure (Professional):
 ```
 src/main/java/com/arkanoid/
-├── ArkanoidGame.java
+├── main.ArkanoidGame.java
 ├── core/
-│   ├── GameManager.java
-│   ├── GamePanel.java
-│   └── GameBounds.java
+│   ├── core.GameManager.java
+│   ├── ui.GamePanel.java
+│   └── core.GameBounds.java
 ├── entities/
-│   ├── GameObject.java
-│   ├── MovableObject.java
-│   ├── Ball.java
-│   ├── Paddle.java
-│   ├── Brick.java
-│   ├── Powerup.java
-│   └── LaserBeam.java
+│   ├── entities.GameObject.java
+│   ├── entities.MovableObject.java
+│   ├── entities.Ball.java
+│   ├── entities.Paddle.java
+│   ├── entities.Brick.java
+│   ├── entities.Powerup.java
+│   └── entities.LaserBeam.java
 ├── factories/
 │   ├── BrickFactory.java
 │   └── PowerUpFactory.java
 ├── managers/
-│   ├── LevelManager.java
-│   ├── SoundManager.java
-│   ├── FontManager.java
-│   ├── HighScoreManager.java
-│   └── ConfigManager.java
+│   ├── core.LevelManager.java
+│   ├── managers.SoundManager.java
+│   ├── managers.FontManager.java
+│   ├── managers.HighScoreManager.java
+│   └── managers.ConfigManager.java
 ├── ui/
-│   ├── MenuPanel.java
-│   └── HighScorePanel.java
+│   ├── ui.MenuPanel.java
+│   └── ui.HighScorePanel.java
 └── utils/
     ├── GameLogger.java
-    ├── CameraShake.java
+    ├── effects.CameraShake.java
     └── PerformanceMonitor.java
 ```
 
@@ -83,13 +83,13 @@ src/main/java/com/arkanoid/
 
 #### 1. Game Objects Hierarchy (7 files)
 ```
-GameObject (abstract)
-├── MovableObject (abstract)
-│   ├── Paddle ✅
-│   ├── Powerup ✅
-│   ├── LaserBeam ✅
-│   └── Ball ✅
-└── Brick ✅
+entities.GameObject (abstract)
+├── entities.MovableObject (abstract)
+│   ├── entities.Paddle ✅
+│   ├── entities.Powerup ✅
+│   ├── entities.LaserBeam ✅
+│   └── entities.Ball ✅
+└── entities.Brick ✅
 ```
 
 **OOP Principles Applied:**
@@ -101,12 +101,12 @@ GameObject (abstract)
 #### 2. Swing UI Components (4 files)
 ```
 JFrame
-└── ArkanoidGame ✅
+└── main.ArkanoidGame ✅
 
 JPanel + KeyListener
-├── GamePanel ✅
-├── MenuPanel ✅
-└── HighScorePanel ✅
+├── ui.GamePanel ✅
+├── ui.MenuPanel ✅
+└── ui.HighScorePanel ✅
 ```
 
 ---
@@ -114,17 +114,17 @@ JPanel + KeyListener
 ### Classes KHÔNG CẦN KẾ THỪA (Appropriate Design):
 
 #### Manager Classes (7 files):
-1. **GameManager** - State management (có thể là Singleton)
-2. **LevelManager** - Factory pattern (static methods)
-3. **SoundManager** - Singleton pattern ✅
-4. **HighScoreManager** - Utility class (static methods)
-5. **FontManager** - Utility class (static methods)
-6. **ConfigManager** - Singleton pattern ✅
+1. **core.GameManager** - State management (có thể là Singleton)
+2. **core.LevelManager** - Factory pattern (static methods)
+3. **managers.SoundManager** - Singleton pattern ✅
+4. **managers.HighScoreManager** - Utility class (static methods)
+5. **managers.FontManager** - Utility class (static methods)
+6. **managers.ConfigManager** - Singleton pattern ✅
 7. **GameLogger** - Utility class (static methods)
 
 #### Utility Classes (3 files):
-1. **GameBounds** - Constants class (static finals)
-2. **CameraShake** - Effect utility
+1. **core.GameBounds** - Constants class (static finals)
+2. **effects.CameraShake** - Effect utility
 3. **PerformanceMonitor** - Metrics utility
 
 **Lý do hợp lý:** Các class này sử dụng đúng design patterns (Singleton, Factory, Utility).
@@ -133,7 +133,7 @@ JPanel + KeyListener
 
 ## 🔧 REFACTORED CLASSES DETAILS
 
-### ✅ GameObject.java (Abstract Base)
+### ✅ entities.GameObject.java (Abstract Base)
 **Changes:**
 - Created new abstract base class
 - Private fields: x, y, width, height
@@ -141,7 +141,7 @@ JPanel + KeyListener
 - Common methods: getBounds(), intersects()
 
 ```java
-public abstract class GameObject {
+public abstract class entities.GameObject {
     private double x, y;
     private int width, height;
     
@@ -153,16 +153,18 @@ public abstract class GameObject {
 
 ---
 
-### ✅ MovableObject.java (Abstract Movable)
+### ✅ entities.MovableObject.java (Abstract Movable)
 **Changes:**
-- Extends GameObject
+- Extends entities.GameObject
 - Added velocity system
 - Auto movement in update()
 
 ```java
+import entities.GameObject;
+
 public abstract class MovableObject extends GameObject {
     private double velocityX, velocityY, speed;
-    
+
     @Override
     public void update() {
         x += velocityX;
@@ -173,11 +175,11 @@ public abstract class MovableObject extends GameObject {
 
 ---
 
-### ✅ Paddle.java
-**Backup:** `Paddle.java.backup`
+### ✅ entities.Paddle.java
+**Backup:** `entities.Paddle.java.backup`
 
 **Changes:**
-- ✅ Extends MovableObject
+- ✅ Extends entities.MovableObject
 - ✅ Private constants: SPEED, NORMAL_WIDTH, ENLARGED_WIDTH
 - ✅ Constructor calls super(x, y, width, height, speed)
 - ✅ Uses getX(), setX() instead of direct access
@@ -186,17 +188,17 @@ public abstract class MovableObject extends GameObject {
 
 **OOP Applied:**
 - Encapsulation: All fields private
-- Inheritance: Reuses position from GameObject
+- Inheritance: Reuses position from entities.GameObject
 - Polymorphism: Overrides update(), render()
-- Abstraction: Powerup logic hidden
+- Abstraction: entities.Powerup logic hidden
 
 ---
 
-### ✅ Ball.java
-**Backup:** `Ball.java.backup2`
+### ✅ entities.Ball.java
+**Backup:** `entities.Ball.java.backup2`
 
 **Changes:**
-- ✅ Extends MovableObject
+- ✅ Extends entities.MovableObject
 - ✅ Private constants: BALL_SIZE, INITIAL_SPEED
 - ✅ Uses setVelocity() instead of dx, dy
 - ✅ Override update() for attachment logic
@@ -205,17 +207,17 @@ public abstract class MovableObject extends GameObject {
 
 **OOP Applied:**
 - Encapsulation: Uses getters/setters
-- Inheritance: Extends MovableObject
+- Inheritance: Extends entities.MovableObject
 - Polymorphism: Overrides update(), render()
 - Abstraction: Physics hidden
 
 ---
 
-### ✅ Brick.java
-**Backup:** `Brick.java.backup`
+### ✅ entities.Brick.java
+**Backup:** `entities.Brick.java.backup`
 
 **Changes:**
-- ✅ Extends GameObject (NOT MovableObject - stationary!)
+- ✅ Extends entities.GameObject (NOT entities.MovableObject - stationary!)
 - ✅ Private constants: BRICK_WIDTH, BRICK_HEIGHT
 - ✅ Override update() with empty body
 - ✅ Override render()
@@ -223,17 +225,17 @@ public abstract class MovableObject extends GameObject {
 
 **OOP Applied:**
 - Encapsulation: Private fields
-- Inheritance: Extends GameObject
+- Inheritance: Extends entities.GameObject
 - Polymorphism: Enum types, render()
 - Abstraction: Hit detection hidden
 
 ---
 
-### ✅ Powerup.java
-**Backup:** `Powerup.java.backup`
+### ✅ entities.Powerup.java
+**Backup:** `entities.Powerup.java.backup`
 
 **Changes:**
-- ✅ Extends MovableObject
+- ✅ Extends entities.MovableObject
 - ✅ Private constants: SIZE, FALL_SPEED
 - ✅ Constructor sets velocity for auto falling
 - ✅ Uses inherited update()
@@ -241,17 +243,17 @@ public abstract class MovableObject extends GameObject {
 
 **OOP Applied:**
 - Encapsulation: Private fields
-- Inheritance: Auto movement from MovableObject
+- Inheritance: Auto movement from entities.MovableObject
 - Polymorphism: Enum types
 - Abstraction: Falling logic hidden
 
 ---
 
-### ✅ LaserBeam.java
-**Backup:** `LaserBeam.java.backup`
+### ✅ entities.LaserBeam.java
+**Backup:** `entities.LaserBeam.java.backup`
 
 **Changes:**
-- ✅ Extends MovableObject
+- ✅ Extends entities.MovableObject
 - ✅ Private constants: SIZE, SPEED
 - ✅ Sets upward velocity in constructor
 - ✅ Uses inherited update()
@@ -268,20 +270,34 @@ public abstract class MovableObject extends GameObject {
 ## 🔄 GAMEPL UPDATES
 
 ### Polymorphic Rendering:
+
 ```java
 // ALL game objects now use polymorphic render()
-for (Brick brick : bricks) {
-    brick.render(g2d);  // Polymorphism!
+
+import entities.Ball;
+import entities.Brick;
+import entities.Powerup;for(Brick brick :bricks){
+        brick.
+
+render(g2d);  // Polymorphism!
 }
 
-paddle.render(g2d);  // Polymorphism!
+        paddle.
 
-for (Ball ball : balls) {
-    ball.render(g2d);  // Polymorphism!
+render(g2d);  // Polymorphism!
+
+for(
+Ball ball :balls){
+        ball.
+
+render(g2d);  // Polymorphism!
 }
 
-for (Powerup powerup : powerups) {
-    powerup.render(g2d);  // Polymorphism!
+        for(
+Powerup powerup :powerups){
+        powerup.
+
+render(g2d);  // Polymorphism!
 }
 ```
 
@@ -305,21 +321,21 @@ javac *.java -d ../bin -encoding UTF-8
 
 ### Runtime: ✅ SUCCESS
 ```bash
-java -cp bin ArkanoidGame
+java -cp bin main.ArkanoidGame
 # Game runs perfectly!
 ```
 
 ### Verified Features:
-- ✅ Paddle movement (left/right)
-- ✅ Paddle enlarge/shrink powerup
+- ✅ entities.Paddle movement (left/right)
+- ✅ entities.Paddle enlarge/shrink powerup
 - ✅ Laser firing
 - ✅ Laser beams moving upward
-- ✅ Ball physics: launch, bounce, collision
-- ✅ Ball-paddle collision
-- ✅ Ball-brick collision
-- ✅ Ball slow/restore speed
+- ✅ entities.Ball physics: launch, bounce, collision
+- ✅ entities.Ball-paddle collision
+- ✅ entities.Ball-brick collision
+- ✅ entities.Ball slow/restore speed
 - ✅ Powerups falling
-- ✅ Brick destruction
+- ✅ entities.Brick destruction
 - ✅ All 5 levels
 - ✅ Score tracking
 - ✅ High scores
@@ -340,8 +356,8 @@ public boolean hasLaser() { return hasLaser; }
 
 ### 2. Kế Thừa (Inheritance) ✅
 ```
-GameObject → MovableObject → Paddle/Ball/Powerup/LaserBeam
-GameObject → Brick
+entities.GameObject → entities.MovableObject → entities.Paddle/entities.Ball/entities.Powerup/entities.LaserBeam
+entities.GameObject → entities.Brick
 ```
 
 ### 3. Đa Hình (Polymorphism) ✅
@@ -364,14 +380,14 @@ public abstract void render(Graphics2D g2d);
 ## 🎊 FINAL STATUS
 
 ### Refactored Classes: 5/5 ✅
-1. ✅ **Paddle** - extends MovableObject
-2. ✅ **Ball** - extends MovableObject
-3. ✅ **Brick** - extends GameObject
-4. ✅ **Powerup** - extends MovableObject
-5. ✅ **LaserBeam** - extends MovableObject
+1. ✅ **entities.Paddle** - extends entities.MovableObject
+2. ✅ **entities.Ball** - extends entities.MovableObject
+3. ✅ **entities.Brick** - extends entities.GameObject
+4. ✅ **entities.Powerup** - extends entities.MovableObject
+5. ✅ **entities.LaserBeam** - extends entities.MovableObject
 
 ### OOP Coverage:
-- **GameObject system:** 100% ✅
+- **entities.GameObject system:** 100% ✅
 - **Encapsulation:** 100% ✅
 - **Inheritance:** 100% ✅
 - **Polymorphism:** 100% ✅
@@ -406,11 +422,11 @@ The Arkanoid game demonstrates **PERFECT professional OOP architecture** with:
 ## 📚 BACKUP FILES AVAILABLE
 
 All refactored files have backups:
-- `src/Paddle.java.backup`
-- `src/Powerup.java.backup`
-- `src/Brick.java.backup`
-- `src/LaserBeam.java.backup`
-- `src/Ball.java.backup2`
+- `src/entities.Paddle.java.backup`
+- `src/entities.Powerup.java.backup`
+- `src/entities.Brick.java.backup`
+- `src/entities.LaserBeam.java.backup`
+- `src/entities.Ball.java.backup2`
 
 ---
 
@@ -422,14 +438,14 @@ All refactored files have backups:
 
 #### ✅ 11 Tests Implemented:
 
-1. **testBallBrickCollision** - Ball-Brick collision detection
+1. **testBallBrickCollision** - entities.Ball-entities.Brick collision detection
 2. **testBrickDestruction** - Normal brick destroyed after 1 hit
 3. **testSilverBrickThreeHits** - ✅ Silver brick requires 3 hits (Updated!)
 4. **testScoreIncrease** - Score increases when brick destroyed
 5. **testLivesDecrease** - Lives decrease when ball lost
 6. **testGameOver** - Game over when no lives remaining
-7. **testPaddleBounds** - Paddle stays within game bounds
-8. **testBallPaddleBounce** - Ball velocity reverses on bounce
+7. **testPaddleBounds** - entities.Paddle stays within game bounds
+8. **testBallPaddleBounce** - entities.Ball velocity reverses on bounce
 9. **testBrickFactory** - BrickFactory creates correct brick types
 10. **testPowerUpFactory** - PowerUpFactory creates powerups
 11. **testLevelProgression** - Level increases correctly
@@ -460,25 +476,31 @@ mvn test
 #### 1. **Laser bắn khi ball chưa launch** ❌ → ✅
 **Vấn đề:** Khi ball attached (chưa launch), nhấn Space vẫn bắn laser
 **Nguyên nhân:** Không check trạng thái ball trước khi fire laser
-**Giải pháp:** 
+**Giải pháp:**
+
 ```java
-if (paddle.hasLaser()) {
-    // Check if any ball is launched
-    boolean anyBallLaunched = false;
-    for (Ball ball : balls) {
-        if (!ball.isAttached()) {
-            anyBallLaunched = true;
-            break;
+import entities.Ball;if(paddle.hasLaser()){
+// Check if any ball is launched
+boolean anyBallLaunched = false;
+    for(
+Ball ball :balls){
+        if(!ball.
+
+isAttached()){
+anyBallLaunched =true;
+        break;
         }
+        }
+        if(anyBallLaunched){
+        paddle.
+
+fireLaser();
     }
-    if (anyBallLaunched) {
-        paddle.fireLaser();
-    }
-}
+            }
 ```
 
 #### 2. **Catch powerup không hoạt động** ❌ → ✅
-**Vấn đề:** Ball chạm paddle chỉ bounce, không dính khi có Catch
+**Vấn đề:** entities.Ball chạm paddle chỉ bounce, không dính khi có Catch
 **Nguyên nhân:** Logic Catch CHƯA được implement trong collision detection
 **Giải pháp:**
 ```java
@@ -493,47 +515,63 @@ if (paddle.hasCatch() && !ball.isAttached()) {
 **Vấn đề:** 
 - Đang có LASER, ball đang bay
 - Ăn CATCH powerup
-- Ball chạm paddle lần 1 → **Bounce** (sai!)
-- Ball chạm paddle lần 2 → Dính (đúng nhưng muộn!)
+- entities.Ball chạm paddle lần 1 → **Bounce** (sai!)
+- entities.Ball chạm paddle lần 2 → Dính (đúng nhưng muộn!)
 
 **Nguyên nhân - Race Condition:**
-1. Frame N: Ball update → Ball di chuyển
-2. Frame N: Ball-Paddle collision → Ball **bounce** (vì catch chưa enable)
-3. Frame N: Powerup update → Ăn CATCH → `enableCatch()`
-4. Frame N+1: Ball chạm paddle lần nữa → Mới dính
+1. Frame N: entities.Ball update → entities.Ball di chuyển
+2. Frame N: entities.Ball-entities.Paddle collision → entities.Ball **bounce** (vì catch chưa enable)
+3. Frame N: entities.Powerup update → Ăn CATCH → `enableCatch()`
+4. Frame N+1: entities.Ball chạm paddle lần nữa → Mới dính
 
 **Giải pháp:**
 Trong `applyPowerup(CATCH)`, sau khi enable catch, **BẮT NGAY** balls đang gần paddle:
+
 ```java
-paddle.enableCatch();  // Enable trước
+import entities.Ball;paddle.enableCatch();  // Enable trước
 
 // Sau đó attach balls đang gần paddle (trong vòng 50 pixels)
-for (Ball ball : balls) {
-    if (!ball.isAttached()) {
-        double ballBottom = ball.getY() + 8;
-        double paddleTop = paddle.getY();
-        double verticalDistance = Math.abs(ballBottom - paddleTop);
-        
-        // Nếu ball gần paddle (< 50px) và overlap ngang
-        if (verticalDistance < 50 && ball.getX() >= paddle.getX() - 20 
-            && ball.getX() <= paddle.getX() + paddle.getWidth() + 20) {
-            ball.attachToPaddle(paddle);  // Bắt ngay!
+for(
+Ball ball :balls){
+        if(!ball.
+
+isAttached()){
+double ballBottom = ball.getY() + 8;
+double paddleTop = paddle.getY();
+double verticalDistance = Math.abs(ballBottom - paddleTop);
+
+// Nếu ball gần paddle (< 50px) và overlap ngang
+        if(verticalDistance< 50&&ball.
+
+getX() >=paddle.
+
+getX() -20
+        &&ball.
+
+getX() <=paddle.
+
+getX() +paddle.
+
+getWidth() +20){
+        ball.
+
+attachToPaddle(paddle);  // Bắt ngay!
         }
-    }
-}
+                }
+                }
 ```
 
-**Kết quả:** Ball dính ngay lần đầu, không cần chạm lần 2! ✅
+**Kết quả:** entities.Ball dính ngay lần đầu, không cần chạm lần 2! ✅
 
-#### 4. **Powerup kích hoạt khi ball chưa launch** ❌ → ✅
-**Vấn đề:** Ăn CATCH đầu tiên → Ball attached → Powerups khác rơi xuống vẫn kích hoạt
-**Giải pháp:** ĐÃ SỬA (xem phần Powerup Logic)
+#### 4. **entities.Powerup kích hoạt khi ball chưa launch** ❌ → ✅
+**Vấn đề:** Ăn CATCH đầu tiên → entities.Ball attached → Powerups khác rơi xuống vẫn kích hoạt
+**Giải pháp:** ĐÃ SỬA (xem phần entities.Powerup Logic)
 
 ### ✅ Validated Logic:
-- Ball collision với brick: ✅ Chính xác (side detection)
-- Paddle bounds: ✅ Không ra ngoài play area
-- Ball speed increase mỗi level: ✅ +12% mỗi level
-- Powerup conflicts (LASER-ENLARGE, CATCH-DUPLICATE): ✅ Hoạt động đúng
+- entities.Ball collision với brick: ✅ Chính xác (side detection)
+- entities.Paddle bounds: ✅ Không ra ngoài play area
+- entities.Ball speed increase mỗi level: ✅ +12% mỗi level
+- entities.Powerup conflicts (LASER-ENLARGE, CATCH-DUPLICATE): ✅ Hoạt động đúng
 - Reset powerups khi mất mạng: ✅ Clear đúng
 
 ---
@@ -549,8 +587,8 @@ for (Ball ball : balls) {
 - **LASER + ENLARGE:** Shrink paddle → Enable laser
 - **CATCH + DUPLICATE:** Catch block Duplicate (check `paddle.hasCatch()`)
 - **DUPLICATE + CATCH:** Duplicate block Catch (check `balls.size() > 1`)
-- **Powerup + Ball attached:** Powerup bị vô hiệu hóa nếu tất cả balls chưa launch
-- **Laser + Ball attached:** Không thể bắn laser khi ball chưa launch
+- **entities.Powerup + entities.Ball attached:** entities.Powerup bị vô hiệu hóa nếu tất cả balls chưa launch
+- **Laser + entities.Ball attached:** Không thể bắn laser khi ball chưa launch
 
 ### Khi mất mạng:
 - ❌ Reset tất cả powerup effects (Laser, Catch, Enlarge, Slow)

@@ -1,9 +1,13 @@
+package ui;
+
+import main.ArkanoidGame;
+import managers.FontManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.File;
 
 /**
  * Main menu panel with options to start game, view high scores, or exit.

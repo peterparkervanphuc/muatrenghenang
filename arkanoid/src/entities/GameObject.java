@@ -1,3 +1,5 @@
+package entities;
+
 import java.awt.*;
 
 /**
@@ -34,7 +36,7 @@ public abstract class GameObject {
     public abstract void render(Graphics2D g2d);
     
     /**
-     * Check collision with another GameObject
+     * Check collision with another entities.GameObject
      */
     public boolean intersects(GameObject other) {
         return this.getBounds().intersects(other.getBounds());

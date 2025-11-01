@@ -1,3 +1,8 @@
+package core;
+
+import managers.ConfigManager;
+import utils.GameLogger;
+
 /**
  * Manages the game state, score, lives, and level progression
  */

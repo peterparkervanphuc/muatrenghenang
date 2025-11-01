@@ -1,14 +1,17 @@
+package entities;
+
+import core.GameBounds;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
  * Represents the player's paddle (Vaus spacecraft)
  * OOP Principles Applied:
- * - Inheritance: Extends MovableObject to reuse movement logic
+ * - Inheritance: Extends entities.MovableObject to reuse movement logic
  * - Encapsulation: Private fields with controlled access
  * - Polymorphism: Overrides update() and render() methods
  * - Abstraction: Hides complex powerup management behind simple interface

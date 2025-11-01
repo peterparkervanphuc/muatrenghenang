@@ -1,12 +1,15 @@
+package entities;
+
+import core.GameBounds;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.File;
 
 /**
  * Represents the ball in the Arkanoid game
  * OOP Principles Applied:
- * - Inheritance: Extends MovableObject for position and velocity
+ * - Inheritance: Extends entities.MovableObject for position and velocity
  * - Encapsulation: Private fields with controlled access
  * - Polymorphism: Overrides update() and render() methods
  * - Abstraction: Hides complex physics and collision logic
@@ -74,7 +77,7 @@ public class Ball extends MovableObject {
     
     /**
      * Override update to handle attachment and collision with walls
-     * Polymorphism: Custom update logic for Ball
+     * Polymorphism: Custom update logic for entities.Ball
      */
     @Override
     public void update() {
@@ -83,7 +86,7 @@ public class Ball extends MovableObject {
             setX(attachedPaddle.getX() + attachedPaddle.getWidth() / 2);
             setY(attachedPaddle.getY() - radius - 2);
         } else {
-            // Use inherited movement from MovableObject
+            // Use inherited movement from entities.MovableObject
             super.update(); // Move ball with velocity
             
             // Bounce off left wall (with border consideration)
@@ -106,7 +109,7 @@ public class Ball extends MovableObject {
     }
     
     /**
-     * Legacy update method for compatibility with GamePanel
+     * Legacy update method for compatibility with ui.GamePanel
      * Delegates to the new update() method
      */
     public void update(Paddle paddle) {
@@ -221,7 +224,7 @@ public class Ball extends MovableObject {
     }
     
     // Encapsulation: Public getters
-    // getX() and getY() are inherited from GameObject
+    // getX() and getY() are inherited from entities.GameObject
     public double getDx() { return getVelocityX(); }
     public double getDy() { return getVelocityY(); }
     public boolean isAttached() { return attached; }

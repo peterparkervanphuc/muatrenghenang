@@ -1,3 +1,7 @@
+package factories;
+
+import entities.Brick;
+
 /**
  * Factory Pattern for creating different types of bricks
  * Design Pattern: Factory Method
@@ -10,11 +14,11 @@ public class BrickFactory {
      * @param type The type of brick to create
      * @param x The x-coordinate
      * @param y The y-coordinate
-     * @return A new Brick instance of the specified type
+     * @return A new entities.Brick instance of the specified type
      */
     public static Brick createBrick(Brick.BrickType type, int x, int y) {
         if (type == null) {
-            throw new IllegalArgumentException("Brick type cannot be null");
+            throw new IllegalArgumentException("entities.Brick type cannot be null");
         }
         return new Brick(x, y, type);
     }
@@ -24,7 +28,7 @@ public class BrickFactory {
      * @param typeName Name of the brick type (e.g., "SILVER", "RED")
      * @param x The x-coordinate
      * @param y The y-coordinate
-     * @return A new Brick instance
+     * @return A new entities.Brick instance
      */
     public static Brick createBrick(String typeName, int x, int y) {
         try {
@@ -40,7 +44,7 @@ public class BrickFactory {
      * Create a random colored brick (excluding silver)
      * @param x The x-coordinate
      * @param y The y-coordinate
-     * @return A new Brick instance with random color
+     * @return A new entities.Brick instance with random color
      */
     public static Brick createRandomBrick(int x, int y) {
         Brick.BrickType[] types = Brick.BrickType.values();
@@ -53,7 +57,7 @@ public class BrickFactory {
      * Create a silver brick (requires 2 hits)
      * @param x The x-coordinate
      * @param y The y-coordinate
-     * @return A new silver Brick instance
+     * @return A new silver entities.Brick instance
      */
     public static Brick createSilverBrick(int x, int y) {
         return createBrick(Brick.BrickType.SILVER, x, y);

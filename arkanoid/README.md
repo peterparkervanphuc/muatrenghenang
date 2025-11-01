@@ -18,7 +18,7 @@ Classic brick-breaker game xây dựng bằng Java Swing với thiết kế OOP 
 2. Đảm bảo folder đã mark đúng:
    - `src/` → **Mark as Sources Root**
    - `assets/` → **Mark as Resources Root**
-3. Mở file `ArkanoidGame.java`
+3. Mở file `main.ArkanoidGame.java`
 4. Click nút **Run** ▶️ (hoặc `Shift + F10`)
 
 **Lợi ích:** 
@@ -56,7 +56,7 @@ javac *.java -d ../bin -encoding UTF-8
 
 # Chạy
 cd ..
-java -cp bin ArkanoidGame
+java -cp bin main.ArkanoidGame
 ```
 
 ---
@@ -90,7 +90,7 @@ java -cp bin ArkanoidGame
 
 ---
 
-## 🧱 Brick Types (9 loại)
+## 🧱 entities.Brick Types (9 loại)
 
 | Color | Hits | Points |
 |-------|------|--------|
@@ -111,7 +111,7 @@ java -cp bin ArkanoidGame
 ## ✨ Game Features
 
 - ✅ **5 Levels** với độ khó tăng dần và background riêng
-- ✅ **Ball speed** tăng 8% mỗi level
+- ✅ **entities.Ball speed** tăng 8% mỗi level
 - ✅ **45% chance** powerup rơi khi phá gạch
 - ✅ **High Score System** lưu top 10 scores
 - ✅ **Lives system** (3 mạng mặc định)
@@ -137,7 +137,7 @@ game.initial.lives=3
 game.max.level=5
 game.fps=60
 
-# Ball & Paddle
+# entities.Ball & entities.Paddle
 ball.initial.speed=6
 paddle.speed=8
 
@@ -155,17 +155,17 @@ debug.mode=false
 ```
 arkanoid/
 ├── src/                   # Java source code (Sources Root)
-│   ├── GameObject.java    # Abstract base class
-│   ├── MovableObject.java # Abstract movable objects
-│   ├── Paddle.java        # Player paddle
-│   ├── Ball.java          # Game ball
-│   ├── Brick.java         # Bricks
-│   ├── Powerup.java       # Powerup items
-│   ├── LaserBeam.java     # Laser projectiles
-│   ├── GamePanel.java     # Main game engine
-│   ├── GameManager.java   # State management
-│   ├── LevelManager.java  # Level factory
-│   ├── SoundManager.java  # Audio manager
+│   ├── entities.GameObject.java    # Abstract base class
+│   ├── entities.MovableObject.java # Abstract movable objects
+│   ├── entities.Paddle.java        # Player paddle
+│   ├── entities.Ball.java          # Game ball
+│   ├── entities.Brick.java         # Bricks
+│   ├── entities.Powerup.java       # entities.Powerup items
+│   ├── entities.LaserBeam.java     # Laser projectiles
+│   ├── ui.GamePanel.java     # Main game engine
+│   ├── core.GameManager.java   # State management
+│   ├── core.LevelManager.java  # Level factory
+│   ├── managers.SoundManager.java  # Audio manager
 │   └── ... (23 files)
 ├── assets/               # Game assets (Resources Root)
 │   ├── Backgrounds/      # Level backgrounds
@@ -194,25 +194,25 @@ arkanoid/
 
 ### Inheritance Hierarchy:
 ```
-GameObject (abstract)
-├── MovableObject (abstract)
-│   ├── Paddle ✅
-│   ├── Ball ✅
-│   ├── Powerup ✅
-│   └── LaserBeam ✅
-└── Brick ✅
+entities.GameObject (abstract)
+├── entities.MovableObject (abstract)
+│   ├── entities.Paddle ✅
+│   ├── entities.Ball ✅
+│   ├── entities.Powerup ✅
+│   └── entities.LaserBeam ✅
+└── entities.Brick ✅
 ```
 
 ### OOP Principles Applied:
 1. ✅ **Encapsulation** - Private fields, getters/setters
-2. ✅ **Inheritance** - GameObject hierarchy
+2. ✅ **Inheritance** - entities.GameObject hierarchy
 3. ✅ **Polymorphism** - Method overriding (update, render)
 4. ✅ **Abstraction** - Abstract classes & methods
 
 ### Design Patterns:
-- ✅ **Singleton** - SoundManager, ConfigManager, GameLogger
-- ✅ **Factory** - BrickFactory, PowerUpFactory, LevelManager
-- ✅ **MVC-like** - GamePanel (Controller), GameObject (Model), render() (View)
+- ✅ **Singleton** - managers.SoundManager, managers.ConfigManager, GameLogger
+- ✅ **Factory** - BrickFactory, PowerUpFactory, core.LevelManager
+- ✅ **MVC-like** - ui.GamePanel (Controller), entities.GameObject (Model), render() (View)
 
 ---
 
@@ -223,7 +223,7 @@ GameObject (abstract)
 2. Mark directories:
    - `src/` → **Sources Root**
    - `assets/` → **Resources Root**
-3. Run `ArkanoidGame.java`
+3. Run `main.ArkanoidGame.java`
 
 ### Build Commands (Command Line):
 ```bash
@@ -231,11 +231,14 @@ GameObject (abstract)
 javac -d bin -sourcepath src src\*.java
 
 # Run
-java -cp bin ArkanoidGame
+java -cp bin main.ArkanoidGame
 ```
 
 ### Configuration Access:
+
 ```java
+import managers.ConfigManager;
+
 ConfigManager config = ConfigManager.getInstance();
 int lives = config.getInt("game.initial.lives", 3);
 boolean soundOn = config.getBoolean("sound.enabled", true);

@@ -1,12 +1,13 @@
+package entities;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.File;
 
 /**
  * Represents a brick in the Arkanoid game
  * OOP Principles Applied:
- * - Inheritance: Extends GameObject (bricks don't move)
+ * - Inheritance: Extends entities.GameObject (bricks don't move)
  * - Encapsulation: Private fields with controlled access
  * - Polymorphism: Enum for type safety, overrides update() and render()
  * - Abstraction: Hides hit detection and rendering complexity

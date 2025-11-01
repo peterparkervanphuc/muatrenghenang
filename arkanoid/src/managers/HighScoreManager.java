@@ -1,3 +1,7 @@
+package managers;
+
+import utils.GameLogger;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,9 +21,9 @@ public class HighScoreManager {
     }
 
     public static class ScoreEntry {
-        String name;
-        int score;
-        
+        public String name;
+        public int score;
+
         public ScoreEntry(String name, int score) {
             this.name = name;
             this.score = score;

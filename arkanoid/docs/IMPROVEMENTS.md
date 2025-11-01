@@ -13,7 +13,7 @@ Project đã được cải tiến toàn diện với các best practices của 
 ## 1. ✅ Design Patterns - Factory Method
 
 ### **BrickFactory.java**
-Tạo factory để quản lý việc tạo các loại Brick với các phương thức:
+Tạo factory để quản lý việc tạo các loại entities.Brick với các phương thức:
 - `createBrick(BrickType, x, y)` - Tạo brick theo loại
 - `createBrick(String, x, y)` - Tạo brick từ tên loại (cho level loading)
 - `createRandomBrick(x, y)` - Tạo brick ngẫu nhiên
@@ -32,13 +32,13 @@ Tạo factory để quản lý việc tạo các loại PowerUp với các phư�
 - `createBonusPowerUp(x, y)` - Tạo powerup có lợi (cho bonus)
 
 **Lợi ích:**
-- Tách logic tạo powerup ra khỏi GamePanel
+- Tách logic tạo powerup ra khỏi ui.GamePanel
 - Kiểm soát xác suất drop tốt hơn
 - Dễ balance game
 
 ### **Cập nhật tích hợp:**
-- `LevelManager.java` sử dụng `BrickFactory` trong tất cả 5 level
-- `GamePanel.java` sử dụng `PowerUpFactory.createPowerUpFromBrick()`
+- `core.LevelManager.java` sử dụng `BrickFactory` trong tất cả 5 level
+- `ui.GamePanel.java` sử dụng `PowerUpFactory.createPowerUpFromBrick()`
 
 ---
 
@@ -65,7 +65,7 @@ mvn clean compile
 mvn package
 
 # Run game
-java -cp target/arkanoid-game-1.0.0.jar ArkanoidGame
+java -cp target/arkanoid-game-1.0.0.jar main.ArkanoidGame
 
 # Hoặc sử dụng script
 build-and-run.bat
@@ -77,7 +77,7 @@ build-and-run.bat
 
 ### Files mới:
 - `config.properties` - Tất cả cấu hình game
-- `ConfigManager.java` - Singleton để đọc config
+- `managers.ConfigManager.java` - Singleton để đọc config
 
 ### Settings có thể configure:
 ```properties
@@ -91,7 +91,7 @@ game.initial.lives=3
 game.max.level=5
 game.fps=60
 
-# Ball & paddle settings
+# entities.Ball & paddle settings
 ball.initial.speed=6
 paddle.speed=8
 
@@ -103,7 +103,10 @@ debug.mode=false
 ```
 
 ### Sử dụng trong code:
+
 ```java
+import managers.ConfigManager;
+
 ConfigManager config = ConfigManager.getInstance();
 int lives = config.getInt("game.initial.lives", 3);
 boolean soundEnabled = config.getBoolean("sound.enabled", true);
@@ -133,7 +136,7 @@ System.out.println("Error: " + message);
 GameLogger.error("Error: " + message);
 GameLogger.info("Game started");
 GameLogger.warning("Asset missing: " + filename);
-GameLogger.debug("Ball velocity: " + velocity);
+GameLogger.debug("entities.Ball velocity: " + velocity);
 ```
 
 ### Lợi ích:
@@ -153,10 +156,10 @@ GameLogger.debug("Ball velocity: " + velocity);
 - Proper exception logging
 
 ### Files được cải tiến:
-- `ArkanoidGame.java` - Main error handling
-- `SoundManager.java` - Sound loading errors
-- `HighScoreManager.java` - File I/O errors
-- `GameManager.java` - Game state logging
+- `main.ArkanoidGame.java` - Main error handling
+- `managers.SoundManager.java` - Sound loading errors
+- `managers.HighScoreManager.java` - File I/O errors
+- `core.GameManager.java` - Game state logging
 
 ---
 
@@ -165,7 +168,7 @@ GameLogger.debug("Ball velocity: " + velocity);
 ### GameTest.java - 12 Unit Tests
 Tạo thư mục `test/` và file `GameTest.java` với các test case:
 
-1. **testBallBrickCollision()** - Kiểm tra va chạm Ball-Brick
+1. **testBallBrickCollision()** - Kiểm tra va chạm entities.Ball-entities.Brick
 2. **testBrickDestruction()** - Kiểm tra brick bị phá hủy
 3. **testSilverBrickTwoHits()** - Kiểm tra silver brick cần 2 hits
 4. **testScoreIncrease()** - Kiểm tra điểm tăng khi phá gạch
@@ -263,7 +266,7 @@ gameTimer = new Timer(DELAY, e -> {
 
 ### Điểm mạnh sau cải thiện:
 - ✅ **Thiết kế OOP xuất sắc** - Cây kế thừa rõ ràng, áp dụng đúng 4 nguyên tắc
-- ✅ **Design Pattern đầy đủ** - Singleton (SoundManager, GameManager) + Factory (Brick, PowerUp)
+- ✅ **Design Pattern đầy đủ** - Singleton (managers.SoundManager, core.GameManager) + Factory (entities.Brick, PowerUp)
 - ✅ **Unit Testing** - 12 test cases cover các chức năng chính
 - ✅ **Code quality cao** - Naming convention, comments, structure tốt
 - ✅ **Gameplay phong phú** - 5 levels, 7 PowerUps, High Scores

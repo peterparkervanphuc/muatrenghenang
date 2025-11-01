@@ -1,8 +1,8 @@
-import java.awt.*;
+package entities;
 
 /**
  * Abstract class for movable game objects
- * Demonstrates: Inheritance (extends GameObject) and Abstraction
+ * Demonstrates: Inheritance (extends entities.GameObject) and Abstraction
  */
 public abstract class MovableObject extends GameObject {
     // Encapsulation: private fields for velocity

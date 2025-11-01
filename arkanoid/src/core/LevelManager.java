@@ -1,6 +1,8 @@
+package core;
+
+import entities.Brick;
+import factories.BrickFactory;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * Creates and loads different levels with brick patterns

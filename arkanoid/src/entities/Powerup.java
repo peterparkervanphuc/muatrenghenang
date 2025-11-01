@@ -1,12 +1,13 @@
+package entities;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.File;
 
 /**
  * Represents a powerup that falls from destroyed bricks
  * OOP Principles Applied:
- * - Inheritance: Extends MovableObject for automatic falling movement
+ * - Inheritance: Extends entities.MovableObject for automatic falling movement
  * - Encapsulation: Private fields with controlled access
  * - Polymorphism: Overrides update() and render(), enum for type safety
  * - Abstraction: Hides image loading and rendering complexity
@@ -83,7 +84,7 @@ public class Powerup extends MovableObject {
     }
     
     /**
-     * Polymorphism: Uses inherited update() method from MovableObject
+     * Polymorphism: Uses inherited update() method from entities.MovableObject
      * Movement (falling) is automatically handled by velocity set in constructor
      */
     

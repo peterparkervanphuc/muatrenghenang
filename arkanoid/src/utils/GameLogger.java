@@ -1,3 +1,7 @@
+package utils;
+
+import managers.ConfigManager;
+
 import java.io.IOException;
 import java.util.logging.*;
 
@@ -6,7 +10,7 @@ import java.util.logging.*;
  * Provides consistent logging across all game components
  */
 public class GameLogger {
-    private static final Logger logger = Logger.getLogger("ArkanoidGame");
+    private static final Logger logger = Logger.getLogger("main.ArkanoidGame");
     private static boolean initialized = false;
 
     public static void init() {

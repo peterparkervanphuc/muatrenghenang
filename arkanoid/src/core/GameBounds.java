@@ -1,3 +1,5 @@
+package core;
+
 /**
  * Defines the playable area boundaries based on the background border
  */

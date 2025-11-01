@@ -1,9 +1,26 @@
+package ui;
+
+import core.GameBounds;
+import core.GameManager;
+import core.LevelManager;
+import effects.CameraShake;
+import entities.Ball;
+import entities.Brick;
+import entities.LaserBeam;
+import entities.Paddle;
+import entities.Powerup;
+import factories.PowerUpFactory;
+import main.ArkanoidGame;
+import managers.FontManager;
+import managers.HighScoreManager;
+import managers.SoundManager;
+import utils.PerformanceMonitor;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -25,7 +42,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private boolean rightPressed = false;
     private boolean spacePressed = false;
     
-    // Powerup timers
+    // entities.Powerup timers
     private long slowPowerupEndTime = 0;
     private boolean slowPowerupActive = false;
     
@@ -81,10 +98,10 @@ public class GamePanel extends JPanel implements KeyListener {
         paddle.disableCatch();
         
         // Create ball (attached to paddle, ready to launch with Space key)
-        // Ball speed increases with each level
+        // entities.Ball speed increases with each level
         balls.clear();
         Ball ball = new Ball(paddle.getX() + paddle.getWidth() / 2, paddle.getY() - 10, gameManager.getCurrentLevel());
-        ball.attachToPaddle(paddle);  // Ball is now attached and waiting for Space key
+        ball.attachToPaddle(paddle);  // entities.Ball is now attached and waiting for Space key
         ball.restoreNormalSpeed(); // Reset ball speed to normal
         balls.add(ball);
         
@@ -324,7 +341,7 @@ public class GamePanel extends JPanel implements KeyListener {
     
     private void applyPowerup(Powerup powerup) {
         switch (powerup.getType()) {
-            case ENLARGE:
+            case Powerup.PowerupType.ENLARGE:
                 // If Laser is active, don't activate Enlarge (Laser has priority)
                 if (paddle.hasLaser()) {
                     // Do nothing - Laser continues to work, Enlarge is ignored
@@ -335,7 +352,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 SoundManager.getInstance().playEnlargePowerupSound();
                 break;
 
-            case LASER:
+            case Powerup.PowerupType.LASER:
                 // If Enlarge is active, shrink paddle when Laser is activated
                 if (paddle.isEnlarged()) {
                     paddle.shrink();
@@ -345,7 +362,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 SoundManager.getInstance().playPlayerPowerupSound();
                 break;
 
-            case CATCH:
+            case Powerup.PowerupType.CATCH:
                 // CONFLICT: If player already used Duplicate, ignore Catch
                 // (Prevent combining Catch + Duplicate for game balance)
                 if (balls.size() > 1) {
@@ -366,7 +383,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 SoundManager.getInstance().playPlayerPowerupSound();
                 break;
 
-            case SLOW:
+            case Powerup.PowerupType.SLOW:
                 // Slow powerup: slow all balls for 10 seconds
                 slowPowerupActive = true;
                 slowPowerupEndTime = System.currentTimeMillis() + SLOW_POWERUP_DURATION;
@@ -376,7 +393,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 SoundManager.getInstance().playPlayerPowerupSound();
                 break;
 
-            case DUPLICATE:
+            case Powerup.PowerupType.DUPLICATE:
                 // CONFLICT: If Catch is active, ignore Duplicate
                 // (Prevent combining Catch + Duplicate for game balance)
                 if (paddle.hasCatch()) {
@@ -395,7 +412,7 @@ public class GamePanel extends JPanel implements KeyListener {
                         if (original.isAttached()) {
                             newBall.attachToPaddle(paddle);
                         } else {
-                            // Ball is moving - create new ball with opposite direction
+                            // entities.Ball is moving - create new ball with opposite direction
                             newBall.setVelocity(-original.getDx(), original.getDy());
                         }
 
@@ -405,13 +422,13 @@ public class GamePanel extends JPanel implements KeyListener {
                 SoundManager.getInstance().playPlayerPowerupSound();
                 break;
 
-            case BREAK:
+            case Powerup.PowerupType.BREAK:
                 // Destroy one row of bricks at the bottom
                 destroyBottomRow();
                 SoundManager.getInstance().playBreakPowerupSound();
                 break;
 
-            case PLAYER:
+            case Powerup.PowerupType.PLAYER:
                 gameManager.addLife();
                 SoundManager.getInstance().playPlayerPowerupSound();
                 break;
