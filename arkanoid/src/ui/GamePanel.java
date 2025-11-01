@@ -370,12 +370,7 @@ public class GamePanel extends JPanel implements KeyListener {
                     break;
                 }
 
-                // CATCH has priority: disable Laser if it's active
-                if (paddle.hasLaser()) {
-                    paddle.disableLaser();
-                }
-
-                // Enable catch mode first
+                // Enable catch mode (works together with Laser if active)
                 paddle.enableCatch();
 
                 // IMPORTANT: Attach ALL balls to paddle immediately, regardless of position
