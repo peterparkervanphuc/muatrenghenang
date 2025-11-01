@@ -340,9 +340,12 @@ public class GamePanel extends JPanel implements KeyListener {
     }
     
     private void applyPowerup(Powerup powerup) {
+        // Check if any ball is attached (CATCH state - waiting to launch)
+        boolean ballAttached = balls.stream().anyMatch(Ball::isAttached);
+
         switch (powerup.getType()) {
             case Powerup.PowerupType.ENLARGE:
-                // If Laser is active, don't activate Enlarge (Laser has priority)
+                // LASER always blocks ENLARGE in any case (even when ball is attached)
                 if (paddle.hasLaser()) {
                     // Do nothing - Laser continues to work, Enlarge is ignored
                     break;
@@ -353,8 +356,9 @@ public class GamePanel extends JPanel implements KeyListener {
                 break;
 
             case Powerup.PowerupType.LASER:
-                // If Enlarge is active, shrink paddle when Laser is activated
-                if (paddle.isEnlarged()) {
+                // Only shrink Enlarge if ball is flying
+                // If ball is attached (CATCH state), keep Enlarge and add Laser
+                if (!ballAttached && paddle.isEnlarged()) {
                     paddle.shrink();
                     gameManager.setPaddleEnlarged(false);
                 }
