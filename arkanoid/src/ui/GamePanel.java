@@ -246,20 +246,8 @@ public class GamePanel extends JPanel implements KeyListener {
             
             // Check if caught by paddle
             if (powerup.intersects(paddle.getBounds())) {
-                // FIX: Only apply powerup if at least one ball is launched (not attached)
-                // Prevents powerups from activating when all balls are waiting to launch
-                boolean anyBallLaunched = false;
-                for (Ball ball : balls) {
-                    if (!ball.isAttached()) {
-                        anyBallLaunched = true;
-                        break;
-                    }
-                }
-
-                if (anyBallLaunched) {
-                    applyPowerup(powerup);
-                }
-                // Always remove powerup after touching paddle (whether applied or not)
+                // Apply powerup immediately (CATCH state logic is handled inside applyPowerup)
+                applyPowerup(powerup);
                 powerupIterator.remove();
             }
             
