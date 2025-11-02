@@ -181,20 +181,13 @@ public class GamePanel extends JPanel implements KeyListener {
         
         // Launch ball on space press
         if (spacePressed) {
-            // First priority: Launch attached balls
-            boolean ballWasLaunched = false;
             for (Ball ball : balls) {
                 if (ball.isAttached()) {
                     ball.launch();
-                    ballWasLaunched = true;
+                    spacePressed = false;
                     // Disable catch after launching to prevent re-catching on next collision
                     paddle.disableCatch();
                 }
-            }
-
-            // Reset spacePressed after launching
-            if (ballWasLaunched) {
-                spacePressed = false;
             }
         }
         
