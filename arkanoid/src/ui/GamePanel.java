@@ -54,7 +54,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private static final int FPS = 60;
     private static final int DELAY = 1000 / FPS;
     private static final long SLOW_POWERUP_DURATION = 10000; // 10 seconds
-    private static final long LASER_POWERUP_DURATION = 20000; // 20 seconds
+    private static final long LASER_POWERUP_DURATION = 15000; // 15 seconds
 
     public GamePanel(ArkanoidGame mainFrame) {
         this.mainFrame = mainFrame;
