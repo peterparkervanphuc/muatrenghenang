@@ -45,14 +45,17 @@ public class GamePanel extends JPanel implements KeyListener {
     // entities.Powerup timers
     private long slowPowerupEndTime = 0;
     private boolean slowPowerupActive = false;
-    
+    private long laserPowerupEndTime = 0;
+    private boolean laserPowerupActive = false;
+
     // Camera shake effect
     private CameraShake cameraShake;
 
     private static final int FPS = 60;
     private static final int DELAY = 1000 / FPS;
     private static final long SLOW_POWERUP_DURATION = 10000; // 10 seconds
-    
+    private static final long LASER_POWERUP_DURATION = 20000; // 20 seconds
+
     public GamePanel(ArkanoidGame mainFrame) {
         this.mainFrame = mainFrame;
         this.gameManager = new GameManager();
@@ -110,7 +113,8 @@ public class GamePanel extends JPanel implements KeyListener {
         
         // Reset powerup timers
         slowPowerupEndTime = 0;
-        
+        laserPowerupEndTime = 0;
+
         // Load level bricks
         bricks.clear();
         bricks = LevelManager.loadLevel(gameManager.getCurrentLevel());
@@ -157,6 +161,16 @@ public class GamePanel extends JPanel implements KeyListener {
             }
         }
         
+        // Check if laser powerup expired
+        if (laserPowerupActive && System.currentTimeMillis() > laserPowerupEndTime) {
+            laserPowerupActive = false;
+            if (paddle.hasLaser()) {
+                paddle.disableLaser();
+                // Clear remaining laser beams
+                paddle.getLasers().clear();
+            }
+        }
+
         // Update paddle position
         if (leftPressed) {
             paddle.moveLeft();
@@ -346,6 +360,11 @@ public class GamePanel extends JPanel implements KeyListener {
                     paddle.shrink();
                     gameManager.setPaddleEnlarged(false);
                 }
+
+                // Activate laser with 20 second timer
+                // If already active, extend/reset the timer
+                laserPowerupActive = true;
+                laserPowerupEndTime = System.currentTimeMillis() + LASER_POWERUP_DURATION;
                 paddle.enableLaser();
                 SoundManager.getInstance().playPlayerPowerupSound();
                 break;
@@ -464,6 +483,10 @@ public class GamePanel extends JPanel implements KeyListener {
         slowPowerupActive = false;
         slowPowerupEndTime = 0;
         
+        // Reset laser powerup timer
+        laserPowerupActive = false;
+        laserPowerupEndTime = 0;
+
         // Note: Extra lives (PLAYER powerup) are NOT removed
         // Note: Duplicate balls will be lost naturally when all balls fall
     }
