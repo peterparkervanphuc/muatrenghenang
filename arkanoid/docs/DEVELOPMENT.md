@@ -570,7 +570,7 @@ attachToPaddle(paddle);  // Bắt ngay!
 ### ✅ Validated Logic:
 - entities.Ball collision với brick: ✅ Chính xác (side detection)
 - entities.Paddle bounds: ✅ Không ra ngoài play area
-- entities.Ball speed increase mỗi level: ✅ +12% mỗi level
+- entities.Ball speed increase mỗi level: ✅ +9% mỗi level
 - entities.Powerup conflicts (LASER-ENLARGE, CATCH-DUPLICATE): ✅ Hoạt động đúng
 - Reset powerups khi mất mạng: ✅ Clear đúng
 

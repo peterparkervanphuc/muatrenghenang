@@ -42,8 +42,8 @@ public class Ball extends MovableObject {
      */
     public Ball(double x, double y, int level) {
         this(x, y);
-        // Increase speed by 12% per level (level 1 = 100%, level 2 = 112%, level 3 = 124%, etc.)
-        this.levelSpeedBonus = (level - 1) * 0.12;
+        // Increase speed by 9% per level (level 1 = 100%, level 2 = 109%, level 3 = 118%, etc.)
+        this.levelSpeedBonus = (level - 1) * 0.09;
     }
     
     private void loadImage() {
