@@ -154,6 +154,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
         // Update camera shake
         cameraShake.update();
+        for (Brick brick : bricks) {
+            brick.update();
+        }
 
         // Check if slow powerup expired
         if (slowPowerupActive && System.currentTimeMillis() > slowPowerupEndTime) {

@@ -3,7 +3,7 @@ package entities;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
-
+import core.GameBounds;
 
 public class Brick extends GameObject {
     // Encapsulation: Private constants
@@ -14,6 +14,7 @@ public class Brick extends GameObject {
     private BrickType type;
     private int hits;
     private BufferedImage brickImage;
+    private double dx; // Tốc độ di chuyển ngang
 
     /**
      * Polymorphism: Enum for type-safe brick types
@@ -28,24 +29,35 @@ public class Brick extends GameObject {
         BLUE(1, 100, "Sprites/Walls/BlueWall.png", true),
         PURPLE(1, 110, "Sprites/Walls/PurpleWall.png", true),
         YELLOW(1, 120, "Sprites/Walls/YellowWall.png", true),
-        SILVER(3, 50, "Sprites/Walls/SilverWall.png", true),// Requires 3 hits
-        GOLD(1, 0, "Sprites/Walls/GoldWall.png", false);
+        SILVER(3, 50, "Sprites/Walls/SilverWall.png", true),
+        GOLD(1, 0, "Sprites/Walls/GoldWall.png", false),
+        MOVING_UNBREAKABLE(1, 0, "Sprites/Walls/MovingWall.png", false, 2.0); // <-- LỖI 1: ĐÃ THÊM DẤU ;
 
         private final int maxHits;
         private final int points;
         private final String imagePath;
         private final boolean isBreakable;
+        private final double initialSpeed;
 
-        // === LỖI 2 ĐÃ SỬA Ở ĐÂY ===
+        // === LỖI 2: ĐÃ SỬA LẠI TOÀN BỘ LOGIC CONSTRUCTOR ===
+
+        // Constructor cho gạch thường (không di chuyển, 4 tham số)
         BrickType(int maxHits, int points, String imagePath, boolean isBreakable) {
+            this(maxHits, points, imagePath, isBreakable, 0.0); // Gọi constructor 5 tham số với tốc độ 0
+        }
+
+        // Constructor đầy đủ (5 tham số)
+        BrickType(int maxHits, int points, String imagePath, boolean isBreakable, double initialSpeed) {
             this.maxHits = maxHits;
             this.points = points;
             this.imagePath = imagePath;
             this.isBreakable = isBreakable;
+            this.initialSpeed = initialSpeed; // Gán tốc độ
         }
-        // ========================
+        // ===============================================
 
         public boolean isBreakable() { return isBreakable; }
+        public double getInitialSpeed() { return initialSpeed; }
         public int getMaxHits() { return maxHits; }
         public int getPoints() { return points; }
         public String getImagePath() { return imagePath; }
@@ -60,6 +72,8 @@ public class Brick extends GameObject {
         this.type = type;
         this.hits = type.getMaxHits();
         loadImage();
+
+        this.dx = type.getInitialSpeed(); // Gán tốc độ di chuyển
     }
 
     private void loadImage() {
@@ -74,13 +88,11 @@ public class Brick extends GameObject {
         }
     }
 
-    // === LỖI 1 ĐÃ SỬA Ở ĐÂY ===
     public void hit() {
         if (type.isBreakable()){
             hits--;
         }
-    } // <-- DẤU NGOẶC BỊ THIẾU ĐÃ ĐƯỢC THÊM VÀO
-    // ========================
+    }
 
     public boolean isDestroyed() {
         return hits <= 0;
@@ -96,7 +108,22 @@ public class Brick extends GameObject {
      */
     @Override
     public void update() {
-        // Bricks are stationary - no update needed
+        // CHỈ DI CHUYỂN NẾU LÀ LOẠI GẠCH DI CHUYỂN
+        if (type == BrickType.MOVING_UNBREAKABLE) {
+            setX(getX() + dx); // Di chuyển gạch theo dx
+
+            // Kiểm tra va chạm biên để đổi hướng
+            if (getX() <= GameBounds.PLAY_LEFT || getX() + getWidth() >= GameBounds.PLAY_RIGHT) {
+                dx *= -1; // Đổi hướng
+
+                // Đảm bảo gạch không bị kẹt ở biên
+                if (getX() <= GameBounds.PLAY_LEFT) {
+                    setX(GameBounds.PLAY_LEFT);
+                } else if (getX() + getWidth() >= GameBounds.PLAY_RIGHT) {
+                    setX(GameBounds.PLAY_RIGHT - getWidth());
+                }
+            }
+        }
     }
 
     /**
@@ -135,6 +162,7 @@ public class Brick extends GameObject {
             case YELLOW: return Color.YELLOW;
             case SILVER: return Color.LIGHT_GRAY;
             case GOLD: return Color.YELLOW.darker();
+            case MOVING_UNBREAKABLE: return Color.DARK_GRAY.brighter();
             default: return Color.GRAY;
         }
     }
