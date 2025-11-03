@@ -137,4 +137,11 @@ public class Brick extends GameObject {
     
     // Encapsulation: Public getter for brick score value
     public int getPoints() { return type.getPoints(); }
+    public BrickType getType() { return type; }
+    public int getHitsRemaining() { return hits; }
+
+    // Setter for restoring game state
+    public void setHitsRemaining(int hits) {
+        this.hits = hits;
+    }
 }

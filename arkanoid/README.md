@@ -1,204 +1,280 @@
 # 🎮 ARKANOID GAME
 
-Classic brick-breaker game xây dựng bằng Java Swing với thiết kế OOP chuyên nghiệp.
+Classic brick-breaker game được xây dựng bằng Java Swing với kiến trúc OOP chuyên nghiệp.
 
-[![GitHub](https://img.shields.io/badge/GitHub-muatrenghenang-blue)](https://github.com/peterparkervanphuc/muatrenghenang)
 [![Java](https://img.shields.io/badge/Java-11+-orange)](https://www.oracle.com/java/)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-> 📦 **Repository:** [peterparkervanphuc/muatrenghenang](https://github.com/peterparkervanphuc/muatrenghenang)  
-> 📂 **Project Location:** `/arkanoid/`
+> 📦 **Repository:** [github.com/peterparkervanphuc/muatrenghenang](https://github.com/peterparkervanphuc/muatrenghenang)
 
 ---
 
-## 🚀 Cách Chạy Game
+## 🚀 QUICK START
 
-### ✅ Phương Pháp 1: IntelliJ IDEA (Khuyến nghị cho Development)
+### Cách Chạy Game
 
+#### ✅ IntelliJ IDEA (Khuyến nghị)
 1. Mở project trong IntelliJ IDEA
-2. Đảm bảo folder đã mark đúng:
-   - `src/` → **Mark as Sources Root**
-   - `assets/` → **Mark as Resources Root**
-3. Mở file `main.ArkanoidGame.java`
-4. Click nút **Run** ▶️ (hoặc `Shift + F10`)
+2. Mark folders:
+   - `src/` → **Sources Root**
+   - `assets/` → **Resources Root**
+3. Run `ArkanoidGame.main()` (Shift + F10)
 
-**Lợi ích:** 
-- Tự động compile
-- Debug dễ dàng
-- Hot reload khi sửa code
-- Full IDE features
-
-### ✅ Phương Pháp 2: Script File (Cho Quick Testing / CI/CD / Distribution)
-
-**Windows:**
+#### ✅ Script File
 ```batch
-run.bat
+run.bat          # Windows
 ```
-Hoặc double-click vào `run.bat` trong File Explorer
 
-**Lợi ích:**
-- Tự động compile và chạy
-- Không cần IDE
-- Phù hợp cho CI/CD automation
-- Quick testing
-- Distribute cho người không có IntelliJ
-
-**Use Cases:**
-- 🧪 Quick testing sau khi pull code
-- 🤖 CI/CD automation (GitHub Actions, Jenkins)
-- 📦 Distribution cho người dùng cuối
-- ⚡ Chạy nhanh không cần mở IDE
-
-### ✅ Phương Pháp 3: Command Line Manual (Advanced)
+#### ✅ Command Line
 ```bash
 # Compile
-cd src
-javac *.java -d ../bin -encoding UTF-8
+javac -d bin -sourcepath src src/main/ArkanoidGame.java
 
-# Chạy
-cd ..
-java -cp bin main.ArkanoidGame
+# Run
+java -cp bin;assets main.ArkanoidGame
 ```
 
 ---
 
-## 🎯 Game Controls (Điều khiển)
+## 🎮 CONTROLS
 
-### Menu:
-- **Enter/Space** - Bắt đầu game / Chọn
-- **↑↓** - Di chuyển trong menu
-- **H** - Xem high scores
-- **ESC** - Quay lại menu
+### Menu
+- **↑↓** - Navigate
+- **Enter** - Select
+- **ESC** - Back to menu
 
-### In-Game:
-- **← →** (Left/Right Arrow) - Di chuyển paddle
-- **Space** - Launch ball khi attached
-- **Space** - Fire laser (khi có powerup LASER)
-- **P** - Pause game
-- **ESC** - Quay về menu
-
----
-
-## 🎁 Powerups (7 loại)
-
-1. **ENLARGE** (Blue) - Tăng kích thước paddle
-2. **LASER** (Red) - Bắn laser phá gạch
-3. **CATCH** (Green) - Bắt bóng khi chạm paddle
-4. **SLOW** (Yellow) - Làm chậm bóng 10 giây
-5. **DUPLICATE** (Pink) - Tạo thêm bóng
-6. **BREAK** (Brown) - Phá 1 hàng brick dưới cùng
-7. **PLAYER** (Cyan) - Extra life (+1 mạng)
+### In-Game
+- **← →** (A/D) - Move paddle
+- **Space** - Launch ball / Fire laser
+- **F5** - Save game (3 slots)
+- **F9** - Load game
+- **ESC** - Pause / Return to menu
 
 ---
 
-## 🧱 entities.Brick Types (9 loại)
+## ✨ FEATURES
 
-| Color | Hits | Points |
-|-------|------|--------|
-| WHITE | 1 | 50 |
-| ORANGE | 1 | 60 |
-| LIGHT_BLUE | 1 | 70 |
-| GREEN | 1 | 80 |
-| RED | 1 | 90 |
-| BLUE | 1 | 100 |
-| PURPLE | 1 | 110 |
-| YELLOW | 1 | 120 |
-| **SILVER** | **3** | **50** |
-
-**⭐ Đặc biệt:** SILVER bricks cần đánh **3 lần** và có camera shake effect!
-
----
-
-## ✨ Game Features
-
-- ✅ **5 Levels** với độ khó tăng dần và background riêng
-- ✅ **entities.Ball speed** tăng 8% mỗi level
-- ✅ **45% chance** powerup rơi khi phá gạch
-- ✅ **High Score System** lưu top 10 scores
-- ✅ **Lives system** (3 mạng mặc định)
-- ✅ **Camera Shake** khi đập silver brick hoặc mất mạng
-- ✅ **Sound effects** và menu music
-- ✅ **Configuration system** qua config.properties
-- ✅ **Logging system** với file log
+### Core Gameplay
+- ✅ **5 Levels** với độ khó tăng dần
+- ✅ **Ball speed** tăng 9% mỗi level
+- ✅ **9 brick types** (8 màu + silver)
+- ✅ **7 powerups** với effects đặc biệt
+- ✅ **Lives system** (3 mạng)
+- ✅ **High score** top 10
 - ✅ **60 FPS** smooth gameplay
 
+### Advanced Features
+- 💾 **Save/Load System**
+  - Auto-save mỗi 30 giây
+  - Manual save: 3 slots
+  - Lưu toàn bộ game state
+- 🎵 **Sound System**
+  - Menu music
+  - Sound effects (hit, break, powerup, death)
+- 📊 **Config System**
+  - Tùy chỉnh qua `config.properties`
+  - Lives, speed, FPS, etc.
+- 📝 **Logging**
+  - Game events log vào `arkanoid.log`
+
 ---
 
-## ⚙️ Configuration
+## 🎁 POWERUPS
 
-Chỉnh sửa `config.properties` để customize game:
+| Icon | Powerup | Effect | Duration |
+|------|---------|--------|----------|
+| 🔵 | **ENLARGE** | Tăng kích thước paddle | Permanent |
+| 🔴 | **LASER** | Bắn laser phá gạch | 15 giây |
+| 🟢 | **CATCH** | Bắt bóng khi chạm paddle | Until launch |
+| 🟡 | **SLOW** | Giảm tốc bóng 60% | 10 giây |
+| 🟣 | **DUPLICATE** | Tạo thêm 2 bóng | Permanent |
+| 🟤 | **BREAK** | Phá 1 hàng brick dưới | Instant |
+| 🔷 | **PLAYER** | +1 mạng | Instant |
+
+### Powerup Conflicts
+- **LASER ↔ ENLARGE**: Exclusive (không thể có cả 2)
+- **CATCH ↔ DUPLICATE**: Exclusive
+- **Drop chance**: 45% khi phá gạch
+
+---
+
+## 🧱 BRICK TYPES
+
+| Color | Hits | Points | Special |
+|-------|------|--------|---------|
+| White | 1 | 50 | - |
+| Orange | 1 | 60 | - |
+| Light Blue | 1 | 70 | - |
+| Green | 1 | 80 | - |
+| Red | 1 | 90 | - |
+| Blue | 1 | 100 | - |
+| Purple | 1 | 110 | - |
+| Yellow | 1 | 120 | - |
+| **Silver** | **3** | **50** | **Camera shake** |
+
+---
+
+## 📁 PROJECT STRUCTURE
+
+```
+arkanoid/
+├── src/
+│   ├── core/              # Game logic
+│   ├── entities/          # Game objects
+│   ├── factories/         # Factory patterns
+│   ├── managers/          # System managers
+│   ├── ui/                # User interface
+│   ├── effects/           # Visual effects
+│   ├── utils/             # Utilities
+│   └── main/              # Entry point
+├── assets/
+│   ├── Backgrounds/       # 5 level backgrounds
+│   ├── Sprites/           # Game images
+│   ├── Sounds/            # Audio files
+│   └── Fonts/             # Custom fonts
+├── docs/
+│   ├── DEVELOPMENT.md     # Technical docs
+│   └── SAVE_GAME.md       # Save system guide
+├── Saves/                 # Save game files
+├── High Scores/           # Score data
+└── config.properties      # Configuration
+```
+
+---
+
+## 🏗️ TECHNICAL HIGHLIGHTS
+
+### OOP Architecture
+```
+GameObject (abstract)
+├── MovableObject (abstract)
+│   ├── Paddle
+│   ├── Ball
+│   ├── Powerup
+│   └── LaserBeam
+└── Brick
+```
+
+### Design Patterns
+- **Singleton**: Managers (Config, Sound, SaveGame, HighScore)
+- **Factory**: BrickFactory, PowerUpFactory
+- **MVC**: Separation of concerns
+- **Observer**: Event handling
+
+### Key Technologies
+- **Java Swing**: GUI framework
+- **Java 2D**: Graphics rendering
+- **Serialization**: Save/load system
+- **Properties**: Configuration management
+
+---
+
+## ⚙️ CONFIGURATION
+
+Chỉnh sửa `config.properties`:
 
 ```properties
-# Window settings
+# Window
 window.width=800
 window.height=600
+window.title=Arkanoid
 
-# Game settings
+# Gameplay
 game.initial.lives=3
 game.max.level=5
 game.fps=60
 
-# entities.Ball & entities.Paddle
+# Physics
 ball.initial.speed=6
 paddle.speed=8
 
 # Sound
 sound.enabled=true
-
-# Debug
-debug.mode=false
 ```
 
 ---
 
-## 📁 Project Structure
+## 📚 DOCUMENTATION
 
-```
-arkanoid/
-├── src/                   # Java source code (Sources Root)
-│   ├── entities.GameObject.java    # Abstract base class
-│   ├── entities.MovableObject.java # Abstract movable objects
-│   ├── entities.Paddle.java        # Player paddle
-│   ├── entities.Ball.java          # Game ball
-│   ├── entities.Brick.java         # Bricks
-│   ├── entities.Powerup.java       # entities.Powerup items
-│   ├── entities.LaserBeam.java     # Laser projectiles
-│   ├── ui.GamePanel.java     # Main game engine
-│   ├── core.GameManager.java   # State management
-│   ├── core.LevelManager.java  # Level factory
-│   ├── managers.SoundManager.java  # Audio manager
-│   └── ... (23 files)
-├── assets/               # Game assets (Resources Root)
-│   ├── Backgrounds/      # Level backgrounds
-│   ├── Sounds/           # Audio files
-│   ├── Sprites/          # Images
-│   └── Fonts/            # Custom fonts
-├── bin/                  # Compiled classes (auto-generated)
-├── docs/                 # Documentation
-│   ├── ARCHITECTURE.md   # Kiến trúc hệ thống
-│   ├── IMPROVEMENTS.md   # Các cải tiến
-│   └── DEVELOPMENT.md    # Hướng dẫn dev
-├── High Scores/          # Score data
-├── config.properties     # Configuration
-├── run.bat              # Quick run script (Windows)
-├── pom.xml              # Maven config (optional)
-└── arkanoid.iml         # IntelliJ project file
-```
+- 📖 [DEVELOPMENT.md](docs/DEVELOPMENT.md) - Technical documentation
+- 💾 [SAVE_GAME.md](docs/SAVE_GAME.md) - Save/Load system guide
+- 🎯 [CLASS_DIAGRAM.puml](docs/CLASS_DIAGRAM.puml) - UML diagram
 
 ---
 
-## 🏗️ Kiến Trúc OOP
+## 🎯 GAME TIPS
 
-### UML Class Diagram:
-📊 **Xem sơ đồ chi tiết:** [`docs/CLASS_DIAGRAM.puml`](docs/CLASS_DIAGRAM.puml)  
-📖 **Hướng dẫn xem:** [`docs/UML_GUIDE.md`](docs/UML_GUIDE.md)
+1. **Powerup Strategy**: 
+   - LASER tốt cho clear bricks nhanh
+   - CATCH giúp kiểm soát ball tốt hơn
+   - SLOW cho người chơi mới
 
-### Inheritance Hierarchy:
-```
-entities.GameObject (abstract)
-├── entities.MovableObject (abstract)
-│   ├── entities.Paddle ✅
-│   ├── entities.Ball ✅
-│   ├── entities.Powerup ✅
+2. **Scoring**: 
+   - Yellow bricks cho nhiều điểm nhất (120)
+   - Silver bricks khó phá nhưng cho powerup
+
+3. **Save System**:
+   - Auto-save mỗi 30s vào Slot 1
+   - Manual save (F5) cho strategies khác nhau
+
+---
+
+## 🐛 TROUBLESHOOTING
+
+### Game không chạy?
+1. Kiểm tra Java version: `java -version` (cần Java 11+)
+2. Đảm bảo `src/` và `assets/` đã mark đúng trong IDE
+3. Check `arkanoid.log` để xem lỗi
+
+### Không có âm thanh?
+1. Kiểm tra `config.properties`: `sound.enabled=true`
+2. Đảm bảo WAV files trong `assets/Sounds/`
+
+### Save game không hoạt động?
+1. Kiểm tra thư mục `Saves/` được tạo
+2. Check permissions ghi file
+3. Xem `arkanoid.log` để debug
+
+---
+
+## 🤝 CONTRIBUTING
+
+Mọi đóng góp đều được chào đón! 
+
+### Cách contribute:
+1. Fork repository
+2. Tạo feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit changes: `git commit -m 'Add AmazingFeature'`
+4. Push to branch: `git push origin feature/AmazingFeature`
+5. Open Pull Request
+
+---
+
+## 📝 LICENSE
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+## 👤 AUTHOR
+
+**Peter Parker Van Phuc**
+
+- GitHub: [@peterparkervanphuc](https://github.com/peterparkervanphuc)
+- Repository: [muatrenghenang](https://github.com/peterparkervanphuc/muatrenghenang)
+
+---
+
+## 🙏 ACKNOWLEDGMENTS
+
+- Original Arkanoid by TAITO (1986)
+- Java Swing documentation
+- IntelliJ IDEA
+
+---
+
+**⭐ Star this repo if you like it!**
+
 │   └── entities.LaserBeam ✅
 └── entities.Brick ✅
 ```

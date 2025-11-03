@@ -17,8 +17,8 @@ public class MenuPanel extends JPanel implements KeyListener {
     private BufferedImage logoImage;
     private BufferedImage menuBackground;
     private int selectedOption = 0;
-    private String[] menuOptions = {"START GAME", "HIGH SCORES", "HELP", "EXIT"};
-    
+    private String[] menuOptions = {"START GAME", "LOAD GAME", "HIGH SCORES", "HELP", "EXIT"};
+
     public MenuPanel(ArkanoidGame mainFrame) {
         this.mainFrame = mainFrame;
         setPreferredSize(new Dimension(800, 600));
@@ -154,13 +154,16 @@ public class MenuPanel extends JPanel implements KeyListener {
             case 0: // Start Game
                 mainFrame.startGame();
                 break;
-            case 1: // High Scores
+            case 1: // Load Game
+                mainFrame.loadGame();
+                break;
+            case 2: // High Scores
                 mainFrame.showHighScores();
                 break;
-            case 2: // Help
+            case 3: // Help
                 showHelp();
                 break;
-            case 3: // Exit
+            case 4: // Exit
                 System.exit(0);
                 break;
         }

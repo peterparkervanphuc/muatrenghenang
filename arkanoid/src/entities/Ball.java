@@ -228,4 +228,22 @@ public class Ball extends MovableObject {
     public double getDx() { return getVelocityX(); }
     public double getDy() { return getVelocityY(); }
     public boolean isAttached() { return attached; }
+    public double getSpeedMultiplier() { return speedMultiplier; }
+    public double getLevelSpeedBonus() { return levelSpeedBonus; }
+
+    // Setters for restoring game state
+    public void setSpeedMultiplier(double multiplier) {
+        this.speedMultiplier = multiplier;
+    }
+
+    public void setLevelSpeedBonus(double bonus) {
+        this.levelSpeedBonus = bonus;
+    }
+
+    public void setAttached(boolean attached) {
+        this.attached = attached;
+        if (!attached) {
+            this.attachedPaddle = null;
+        }
+    }
 }

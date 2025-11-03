@@ -1,104 +1,251 @@
-# Hướng Dẫn Development - Arkanoid Game
+# 🎮 ARKANOID - Technical Documentation
 
-**Last Updated:** October 29, 2025
-
----
-
-## 🏗️ PACKAGE STRUCTURE
-
-### Current Structure (Flat):
-```
-src/
-├── main.ArkanoidGame.java
-├── ui.GamePanel.java
-├── entities.Ball.java
-└── ... (all in root)
-```
-
-### Recommended Structure (Professional):
-```
-src/main/java/com/arkanoid/
-├── main.ArkanoidGame.java
-├── core/
-│   ├── core.GameManager.java
-│   ├── ui.GamePanel.java
-│   └── core.GameBounds.java
-├── entities/
-│   ├── entities.GameObject.java
-│   ├── entities.MovableObject.java
-│   ├── entities.Ball.java
-│   ├── entities.Paddle.java
-│   ├── entities.Brick.java
-│   ├── entities.Powerup.java
-│   └── entities.LaserBeam.java
-├── factories/
-│   ├── BrickFactory.java
-│   └── PowerUpFactory.java
-├── managers/
-│   ├── core.LevelManager.java
-│   ├── managers.SoundManager.java
-│   ├── managers.FontManager.java
-│   ├── managers.HighScoreManager.java
-│   └── managers.ConfigManager.java
-├── ui/
-│   ├── ui.MenuPanel.java
-│   └── ui.HighScorePanel.java
-└── utils/
-    ├── GameLogger.java
-    ├── effects.CameraShake.java
-    └── PerformanceMonitor.java
-```
-
-### Why Keep Flat Structure?
-- ✅ Working code - don't break it
-- ✅ Single-person project
-- ✅ Small codebase (~24 files)
-- ❌ Would require changing all imports
-- ❌ Breaking change
-
-### When to Refactor to Packages?
-- When project grows to 50+ files
-- When adding multiplayer/networking
-- When multiple developers join
-- When preparing for production release
-
-**Current Status:** Flat structure is ACCEPTABLE for portfolio project.
+**Last Updated:** November 3, 2025
 
 ---
 
-## 🎯 OOP REFACTORING SUMMARY
+## 📂 PROJECT STRUCTURE
 
-### Tổng Quan:
-Đã áp dụng thành công 4 nguyên tắc OOP:
-1. **Đóng gói (Encapsulation)** ✅
-2. **Kế thừa (Inheritance)** ✅
-3. **Đa hình (Polymorphism)** ✅
-4. **Trừu tượng hóa (Abstraction)** ✅
+```
+arkanoid/
+├── src/
+│   ├── core/              # Game logic core
+│   │   ├── GameManager.java
+│   │   ├── LevelManager.java
+│   │   └── GameBounds.java
+│   ├── entities/          # Game objects
+│   │   ├── GameObject.java (abstract)
+│   │   ├── MovableObject.java (abstract)
+│   │   ├── Ball.java
+│   │   ├── Paddle.java
+│   │   ├── Brick.java
+│   │   ├── Powerup.java
+│   │   └── LaserBeam.java
+│   ├── factories/         # Factory patterns
+│   │   ├── BrickFactory.java
+│   │   └── PowerUpFactory.java
+│   ├── managers/          # System managers
+│   │   ├── ConfigManager.java
+│   │   ├── SoundManager.java
+│   │   ├── FontManager.java
+│   │   ├── HighScoreManager.java
+│   │   └── SaveGameManager.java
+│   ├── ui/                # User interface
+│   │   ├── GamePanel.java
+│   │   ├── MenuPanel.java
+│   │   └── HighScorePanel.java
+│   ├── effects/           # Visual effects
+│   │   └── CameraShake.java
+│   ├── utils/             # Utilities
+│   │   ├── GameLogger.java
+│   │   └── PerformanceMonitor.java
+│   └── main/              # Entry point
+│       └── ArkanoidGame.java
+├── assets/                # Game resources
+│   ├── Backgrounds/       # Level backgrounds (5 stages)
+│   ├── Sprites/           # Game sprites
+│   ├── Sounds/            # Audio files
+│   └── Fonts/             # Custom fonts
+├── docs/                  # Documentation
+├── Saves/                 # Save game files
+└── High Scores/           # High score data
+```
 
 ---
 
-## 📊 INHERITANCE ANALYSIS
+## 🏗️ ARCHITECTURE
 
-### Classes CÓ KẾ THỪA:
+### OOP Design Principles
 
-#### 1. Game Objects Hierarchy (7 files)
+#### 1. **Inheritance Hierarchy**
 ```
-entities.GameObject (abstract)
-├── entities.MovableObject (abstract)
-│   ├── entities.Paddle ✅
-│   ├── entities.Powerup ✅
-│   ├── entities.LaserBeam ✅
-│   └── entities.Ball ✅
-└── entities.Brick ✅
+GameObject (abstract base)
+├── MovableObject (abstract)
+│   ├── Paddle
+│   ├── Ball
+│   ├── Powerup
+│   └── LaserBeam
+└── Brick
 ```
 
-**OOP Principles Applied:**
-- **Encapsulation:** Private fields, getters/setters
-- **Inheritance:** Reuse position/size/velocity logic
-- **Polymorphism:** Override update(), render()
-- **Abstraction:** Abstract base classes
+#### 2. **Design Patterns**
+- **Singleton**: ConfigManager, SoundManager, SaveGameManager, HighScoreManager
+- **Factory**: BrickFactory, PowerUpFactory
+- **MVC**: Separation of UI (panels), Logic (managers), Data (entities)
+- **Observer**: KeyListener, Timer events
 
-#### 2. Swing UI Components (4 files)
+#### 3. **Key Features**
+- ✅ Encapsulation: Private fields with getters/setters
+- ✅ Polymorphism: Override update(), render() methods
+- ✅ Abstraction: Abstract base classes
+- ✅ Composition: GamePanel has-a Paddle, Balls, Bricks
+
+---
+
+## 🎯 GAME MECHANICS
+
+### Core Systems
+
+#### **Ball Physics**
+- Speed tăng 9% mỗi level
+- Collision detection: circle-rectangle intersection
+- Bounce angles phụ thuộc vị trí hit paddle
+- Slow powerup: giảm tốc 60% trong 10 giây
+
+#### **Powerup Logic**
+- 45% chance drop khi phá gạch
+- 7 loại: ENLARGE, LASER, CATCH, SLOW, DUPLICATE, BREAK, PLAYER
+- Conflicts:
+  - LASER ↔ ENLARGE (exclusive)
+  - CATCH ↔ DUPLICATE (exclusive)
+- Duration: SLOW (10s), LASER (15s)
+
+#### **Level Progression**
+- 5 levels với patterns khác nhau
+- Background thay đổi theo level
+- Brick arrangements: rows, pyramid, checkerboard, diamond, fortress
+
+#### **Save/Load System**
+- Auto-save mỗi 30 giây (Slot 1)
+- Manual save: F5 (3 slots)
+- Load: F9 hoặc từ menu
+- Lưu toàn bộ game state: balls, bricks, powerups, timers
+
+---
+
+## 🔧 CONFIGURATION
+
+### config.properties
+```properties
+# Window
+window.width=800
+window.height=600
+window.title=Arkanoid
+
+# Gameplay
+game.initial.lives=3
+game.max.level=5
+game.fps=60
+
+# Physics
+ball.initial.speed=6
+paddle.speed=8
+```
+
+---
+
+## 📊 PERFORMANCE
+
+### Optimizations
+- Object pooling for laser beams
+- Efficient collision detection (bounding box first)
+- 60 FPS game loop với Timer
+- Camera shake sử dụng Graphics2D transform
+
+### Monitoring
+```java
+PerformanceMonitor.logFrameTime();
+PerformanceMonitor.logCollisionChecks();
+```
+
+---
+
+## 🐛 DEBUGGING
+
+### Logging System
+```java
+GameLogger.info("Game state");
+GameLogger.error("Error occurred", exception);
+GameLogger.debug("Debug info");
+```
+
+**Log file:** `arkanoid.log`
+
+### Debug Mode
+```properties
+debug.mode=true
+debug.show.fps=true
+debug.show.collision.boxes=true
+```
+
+---
+
+## 🎨 ASSETS
+
+### Required Assets
+- **Backgrounds**: Stage 1-5.png (800x600)
+- **Sprites**: ball.png, paddle variants, bricks, powerups
+- **Sounds**: WAV format (hit, break, powerup, death, etc.)
+- **Fonts**: emulogic.ttf (retro arcade font)
+
+### Asset Loading
+```java
+// Via ClassLoader (resources)
+InputStream stream = getClass().getClassLoader()
+    .getResourceAsStream("Sprites/ball.png");
+BufferedImage image = ImageIO.read(stream);
+```
+
+---
+
+## 🔨 BUILD & RUN
+
+### IntelliJ IDEA (Recommended)
+1. Mark `src/` as **Sources Root**
+2. Mark `assets/` as **Resources Root**
+3. Run `ArkanoidGame.main()`
+
+### Command Line
+```bash
+# Compile
+javac -d bin -sourcepath src src/main/ArkanoidGame.java
+
+# Run
+java -cp bin;assets main.ArkanoidGame
+```
+
+### Batch Script
+```batch
+run.bat
+```
+
+---
+
+## 📝 DEVELOPMENT NOTES
+
+### Code Style
+- **Naming**: camelCase for methods/variables, PascalCase for classes
+- **Comments**: Javadoc for public methods
+- **Formatting**: 4 spaces indent, 120 char line width
+
+### Testing Checklist
+- [ ] Ball physics: bounce angles, speed
+- [ ] Powerup conflicts: LASER vs ENLARGE, CATCH vs DUPLICATE
+- [ ] Save/Load: all game states restored correctly
+- [ ] Collision: ball-brick, ball-paddle, laser-brick
+- [ ] Level progression: 5 levels, backgrounds
+- [ ] Audio: all sound effects play correctly
+
+### Known Issues
+- None (all resolved)
+
+---
+
+## 🚀 FUTURE ENHANCEMENTS
+
+### Potential Features
+- [ ] Multiplayer mode
+- [ ] Boss levels
+- [ ] More powerup types
+- [ ] Achievement system
+- [ ] Cloud save sync
+- [ ] Mobile port
+
+---
+
+**Developer:** peterparkervanphuc  
+**Repository:** [github.com/peterparkervanphuc/muatrenghenang](https://github.com/peterparkervanphuc/muatrenghenang)
+
 ```
 JFrame
 └── main.ArkanoidGame ✅

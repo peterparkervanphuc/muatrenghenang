@@ -13,7 +13,9 @@ import factories.PowerUpFactory;
 import main.ArkanoidGame;
 import managers.FontManager;
 import managers.HighScoreManager;
+import managers.SaveGameManager;
 import managers.SoundManager;
+import utils.GameLogger;
 import utils.PerformanceMonitor;
 
 import javax.swing.*;
@@ -55,6 +57,10 @@ public class GamePanel extends JPanel implements KeyListener {
     private static final int DELAY = 1000 / FPS;
     private static final long SLOW_POWERUP_DURATION = 10000; // 10 seconds
     private static final long LASER_POWERUP_DURATION = 15000; // 15 seconds
+    private static final long AUTO_SAVE_INTERVAL = 30000; // 30 seconds
+
+    // Auto-save
+    private long lastAutoSaveTime = 0;
 
     public GamePanel(ArkanoidGame mainFrame) {
         this.mainFrame = mainFrame;
@@ -149,6 +155,9 @@ public class GamePanel extends JPanel implements KeyListener {
             return;
         }
         
+        // Auto-save every 30 seconds
+        autoSave();
+
         // Update camera shake
         cameraShake.update();
 
@@ -647,6 +656,207 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
     
+    /**
+     * Create GameState from current game state
+     */
+    private SaveGameManager.GameState createGameState() {
+        SaveGameManager.GameState state = new SaveGameManager.GameState();
+
+        // Save GameManager state
+        state.score = gameManager.getScore();
+        state.lives = gameManager.getLives();
+        state.currentLevel = gameManager.getCurrentLevel();
+        state.gameOver = gameManager.isGameOver();
+        state.paddleEnlarged = gameManager.isPaddleEnlarged();
+
+        // Save Paddle state
+        state.paddleX = paddle.getX();
+        state.paddleY = paddle.getY();
+        state.paddleHasLaser = paddle.hasLaser();
+        state.paddleHasCatch = paddle.hasCatch();
+
+        // Save Ball states
+        for (Ball ball : balls) {
+            state.balls.add(new SaveGameManager.BallState(ball));
+        }
+
+        // Save Brick states
+        for (Brick brick : bricks) {
+            state.bricks.add(new SaveGameManager.BrickState(brick));
+        }
+
+        // Save Powerup states (falling powerups)
+        for (Powerup powerup : powerups) {
+            state.powerups.add(new SaveGameManager.PowerupState(powerup));
+        }
+
+        // Save powerup timers
+        state.slowPowerupEndTime = slowPowerupEndTime;
+        state.slowPowerupActive = slowPowerupActive;
+        state.laserPowerupEndTime = laserPowerupEndTime;
+        state.laserPowerupActive = laserPowerupActive;
+
+        return state;
+    }
+
+    /**
+     * Restore game from GameState
+     */
+    private void restoreGameState(SaveGameManager.GameState state) {
+        if (state == null) return;
+
+        // Restore GameManager state
+        gameManager.resetGame(); // Reset first
+        // Use reflection or add setters to GameManager
+        restoreGameManagerState(state);
+
+        // Restore Paddle
+        paddle = new Paddle((int)state.paddleX, (int)state.paddleY, state.paddleEnlarged);
+        if (state.paddleHasLaser) paddle.enableLaser();
+        if (state.paddleHasCatch) paddle.enableCatch();
+
+        // Restore Balls
+        balls.clear();
+        for (SaveGameManager.BallState ballState : state.balls) {
+            Ball ball = new Ball(ballState.x, ballState.y);
+            ball.setVelocity(ballState.velocityX, ballState.velocityY);
+            ball.setSpeedMultiplier(ballState.speedMultiplier);
+            ball.setLevelSpeedBonus(ballState.levelSpeedBonus);
+            ball.setAttached(ballState.attached);
+            if (ballState.attached) {
+                ball.attachToPaddle(paddle);
+            }
+            balls.add(ball);
+        }
+
+        // Restore Bricks
+        bricks.clear();
+        for (SaveGameManager.BrickState brickState : state.bricks) {
+            try {
+                Brick.BrickType type = Brick.BrickType.valueOf(brickState.brickType);
+                Brick brick = new Brick((int)brickState.x, (int)brickState.y, type);
+                brick.setHitsRemaining(brickState.hitsRemaining);
+                bricks.add(brick);
+            } catch (IllegalArgumentException e) {
+                GameLogger.error("Invalid brick type: " + brickState.brickType);
+            }
+        }
+
+        // Restore Powerups
+        powerups.clear();
+        for (SaveGameManager.PowerupState powerupState : state.powerups) {
+            try {
+                Powerup.PowerupType type = Powerup.PowerupType.valueOf(powerupState.powerupType);
+                Powerup powerup = new Powerup((int)powerupState.x, (int)powerupState.y, type);
+                powerups.add(powerup);
+            } catch (IllegalArgumentException e) {
+                GameLogger.error("Invalid powerup type: " + powerupState.powerupType);
+            }
+        }
+
+        // Restore powerup timers
+        slowPowerupEndTime = state.slowPowerupEndTime;
+        slowPowerupActive = state.slowPowerupActive;
+        laserPowerupEndTime = state.laserPowerupEndTime;
+        laserPowerupActive = state.laserPowerupActive;
+
+        // Load background for current level
+        loadBackground();
+
+        GameLogger.info("Game state restored successfully");
+    }
+
+    /**
+     * Helper method to restore GameManager state
+     */
+    private void restoreGameManagerState(SaveGameManager.GameState state) {
+        // We'll need to add setter methods to GameManager
+        // For now, we'll use a workaround by manipulating score/lives directly
+        gameManager.resetGame();
+
+        // Add score
+        gameManager.addScore(state.score);
+
+        // Set lives (add/remove as needed)
+        int currentLives = gameManager.getLives();
+        int targetLives = state.lives;
+        if (targetLives > currentLives) {
+            for (int i = 0; i < targetLives - currentLives; i++) {
+                gameManager.addLife();
+            }
+        } else if (targetLives < currentLives) {
+            for (int i = 0; i < currentLives - targetLives; i++) {
+                gameManager.loseLife();
+            }
+        }
+
+        // Set level (advance as needed)
+        for (int i = 1; i < state.currentLevel; i++) {
+            gameManager.nextLevel();
+        }
+
+        gameManager.setGameOver(state.gameOver);
+        gameManager.setPaddleEnlarged(state.paddleEnlarged);
+    }
+
+    /**
+     * Save game to slot (manual save)
+     */
+    public void saveGame(int slot) {
+        SaveGameManager.GameState state = createGameState();
+        if (SaveGameManager.getInstance().saveGame(slot, state)) {
+            GameLogger.info("Game saved to slot " + slot);
+            JOptionPane.showMessageDialog(this,
+                "Game saved successfully!",
+                "Save Game",
+                JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Failed to save game!",
+                "Save Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Load game from slot
+     */
+    public void loadGame(int slot) {
+        SaveGameManager.GameState state = SaveGameManager.getInstance().loadGame(slot);
+        if (state != null) {
+            restoreGameState(state);
+
+            // Start game timer after loading
+            if (!gameTimer.isRunning()) {
+                gameTimer.start();
+            }
+
+            GameLogger.info("Game loaded from slot " + slot);
+            JOptionPane.showMessageDialog(this,
+                "Game loaded successfully!",
+                "Load Game",
+                JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "No save data found in slot " + slot + "!",
+                "Load Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Auto-save to slot 1
+     */
+    private void autoSave() {
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastAutoSaveTime >= AUTO_SAVE_INTERVAL) {
+            SaveGameManager.GameState state = createGameState();
+            SaveGameManager.getInstance().saveGame(1, state);
+            lastAutoSaveTime = currentTime;
+            GameLogger.info("Auto-save completed");
+        }
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
@@ -687,6 +897,44 @@ public class GamePanel extends JPanel implements KeyListener {
             } else {
                 gameTimer.start();
             }
+        }
+
+        // Save game with F5
+        if (key == KeyEvent.VK_F5) {
+            gameTimer.stop();
+            String[] options = {"Slot 1", "Slot 2", "Slot 3", "Cancel"};
+            int choice = JOptionPane.showOptionDialog(this,
+                "Select save slot:",
+                "Save Game",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+
+            if (choice >= 0 && choice < 3) {
+                saveGame(choice + 1);
+            }
+            gameTimer.start();
+        }
+
+        // Load game with F9
+        if (key == KeyEvent.VK_F9) {
+            gameTimer.stop();
+            String[] options = {"Slot 1", "Slot 2", "Slot 3", "Cancel"};
+            int choice = JOptionPane.showOptionDialog(this,
+                "Select load slot:",
+                "Load Game",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+
+            if (choice >= 0 && choice < 3) {
+                loadGame(choice + 1);
+            }
+            gameTimer.start();
         }
     }
     
