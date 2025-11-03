@@ -92,9 +92,9 @@ public class MenuPanel extends JPanel implements KeyListener {
             g2d.setFont(new Font("Arial", Font.BOLD, 20));
         }
         
-        int startY = 300;
-        int spacing = 50;
-        
+        int startY = 270;
+        int spacing = 45;
+
         for (int i = 0; i < menuOptions.length; i++) {
             if (i == selectedOption) {
                 g2d.setColor(Color.YELLOW);
