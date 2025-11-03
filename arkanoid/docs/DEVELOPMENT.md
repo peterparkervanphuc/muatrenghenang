@@ -1,19 +1,19 @@
-# 🎮 ARKANOID - Technical Documentation
+# 🎮 ARKANOID - Tài Liệu Kỹ Thuật
 
-**Last Updated:** November 3, 2025
+**Cập nhật:** 3 tháng 11, 2025
 
 ---
 
-## 📂 PROJECT STRUCTURE
+## 📂 CẤU TRÚC PROJECT
 
 ```
 arkanoid/
 ├── src/
-│   ├── core/              # Game logic core
+│   ├── core/              # Logic game cốt lõi
 │   │   ├── GameManager.java
 │   │   ├── LevelManager.java
 │   │   └── GameBounds.java
-│   ├── entities/          # Game objects
+│   ├── entities/          # Các đối tượng game
 │   │   ├── GameObject.java (abstract)
 │   │   ├── MovableObject.java (abstract)
 │   │   ├── Ball.java
@@ -24,40 +24,40 @@ arkanoid/
 │   ├── factories/         # Factory patterns
 │   │   ├── BrickFactory.java
 │   │   └── PowerUpFactory.java
-│   ├── managers/          # System managers
+│   ├── managers/          # Quản lý hệ thống
 │   │   ├── ConfigManager.java
 │   │   ├── SoundManager.java
 │   │   ├── FontManager.java
 │   │   ├── HighScoreManager.java
 │   │   └── SaveGameManager.java
-│   ├── ui/                # User interface
+│   ├── ui/                # Giao diện người dùng
 │   │   ├── GamePanel.java
 │   │   ├── MenuPanel.java
 │   │   └── HighScorePanel.java
-│   ├── effects/           # Visual effects
+│   ├── effects/           # Hiệu ứng hình ảnh
 │   │   └── CameraShake.java
-│   ├── utils/             # Utilities
+│   ├── utils/             # Tiện ích
 │   │   ├── GameLogger.java
 │   │   └── PerformanceMonitor.java
 │   └── main/              # Entry point
 │       └── ArkanoidGame.java
-├── assets/                # Game resources
-│   ├── Backgrounds/       # Level backgrounds (5 stages)
-│   ├── Sprites/           # Game sprites
-│   ├── Sounds/            # Audio files
-│   └── Fonts/             # Custom fonts
-├── docs/                  # Documentation
-├── Saves/                 # Save game files
-└── High Scores/           # High score data
+├── assets/                # Tài nguyên game
+│   ├── Backgrounds/       # Background 5 màn (stages)
+│   ├── Sprites/           # Hình ảnh game
+│   ├── Sounds/            # File âm thanh
+│   └── Fonts/             # Font chữ custom
+├── docs/                  # Tài liệu
+├── Saves/                 # File save game
+└── High Scores/           # Dữ liệu điểm cao
 ```
 
 ---
 
-## 🏗️ ARCHITECTURE
+## 🏗️ KIẾN TRÚC
 
-### OOP Design Principles
+### Nguyên Tắc Thiết Kế OOP
 
-#### 1. **Inheritance Hierarchy**
+#### 1. **Hệ Thống Kế Thừa**
 ```
 GameObject (abstract base)
 ├── MovableObject (abstract)
@@ -71,41 +71,41 @@ GameObject (abstract base)
 #### 2. **Design Patterns**
 - **Singleton**: ConfigManager, SoundManager, SaveGameManager, HighScoreManager
 - **Factory**: BrickFactory, PowerUpFactory
-- **MVC**: Separation of UI (panels), Logic (managers), Data (entities)
+- **MVC**: Tách biệt UI (panels), Logic (managers), Data (entities)
 - **Observer**: KeyListener, Timer events
 
-#### 3. **Key Features**
-- ✅ Encapsulation: Private fields with getters/setters
-- ✅ Polymorphism: Override update(), render() methods
-- ✅ Abstraction: Abstract base classes
-- ✅ Composition: GamePanel has-a Paddle, Balls, Bricks
+#### 3. **Tính Năng Chính**
+- ✅ Đóng gói (Encapsulation): Private fields với getters/setters
+- ✅ Đa hình (Polymorphism): Override update(), render()
+- ✅ Trừu tượng (Abstraction): Abstract base classes
+- ✅ Kết hợp (Composition): GamePanel has-a Paddle, Balls, Bricks
 
 ---
 
-## 🎯 GAME MECHANICS
+## 🎯 CƠ CHẾ GAME
 
-### Core Systems
+### Hệ Thống Cốt Lõi
 
-#### **Ball Physics**
-- Speed tăng 9% mỗi level
-- Collision detection: circle-rectangle intersection
-- Bounce angles phụ thuộc vị trí hit paddle
-- Slow powerup: giảm tốc 60% trong 10 giây
+#### **Vật Lý Bóng (Ball Physics)**
+- Tốc độ tăng 9% mỗi level
+- Phát hiện va chạm: circle-rectangle intersection
+- Góc nảy phụ thuộc vị trí chạm paddle
+- Powerup Slow: giảm tốc 60% trong 10 giây
 
-#### **Powerup Logic**
-- 45% chance drop khi phá gạch
+#### **Logic Powerup**
+- 45% tỷ lệ rơi khi phá gạch
 - 7 loại: ENLARGE, LASER, CATCH, SLOW, DUPLICATE, BREAK, PLAYER
-- Conflicts:
-  - LASER ↔ ENLARGE (exclusive)
-  - CATCH ↔ DUPLICATE (exclusive)
-- Duration: SLOW (10s), LASER (15s)
+- Xung đột:
+  - LASER ↔ ENLARGE (loại trừ lẫn nhau)
+  - CATCH ↔ DUPLICATE (loại trừ lẫn nhau)
+- Thời gian: SLOW (10s), LASER (15s)
 
-#### **Level Progression**
+#### **Tiến Trình Level**
 - 5 levels với patterns khác nhau
-- Background thay đổi theo level
-- Brick arrangements: rows, pyramid, checkerboard, diamond, fortress
+- Background đổi theo level
+- Bố trí gạch: rows, pyramid, checkerboard, diamond, fortress
 
-#### **Save/Load System**
+#### **Hệ Thống Save/Load**
 - Auto-save mỗi 30 giây (Slot 1)
 - Manual save: F5 (3 slots)
 - Load: F9 hoặc từ menu
@@ -113,11 +113,11 @@ GameObject (abstract base)
 
 ---
 
-## 🔧 CONFIGURATION
+## 🔧 CẤU HÌNH
 
 ### config.properties
 ```properties
-# Window
+# Cửa sổ
 window.width=800
 window.height=600
 window.title=Arkanoid
@@ -127,22 +127,22 @@ game.initial.lives=3
 game.max.level=5
 game.fps=60
 
-# Physics
+# Vật lý
 ball.initial.speed=6
 paddle.speed=8
 ```
 
 ---
 
-## 📊 PERFORMANCE
+## 📊 HIỆU SUẤT
 
-### Optimizations
-- Object pooling for laser beams
-- Efficient collision detection (bounding box first)
-- 60 FPS game loop với Timer
-- Camera shake sử dụng Graphics2D transform
+### Tối Ưu Hóa
+- Object pooling cho laser beams
+- Collision detection hiệu quả (bounding box trước)
+- Game loop 60 FPS với Timer
+- Camera shake dùng Graphics2D transform
 
-### Monitoring
+### Giám Sát
 ```java
 PerformanceMonitor.logFrameTime();
 PerformanceMonitor.logCollisionChecks();
@@ -150,18 +150,18 @@ PerformanceMonitor.logCollisionChecks();
 
 ---
 
-## 🐛 DEBUGGING
+## 🐛 GỠ LỖI
 
-### Logging System
+### Hệ Thống Logging
 ```java
-GameLogger.info("Game state");
-GameLogger.error("Error occurred", exception);
-GameLogger.debug("Debug info");
+GameLogger.info("Trạng thái game");
+GameLogger.error("Lỗi xảy ra", exception);
+GameLogger.debug("Thông tin debug");
 ```
 
-**Log file:** `arkanoid.log`
+**File log:** `arkanoid.log`
 
-### Debug Mode
+### Chế Độ Debug
 ```properties
 debug.mode=true
 debug.show.fps=true
@@ -170,17 +170,17 @@ debug.show.collision.boxes=true
 
 ---
 
-## 🎨 ASSETS
+## 🎨 TÀI NGUYÊN
 
-### Required Assets
+### Assets Cần Thiết
 - **Backgrounds**: Stage 1-5.png (800x600)
 - **Sprites**: ball.png, paddle variants, bricks, powerups
-- **Sounds**: WAV format (hit, break, powerup, death, etc.)
-- **Fonts**: emulogic.ttf (retro arcade font)
+- **Sounds**: định dạng WAV (hit, break, powerup, death, etc.)
+- **Fonts**: emulogic.ttf (font arcade retro)
 
-### Asset Loading
+### Tải Assets
 ```java
-// Via ClassLoader (resources)
+// Qua ClassLoader (resources)
 InputStream stream = getClass().getClassLoader()
     .getResourceAsStream("Sprites/ball.png");
 BufferedImage image = ImageIO.read(stream);
@@ -190,9 +190,9 @@ BufferedImage image = ImageIO.read(stream);
 
 ## 🔨 BUILD & RUN
 
-### IntelliJ IDEA (Recommended)
-1. Mark `src/` as **Sources Root**
-2. Mark `assets/` as **Resources Root**
+### IntelliJ IDEA (Khuyến nghị)
+1. Mark `src/` là **Sources Root**
+2. Mark `assets/` là **Resources Root**
 3. Run `ArkanoidGame.main()`
 
 ### Command Line
@@ -211,40 +211,41 @@ run.bat
 
 ---
 
-## 📝 DEVELOPMENT NOTES
+## 📝 GHI CHÚ DEVELOPMENT
 
 ### Code Style
-- **Naming**: camelCase for methods/variables, PascalCase for classes
-- **Comments**: Javadoc for public methods
-- **Formatting**: 4 spaces indent, 120 char line width
+- **Đặt tên**: camelCase cho methods/variables, PascalCase cho classes
+- **Comments**: Javadoc cho public methods
+- **Format**: 4 spaces indent, 120 ký tự/dòng
 
-### Testing Checklist
-- [ ] Ball physics: bounce angles, speed
-- [ ] Powerup conflicts: LASER vs ENLARGE, CATCH vs DUPLICATE
-- [ ] Save/Load: all game states restored correctly
-- [ ] Collision: ball-brick, ball-paddle, laser-brick
-- [ ] Level progression: 5 levels, backgrounds
-- [ ] Audio: all sound effects play correctly
+### Checklist Testing
+- [ ] Vật lý bóng: góc nảy, tốc độ
+- [ ] Xung đột powerup: LASER vs ENLARGE, CATCH vs DUPLICATE
+- [ ] Save/Load: khôi phục đúng tất cả game states
+- [ ] Va chạm: ball-brick, ball-paddle, laser-brick
+- [ ] Tiến trình level: 5 levels, backgrounds
+- [ ] Âm thanh: tất cả sound effects hoạt động đúng
 
-### Known Issues
-- None (all resolved)
+### Vấn Đề Đã Biết
+- Không có (đã giải quyết hết)
 
 ---
 
-## 🚀 FUTURE ENHANCEMENTS
+## 🚀 CẢI TIẾN TƯƠNG LAI
 
-### Potential Features
-- [ ] Multiplayer mode
+### Tính Năng Tiềm Năng
+- [ ] Chế độ multiplayer
 - [ ] Boss levels
-- [ ] More powerup types
-- [ ] Achievement system
-- [ ] Cloud save sync
-- [ ] Mobile port
+- [ ] Nhiều loại powerup hơn
+- [ ] Hệ thống thành tích (achievements)
+- [ ] Đồng bộ save lên cloud
+- [ ] Port sang mobile
 
 ---
 
 **Developer:** peterparkervanphuc  
 **Repository:** [github.com/peterparkervanphuc/muatrenghenang](https://github.com/peterparkervanphuc/muatrenghenang)
+
 
 ```
 JFrame
