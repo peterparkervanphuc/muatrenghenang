@@ -57,10 +57,6 @@ public class GamePanel extends JPanel implements KeyListener {
     private static final int DELAY = 1000 / FPS;
     private static final long SLOW_POWERUP_DURATION = 10000; // 10 seconds
     private static final long LASER_POWERUP_DURATION = 15000; // 15 seconds
-    private static final long AUTO_SAVE_INTERVAL = 30000; // 30 seconds
-
-    // Auto-save
-    private long lastAutoSaveTime = 0;
 
     public GamePanel(ArkanoidGame mainFrame) {
         this.mainFrame = mainFrame;
@@ -155,8 +151,6 @@ public class GamePanel extends JPanel implements KeyListener {
             return;
         }
         
-        // Auto-save every 30 seconds
-        autoSave();
 
         // Update camera shake
         cameraShake.update();
@@ -844,18 +838,6 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-    /**
-     * Auto-save to slot 1
-     */
-    private void autoSave() {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastAutoSaveTime >= AUTO_SAVE_INTERVAL) {
-            SaveGameManager.GameState state = createGameState();
-            SaveGameManager.getInstance().saveGame(1, state);
-            lastAutoSaveTime = currentTime;
-            GameLogger.info("Auto-save completed");
-        }
-    }
 
     @Override
     public void keyPressed(KeyEvent e) {

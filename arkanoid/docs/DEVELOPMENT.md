@@ -106,8 +106,8 @@ GameObject (abstract base)
 - Bố trí gạch: rows, pyramid, checkerboard, diamond, fortress
 
 #### **Hệ Thống Save/Load**
-- Auto-save mỗi 30 giây (Slot 1)
 - Manual save: F5 (3 slots)
+- Delete save: F6 hoặc menu
 - Load: F9 hoặc từ menu
 - Lưu toàn bộ game state: balls, bricks, powerups, timers
 

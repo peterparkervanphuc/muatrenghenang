@@ -66,8 +66,9 @@ java -cp bin;assets main.ArkanoidGame
 
 ### Advanced Features
 - 💾 **Save/Load System**
-  - Auto-save mỗi 30 giây
-  - Manual save: 3 slots
+  - Manual save: 3 slots (F5)
+  - Delete save: F6 or menu
+  - Load game: F9 or menu
   - Lưu toàn bộ game state
 - 🎵 **Sound System**
   - Menu music

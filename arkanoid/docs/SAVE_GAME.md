@@ -6,13 +6,8 @@
 
 ## 🎮 HOW TO USE
 
-### Save Game
+### Save Game (Manual - F5)
 
-#### Auto-Save
-- Game tự động lưu vào **Slot 1** mỗi **30 giây**
-- Không cần thao tác, hoạt động trong background
-
-#### Manual Save (F5)
 1. Nhấn **F5** trong game
 2. Chọn slot (1, 2, hoặc 3)
 3. Confirm để lưu
@@ -79,23 +74,23 @@
 ```
 arkanoid/
 └── Saves/
-    ├── save_slot_1.dat    # Auto-save
+    ├── save_slot_1.dat    # Manual save
     ├── save_slot_2.dat    # Manual save
     └── save_slot_3.dat    # Manual save
 ```
 
 - **Format**: Binary (.dat)
 - **Auto-created**: Saves/ folder created automatically
-- **Slots**: 3 independent save slots
+- **Slots**: 3 independent manual save slots
 
 ---
 
 ## 🎯 FEATURES
 
 ✅ **Implemented:**
-- [x] Auto-save every 30 seconds (Slot 1)
 - [x] Manual save with 3 slots (F5)
 - [x] Load from menu or in-game (F9)
+- [x] Delete save (F6 or menu)
 - [x] Display save slot info
 - [x] Full game state restoration
 - [x] Pause/Resume on save/load
@@ -116,12 +111,11 @@ arkanoid/
 Check `arkanoid.log` for save/load events:
 ```
 [INFO] Game saved to slot 1
-[INFO] Auto-save completed
 [INFO] Game loaded from slot 2
 ```
 
 ---
 
-**💡 Tip:** Slot 1 luôn là auto-save, sử dụng Slot 2 & 3 cho manual saves!
+**💡 Tip:** Sử dụng 3 slots để lưu các strategies khác nhau!
 
 
