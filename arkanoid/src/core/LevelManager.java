@@ -61,9 +61,12 @@ public class LevelManager {
             for (int col = 0; col < cols; col++) {
                 int x = startX + col * 60;
                 int y = startY + row * 22;
+                if (row == rows -1 && (col ==4 || col ==5)){
+                    bricks.add(BrickFactory.createBrick(Brick.BrickType.GOLD, x, y));
+                } else {
                 bricks.add(BrickFactory.createBrick(colors[row], x, y));
             }
-        }
+        } }
         
         return bricks;
     }

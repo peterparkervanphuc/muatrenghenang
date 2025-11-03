@@ -293,32 +293,42 @@ public class GamePanel extends JPanel implements KeyListener {
             Brick brick = brickIterator.next();
             
             if (ball.intersects(brick.getBounds())) {
-                // Determine collision side and bounce
                 ball.bounceOffBrick(brick);
-                
-                // Damage brick
-                brick.hit();
-                
-                if (brick.isDestroyed()) {
-                    gameManager.addScore(brick.getPoints());
-                    brickIterator.remove();
-                    
-                    // Random powerup drop using PowerUpFactory (45% chance)
-                    Powerup powerup = PowerUpFactory.createPowerUpFromBrick(brick.getX(), brick.getY(), 0.45);
-                    if (powerup != null) {
-                        powerups.add(powerup);
+
+                // === LOGIC MỚI ===
+                if (brick.getType().isBreakable()) {
+                    // GẠCH CÓ THỂ VỠ (Normal, Silver)
+                    brick.hit(); // Chỉ gọi .hit() nếu vỡ được
+
+                    if (brick.isDestroyed()) {
+                        gameManager.addScore(brick.getPoints());
+                        brickIterator.remove();
+
+                        // ... (code tạo powerup giữ nguyên)
+                        Powerup powerup = PowerUpFactory.createPowerUpFromBrick(brick.getX(), brick.getY(), 0.45);
+                        if (powerup != null) {
+                            powerups.add(powerup);
+                        }
+
+                        SoundManager.getInstance().playWallHitSound();
+
+                    } else if (brick.isSilver()) {
+                        // Gạch Silver bị đánh trúng (chưa vỡ)
+                        cameraShake.shake(4, 8);
+                        SoundManager.getInstance().playSilverWallHitSound();
+                    } else {
+                        // Gạch thường bị đánh trúng
+                        SoundManager.getInstance().playWallHitSound();
                     }
-                    
-                    SoundManager.getInstance().playWallHitSound();
-                } else if (brick.isSilver()) {
-                    // Screen shake ONLY for silver brick hit
-                    cameraShake.shake(4, 8);
-                    SoundManager.getInstance().playSilverWallHitSound();
                 } else {
-                    SoundManager.getInstance().playWallHitSound();
+                    // GẠCH BẤT TỬ (GOLD)
+                    // Chỉ rung và phát tiếng động mạnh
+                    cameraShake.shake(4, 8);
+                    SoundManager.getInstance().playSilverWallHitSound(); // Dùng tạm tiếng của gạch Bạc
                 }
-                
-                break; // Only collide with one brick per update
+                // =================
+
+                break;
             }
         }
     }

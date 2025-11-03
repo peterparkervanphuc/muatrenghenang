@@ -47,12 +47,25 @@ public class BrickFactory {
      * @return A new entities.Brick instance with random color
      */
     public static Brick createRandomBrick(int x, int y) {
-        Brick.BrickType[] types = Brick.BrickType.values();
-        // Exclude SILVER for random generation (it's special)
-        int randomIndex = (int) (Math.random() * (types.length - 1));
-        return createBrick(types[randomIndex], x, y);
-    }
+        java.util.List<Brick.BrickType> randomTypes = new java.util.ArrayList<>();
 
+        // Lọc ra các gạch "thường"
+        for (Brick.BrickType type : Brick.BrickType.values()) {
+            // Chỉ thêm gạch CÓ THỂ VỠ và KHÔNG PHẢI GẠCH BẠC
+            if (type.isBreakable() && type != Brick.BrickType.SILVER) {
+                randomTypes.add(type);
+            }
+        }
+
+        // Nếu list rỗng (lỗi gì đó), trả về gạch WHITE
+        if (randomTypes.isEmpty()) {
+            return createBrick(Brick.BrickType.WHITE, x, y);
+        }
+
+        // Random từ list gạch thường đó
+        int randomIndex = (int) (Math.random() * randomTypes.size());
+        return createBrick(randomTypes.get(randomIndex), x, y);
+    }
     /**
      * Create a silver brick (requires 2 hits)
      * @param x The x-coordinate
