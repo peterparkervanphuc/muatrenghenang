@@ -47,6 +47,7 @@ java -cp bin;assets main.ArkanoidGame
 - **← →** (A/D) - Move paddle
 - **Space** - Launch ball / Fire laser
 - **F5** - Save game (3 slots)
+- **F6** - Delete save (with confirmation)
 - **F9** - Load game
 - **ESC** - Pause / Return to menu
 

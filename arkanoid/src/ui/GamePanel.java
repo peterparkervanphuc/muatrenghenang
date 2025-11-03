@@ -936,6 +936,78 @@ public class GamePanel extends JPanel implements KeyListener {
             }
             gameTimer.start();
         }
+
+        // Delete save with F6
+        if (key == KeyEvent.VK_F6) {
+            gameTimer.stop();
+
+            // Build save info
+            StringBuilder message = new StringBuilder("Select a save slot to DELETE:\n\n");
+            boolean hasAnySave = false;
+
+            for (int i = 1; i <= 3; i++) {
+                SaveGameManager.SaveInfo info = SaveGameManager.getInstance().getSaveInfo(i);
+                if (info != null) {
+                    hasAnySave = true;
+                    message.append(String.format("Slot %d: Level %d | Score %d | Lives %d\n",
+                        i, info.level, info.score, info.lives));
+                } else {
+                    message.append(String.format("Slot %d: Empty\n", i));
+                }
+            }
+
+            if (!hasAnySave) {
+                JOptionPane.showMessageDialog(this,
+                    "No save files to delete!",
+                    "Delete Save",
+                    JOptionPane.INFORMATION_MESSAGE);
+                gameTimer.start();
+                return;
+            }
+
+            String[] options = {"Slot 1", "Slot 2", "Slot 3", "Cancel"};
+            int choice = JOptionPane.showOptionDialog(this,
+                message.toString(),
+                "Delete Save",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.WARNING_MESSAGE,
+                null,
+                options,
+                options[0]);
+
+            if (choice >= 0 && choice < 3) {
+                int slot = choice + 1;
+                if (SaveGameManager.getInstance().hasSaveData(slot)) {
+                    int confirm = JOptionPane.showConfirmDialog(this,
+                        "Are you sure you want to DELETE save in Slot " + slot + "?\n" +
+                        "This action cannot be undone!",
+                        "Confirm Delete",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
+
+                    if (confirm == JOptionPane.YES_OPTION) {
+                        if (SaveGameManager.getInstance().deleteSave(slot)) {
+                            JOptionPane.showMessageDialog(this,
+                                "Save deleted successfully!",
+                                "Delete Save",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(this,
+                                "Failed to delete save!",
+                                "Delete Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                        "Slot " + slot + " is already empty!",
+                        "Delete Save",
+                        JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+
+            gameTimer.start();
+        }
     }
     
     @Override

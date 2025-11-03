@@ -33,6 +33,23 @@
 2. Chọn slot
 3. Game pause và load state
 
+### Delete Save
+
+#### From Menu
+1. Chọn **DELETE SAVE** từ menu
+2. Xem thông tin các save slots
+3. Chọn slot muốn xóa
+4. Confirm deletion (WARNING message)
+5. Save bị xóa vĩnh viễn
+
+#### In-Game (F6)
+1. Nhấn **F6** trong game
+2. Game pause, chọn slot muốn xóa
+3. Confirm deletion
+4. Slot trở về Empty
+
+⚠️ **Cảnh báo:** Xóa save không thể hoàn tác!
+
 ---
 
 ## 💾 SAVED DATA
@@ -52,6 +69,7 @@
 | Key | Action |
 |-----|--------|
 | **F5** | Save game (choose slot) |
+| **F6** | Delete save (with confirmation) |
 | **F9** | Load game (choose slot) |
 
 ---
