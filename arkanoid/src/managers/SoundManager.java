@@ -128,10 +128,18 @@ public class SoundManager {
         }
     }
     
+    private boolean isSoundPlaying(String name) {
+        Clip clip = soundClips.get(name);
+        return clip != null && clip.isRunning();
+    }
+
     // Public methods for specific sounds
     public void playMenuMusic() {
-        stopAllMusic();
-        playSoundLoop("menu");
+        // Only restart if menu music is not already playing
+        if (!isSoundPlaying("menu")) {
+            stopAllMusic();
+            playSoundLoop("menu");
+        }
     }
     
     public void stopMenuMusic() {

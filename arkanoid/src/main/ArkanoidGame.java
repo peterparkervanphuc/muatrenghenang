@@ -167,9 +167,16 @@ public class ArkanoidGame extends JFrame {
     }
 
     public void showHighScores() {
+        showHighScores(false); // Don't play music when coming from menu
+    }
+
+    public void showHighScores(boolean playMusic) {
         cardLayout.show(mainPanel, "HIGHSCORE");
         highScorePanel.refreshScores();
         highScorePanel.requestFocusInWindow();
+        if (playMusic) {
+            SoundManager.getInstance().playHighScoresMusic();
+        }
     }
     
     public static void main(String[] args) {

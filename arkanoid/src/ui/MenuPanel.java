@@ -55,7 +55,7 @@ public class MenuPanel extends JPanel implements KeyListener {
         Graphics2D g2d = (Graphics2D) g;
         
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
+
         // Draw menu background
         if (menuBackground != null) {
             g2d.drawImage(menuBackground, 0, 0, getWidth(), getHeight(), null);
