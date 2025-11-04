@@ -1,15 +1,18 @@
 # ===================================
-# Arkanoid Game - Local GitIgnore
+# Arkanoid Game - GitIgnore
 # ===================================
 
-# Compiled class files
+# ============ Compiled Output ============
+# Java compiled files
 *.class
 bin/
 out/
 target/
 
+# ============ IDE Files ============
 # IntelliJ IDEA
 .idea/
+*.iml
 *.iws
 *.ipr
 
@@ -18,10 +21,26 @@ target/
 .project
 .settings/
 
-# Maven dependencies
-lib/
+# NetBeans
+nbproject/
+nbbuild/
+dist/
+nbdist/
 
-# Package files
+# VS Code
+.vscode/
+
+# ============ Build Tools ============
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Gradle
+.gradle/
+build/
+
+# ============ Package Files ============
 *.jar
 *.war
 *.nar
@@ -30,12 +49,38 @@ lib/
 *.tar.gz
 *.rar
 
-# Log files (runtime only, arkanoid.log is kept for debugging)
+# ============ Runtime/User Data ============
+# Log files - Runtime generated
+*.log
+arkanoid.log
 
-# OS specific
-.DS_Store
-Thumbs.db
-
-# High scores (user-specific data)
+# User-specific game data
 High Scores/
+Saves/
+
+# ============ OS Specific ============
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+.directory
+
+# ============ Temporary Files ============
+*.tmp
+*.bak
+*.swp
+*~.nib
+*.orig
+
+# ============ Dependencies ============
+lib/
+node_modules/
 
