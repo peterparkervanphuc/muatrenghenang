@@ -29,3 +29,10 @@
 [2025-11-04 09:12:01] [INFO   ] Initializing Sound Manager - Sound enabled 
 [2025-11-04 09:12:01] [INFO   ] Game initialized successfully 
 [2025-11-04 09:12:02] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:14:50] [INFO   ] Game logger initialized 
+[2025-11-04 09:14:50] [INFO   ] Starting Arkanoid Game... 
+[2025-11-04 09:14:51] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:14:51] [INFO   ] Loaded 10 high scores 
+[2025-11-04 09:14:51] [INFO   ] Initializing Sound Manager - Sound enabled 
+[2025-11-04 09:14:51] [INFO   ] Game initialized successfully 
+[2025-11-04 09:14:52] [INFO   ] Game reset - Lives: 3 
