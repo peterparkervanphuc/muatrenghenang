@@ -1,6 +1,8 @@
 package factories;
 
 import entities.Brick;
+import java.util.List; // <-- THÊM IMPORT NÀY
+import java.util.ArrayList; // <-- THÊM IMPORT NÀY
 
 /**
  * Factory Pattern for creating different types of bricks
@@ -41,20 +43,36 @@ public class BrickFactory {
     }
 
     /**
-     * Create a random colored brick (excluding silver)
+     * Create a random colored brick (CHỈ CÁC LOẠI GẠCH THƯỜNG)
      * @param x The x-coordinate
      * @param y The y-coordinate
      * @return A new entities.Brick instance with random color
      */
     public static Brick createRandomBrick(int x, int y) {
-        Brick.BrickType[] types = Brick.BrickType.values();
-        // Exclude SILVER for random generation (it's special)
-        int randomIndex = (int) (Math.random() * (types.length - 1));
-        return createBrick(types[randomIndex], x, y);
+        // Dùng java.util.List và java.util.ArrayList
+        List<Brick.BrickType> randomTypes = new ArrayList<>();
+
+        // Lọc ra các gạch "thường"
+        for (Brick.BrickType type : Brick.BrickType.values()) {
+            // Chỉ thêm gạch CÓ THỂ VỠ (isBreakable() == true)
+            // VÀ KHÔNG PHẢI GẠCH BẠC
+            if (type.isBreakable() && type != Brick.BrickType.SILVER) {
+                randomTypes.add(type);
+            }
+        }
+
+        // Nếu list rỗng (lỗi gì đó), trả về gạch WHITE
+        if (randomTypes.isEmpty()) {
+            return createBrick(Brick.BrickType.WHITE, x, y);
+        }
+
+        // Random từ list gạch thường đó
+        int randomIndex = (int) (Math.random() * randomTypes.size());
+        return createBrick(randomTypes.get(randomIndex), x, y);
     }
 
     /**
-     * Create a silver brick (requires 2 hits)
+     * Create a silver brick (requires 3 hits)
      * @param x The x-coordinate
      * @param y The y-coordinate
      * @return A new silver entities.Brick instance
@@ -63,4 +81,3 @@ public class BrickFactory {
         return createBrick(Brick.BrickType.SILVER, x, y);
     }
 }
-
