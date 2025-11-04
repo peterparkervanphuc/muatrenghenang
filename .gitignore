@@ -1,28 +1,45 @@
 # ===================================
 # Arkanoid Game - GitIgnore Rules
-# Repository: muatrenghenang
 # ===================================
 
-# IDE - IntelliJ IDEA
+# ============ IDE Files ============
+# IntelliJ IDEA
 .idea/
+*.iml
 *.iws
 *.ipr
 out/
 
-# IDE - Eclipse
+# Eclipse
 .classpath
 .project
 .settings/
 
-# IDE - VS Code
+# VS Code
 .vscode/
 
-# Compiled files
+# NetBeans
+nbproject/
+nbbuild/
+dist/
+nbdist/
+
+# ============ Compiled Output ============
 *.class
 bin/
 target/
 
-# Package files
+# ============ Build Tools ============
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Gradle
+.gradle/
+build/
+
+# ============ Package Files ============
 *.jar
 *.war
 *.nar
@@ -31,26 +48,40 @@ target/
 *.tar.gz
 *.rar
 
-# Logs (runtime logs only, not committed .log files)
-arkanoid/arkanoid.log
+# ============ Runtime/User Data ============
+# Log files
+*.log
+arkanoid.log
 
-# OS specific
+# User-specific game data
+High Scores/
+Saves/
+
+# ============ OS Specific ============
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
 .DS_Store
 .DS_Store?
 ._*
+.AppleDouble
+.LSOverride
 .Spotlight-V100
 .Trashes
-ehthumbs.db
-Thumbs.db
-Desktop.ini
 
-# High Scores (user data)
-High Scores/
-arkanoid/High Scores/
+# Linux
+*~
+.directory
+.nfs*
 
-# Temporary files
+# ============ Temporary Files ============
 *.tmp
 *.bak
 *.swp
-*~
+*.orig
+*~.nib
 

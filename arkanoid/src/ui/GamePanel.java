@@ -539,6 +539,9 @@ public class GamePanel extends JPanel implements KeyListener {
     }
     
     private void showVictoryDialog() {
+        // Play victory sound
+        SoundManager.getInstance().playWinSound();
+
         Timer delayTimer = new Timer(1000, e -> {
             int score = gameManager.getScore();
             String name = JOptionPane.showInputDialog(this, 
