@@ -3,6 +3,7 @@ package entities;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import core.GameBounds; // <-- THÊM IMPORT NÀY
 
 /**
  * Represents a brick in the Arkanoid game
@@ -16,42 +17,57 @@ public class Brick extends GameObject {
     // Encapsulation: Private constants
     private static final int BRICK_WIDTH = 60;
     private static final int BRICK_HEIGHT = 20;
-    
+
     // Encapsulation: Private fields
     private BrickType type;
     private int hits;
     private BufferedImage brickImage;
-    
+    private double dx; // <-- THÊM BIẾN TỐC ĐỘ NGANG
+
     /**
      * Polymorphism: Enum for type-safe brick types
      * Each type has different properties (hits, points, image)
      */
     public enum BrickType {
-        WHITE(1, 50, "Sprites/Walls/WhiteWall.png"),
-        ORANGE(1, 60, "Sprites/Walls/OrangeWall.png"),
-        LIGHT_BLUE(1, 70, "Sprites/Walls/LightBlueWall.png"),
-        GREEN(1, 80, "Sprites/Walls/GreenWall.png"),
-        RED(1, 90, "Sprites/Walls/RedWall.png"),
-        BLUE(1, 100, "Sprites/Walls/BlueWall.png"),
-        PURPLE(1, 110, "Sprites/Walls/PurpleWall.png"),
-        YELLOW(1, 120, "Sprites/Walls/YellowWall.png"),
-        SILVER(3, 50, "Sprites/Walls/SilverWall.png"); // Requires 3 hits
+        WHITE(1, 50, "Sprites/Walls/WhiteWall.png", true),
+        ORANGE(1, 60, "Sprites/Walls/OrangeWall.png", true),
+        LIGHT_BLUE(1, 70, "Sprites/Walls/LightBlueWall.png", true),
+        GREEN(1, 80, "Sprites/Walls/GreenWall.png", true),
+        RED(1, 90, "Sprites/Walls/RedWall.png", true),
+        BLUE(1, 100, "Sprites/Walls/BlueWall.png", true),
+        PURPLE(1, 110, "Sprites/Walls/PurpleWall.png", true),
+        YELLOW(1, 120, "Sprites/Walls/YellowWall.png", true),
+        SILVER(3, 50, "Sprites/Walls/SilverWall.png", true), // Gạch Bạc VỠ ĐƯỢC
+        GOLD(1, 0, "Sprites/Walls/GoldWall.png", false), // Gạch Vàng BẤT TỬ
+        MOVING_UNBREAKABLE(1, 0, "Sprites/Walls/MovingWall.png", false, 2.0); // GẠCH MỚI, TỐC ĐỘ 2.0
 
         private final int maxHits;
         private final int points;
         private final String imagePath;
-        
-        BrickType(int maxHits, int points, String imagePath) {
+        private final boolean isBreakable; // <-- THÊM BIẾN NÀY
+        private final double initialSpeed; // <-- THÊM BIẾN NÀY
+
+        // Constructor cho gạch thường (không di chuyển)
+        BrickType(int maxHits, int points, String imagePath, boolean isBreakable) {
+            this(maxHits, points, imagePath, isBreakable, 0.0); // Gọi constructor mới với tốc độ 0
+        }
+
+        // Constructor MỚI (có tốc độ)
+        BrickType(int maxHits, int points, String imagePath, boolean isBreakable, double initialSpeed) {
             this.maxHits = maxHits;
             this.points = points;
             this.imagePath = imagePath;
+            this.isBreakable = isBreakable;
+            this.initialSpeed = initialSpeed;
         }
-        
+
+        public boolean isBreakable() { return isBreakable; } // <-- THÊM HÀM NÀY
+        public double getInitialSpeed() { return initialSpeed; } // <-- THÊM HÀM NÀY
         public int getMaxHits() { return maxHits; }
         public int getPoints() { return points; }
         public String getImagePath() { return imagePath; }
     }
-    
+
     /**
      * Constructor: Create brick at position with specific type
      * Encapsulation: Initializes all private fields properly
@@ -61,8 +77,9 @@ public class Brick extends GameObject {
         this.type = type;
         this.hits = type.getMaxHits();
         loadImage();
+        this.dx = type.getInitialSpeed(); // <-- GÁN TỐC ĐỘ BAN ĐẦU
     }
-    
+
     private void loadImage() {
         try {
             var brickStream = getClass().getClassLoader().getResourceAsStream(type.getImagePath());
@@ -74,28 +91,45 @@ public class Brick extends GameObject {
             System.err.println("Could not load brick image: " + e.getMessage());
         }
     }
-    
+
     public void hit() {
-        hits--;
+        if (type.isBreakable()) { // <-- SỬA LOGIC: CHỈ TRỪ MÁU NẾU VỠ ĐƯỢC
+            hits--;
+        }
     }
-    
+
     public boolean isDestroyed() {
         return hits <= 0;
     }
-    
+
     public boolean isSilver() {
         return type == BrickType.SILVER;
     }
-    
+
+    public boolean isBreakable() { // <-- THÊM HÀM NÀY ĐỂ GAMERPANEL GỌI
+        return type.isBreakable();
+    }
+
     /**
      * Polymorphism: Override abstract update() method
-     * Bricks don't move, so this is empty
+     * SỬA LẠI: Gạch di chuyển sẽ update()
      */
     @Override
     public void update() {
-        // Bricks are stationary - no update needed
+        if (type == BrickType.MOVING_UNBREAKABLE) {
+            setX(getX() + dx); // Di chuyển gạch
+
+            // Đổi hướng khi chạm biên
+            if (getX() <= GameBounds.PLAY_LEFT || getX() + getWidth() >= GameBounds.PLAY_RIGHT) {
+                dx *= -1; // Đổi hướng
+                // Chống kẹt
+                if (getX() <= GameBounds.PLAY_LEFT) setX(GameBounds.PLAY_LEFT);
+                if (getX() + getWidth() >= GameBounds.PLAY_RIGHT) setX(GameBounds.PLAY_RIGHT - getWidth());
+            }
+        }
+        // Gạch khác không làm gì
     }
-    
+
     /**
      * Polymorphism: Override abstract render() method
      * Abstraction: Hides complex rendering logic
@@ -104,7 +138,7 @@ public class Brick extends GameObject {
     public void render(Graphics2D g2d) {
         if (brickImage != null) {
             // Draw darker if damaged
-            if (hits < type.getMaxHits()) {
+            if (hits < type.getMaxHits() && type.isBreakable()) { // Thêm check isBreakable
                 g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
             }
             g2d.drawImage(brickImage, (int)getX(), (int)getY(), getWidth(), getHeight(), null);
@@ -114,12 +148,12 @@ public class Brick extends GameObject {
             Color color = getColorForType();
             g2d.setColor(color);
             g2d.fillRect((int)getX(), (int)getY(), getWidth(), getHeight());
-            
+
             g2d.setColor(Color.BLACK);
             g2d.drawRect((int)getX(), (int)getY(), getWidth(), getHeight());
         }
     }
-    
+
     private Color getColorForType() {
         switch (type) {
             case WHITE: return Color.WHITE;
@@ -131,10 +165,12 @@ public class Brick extends GameObject {
             case PURPLE: return new Color(128, 0, 128);
             case YELLOW: return Color.YELLOW;
             case SILVER: return Color.LIGHT_GRAY;
+            case GOLD: return Color.YELLOW.darker(); // <-- THÊM VÀNG
+            case MOVING_UNBREAKABLE: return Color.DARK_GRAY.brighter(); // <-- THÊM DI CHUYỂN
             default: return Color.GRAY;
         }
     }
-    
+
     // Encapsulation: Public getter for brick score value
     public int getPoints() { return type.getPoints(); }
     public BrickType getType() { return type; }

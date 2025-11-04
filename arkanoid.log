@@ -1,0 +1,38 @@
+[2025-11-04 08:01:34] [INFO   ] Game logger initialized 
+[2025-11-04 08:01:34] [INFO   ] Starting Arkanoid Game... 
+[2025-11-04 08:01:34] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 08:01:35] [INFO   ] Loaded 10 high scores 
+[2025-11-04 08:01:35] [INFO   ] Initializing Sound Manager - Sound enabled 
+[2025-11-04 08:01:35] [INFO   ] Game initialized successfully 
+[2025-11-04 08:01:42] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:03:01] [INFO   ] Game logger initialized 
+[2025-11-04 09:03:01] [INFO   ] Starting Arkanoid Game... 
+[2025-11-04 09:03:02] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:03:02] [INFO   ] Loaded 10 high scores 
+[2025-11-04 09:03:02] [INFO   ] Initializing Sound Manager - Sound enabled 
+[2025-11-04 09:03:02] [INFO   ] Game initialized successfully 
+[2025-11-04 09:03:04] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:04:22] [INFO   ] Life lost - Remaining lives: 2 
+[2025-11-04 09:04:36] [INFO   ] Life lost - Remaining lives: 1 
+[2025-11-04 09:06:42] [INFO   ] Advancing to level: 2 
+[2025-11-04 09:08:45] [INFO   ] Game logger initialized 
+[2025-11-04 09:08:45] [INFO   ] Starting Arkanoid Game... 
+[2025-11-04 09:08:45] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:08:46] [INFO   ] Loaded 10 high scores 
+[2025-11-04 09:08:46] [INFO   ] Initializing Sound Manager - Sound enabled 
+[2025-11-04 09:08:46] [INFO   ] Game initialized successfully 
+[2025-11-04 09:08:47] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:12:00] [INFO   ] Game logger initialized 
+[2025-11-04 09:12:01] [INFO   ] Starting Arkanoid Game... 
+[2025-11-04 09:12:01] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:12:01] [INFO   ] Loaded 10 high scores 
+[2025-11-04 09:12:01] [INFO   ] Initializing Sound Manager - Sound enabled 
+[2025-11-04 09:12:01] [INFO   ] Game initialized successfully 
+[2025-11-04 09:12:02] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:14:50] [INFO   ] Game logger initialized 
+[2025-11-04 09:14:50] [INFO   ] Starting Arkanoid Game... 
+[2025-11-04 09:14:51] [INFO   ] Game reset - Lives: 3 
+[2025-11-04 09:14:51] [INFO   ] Loaded 10 high scores 
+[2025-11-04 09:14:51] [INFO   ] Initializing Sound Manager - Sound enabled 
+[2025-11-04 09:14:51] [INFO   ] Game initialized successfully 
+[2025-11-04 09:14:52] [INFO   ] Game reset - Lives: 3 
