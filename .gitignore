@@ -1,6 +1,15 @@
 # ===================================
-# Arkanoid Game - GitIgnore Rules
+# Arkanoid Game - GitIgnore (Parent)
 # ===================================
+
+# ============ Project-specific ============
+# Subproject directory
+arkanoid/bin/
+arkanoid/target/
+arkanoid/out/
+arkanoid/*.log
+arkanoid/High Scores/
+arkanoid/Saves/
 
 # ============ IDE Files ============
 # IntelliJ IDEA
@@ -34,10 +43,22 @@ target/
 .mvn/
 mvnw
 mvnw.cmd
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
 
 # Gradle
 .gradle/
 build/
+!gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
 
 # ============ Package Files ============
 *.jar
@@ -47,13 +68,15 @@ build/
 *.zip
 *.tar.gz
 *.rar
+*.7z
 
 # ============ Runtime/User Data ============
 # Log files
 *.log
-arkanoid.log
+hs_err_pid*
+replay_pid*
 
-# User-specific game data
+# User game data
 High Scores/
 Saves/
 
@@ -66,22 +89,41 @@ $RECYCLE.BIN/
 
 # macOS
 .DS_Store
-.DS_Store?
-._*
 .AppleDouble
 .LSOverride
+Icon
+._*
 .Spotlight-V100
 .Trashes
 
 # Linux
 *~
 .directory
-.nfs*
+.fuse_hidden*
 
 # ============ Temporary Files ============
 *.tmp
 *.bak
 *.swp
-*.orig
+*.swo
 *~.nib
+*.orig
+*.rej
+
+# ============ Dependencies ============
+lib/
+node_modules/
+
+# ============ Test Coverage ============
+*.gcda
+*.gcno
+*.gcov
+coverage/
+.nyc_output/
+
+# ============ Other ============
+*.stackdump
+*.ctxt
+.mtj.tmp/
+hs_err_pid*
 
