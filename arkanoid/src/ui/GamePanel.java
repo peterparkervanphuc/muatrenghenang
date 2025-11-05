@@ -284,8 +284,7 @@ public class GamePanel extends JPanel implements KeyListener {
                         SoundManager.getInstance().playWallHitSound();
                     }
                 } else {
-                    // GẠCH BẤT TỬ (GOLD, MOVING) - Âm thanh bật lại mạnh, tạo rung màn hình
-                    cameraShake.shake(4, 8);
+                    // GẠCH BẤT TỬ (GOLD, MOVING) - Chỉ phát âm thanh bật lại mạnh, không rung
                     SoundManager.getInstance().playShipHitSound();
                 }
                 // ===================================
