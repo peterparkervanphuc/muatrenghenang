@@ -51,8 +51,8 @@ public class ConfigManager {
         properties.setProperty("window.title", "Arkanoid Game");
 
         // Game defaults
-        properties.setProperty("game.initial.lives", "3");
-        properties.setProperty("game.max.level", "5");
+        properties.setProperty("game.initial.lives", "5");
+        properties.setProperty("game.max.level", "18");
         properties.setProperty("game.fps", "60");
 
         // Sound defaults
@@ -111,7 +111,7 @@ public class ConfigManager {
     }
 
     public int getMaxLevel() {
-        return getInt("game.max.level", 5);
+        return getInt("game.max.level", 18);
     }
 
     public boolean isSoundEnabled() {
