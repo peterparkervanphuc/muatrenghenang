@@ -13,32 +13,20 @@ public class BrickFactory {
 
     /**
      * Create a brick of the specified type at given position
-     * @param type The type of brick to create
+     * @param id The id of brick to create
      * @param x The x-coordinate
      * @param y The y-coordinate
      * @return A new entities.Brick instance of the specified type
      */
-    public static Brick createBrick(Brick.BrickType type, int x, int y) {
-        if (type == null) {
-            throw new IllegalArgumentException("entities.Brick type cannot be null");
-        }
-        return new Brick(x, y, type);
-    }
-
-    /**
-     * Create a brick from string type name (useful for level loading)
-     * @param typeName Name of the brick type (e.g., "SILVER", "RED")
-     * @param x The x-coordinate
-     * @param y The y-coordinate
-     * @return A new entities.Brick instance
-     */
-    public static Brick createBrick(String typeName, int x, int y) {
-        try {
-            Brick.BrickType type = Brick.BrickType.valueOf(typeName.toUpperCase());
-            return createBrick(type, x, y);
-        } catch (IllegalArgumentException e) {
-            System.err.println("Unknown brick type: " + typeName + ", using WHITE as default");
-            return createBrick(Brick.BrickType.WHITE, x, y);
+    public static Brick createBrick(int id, int x, int y) {
+        if (id == 0) {
+            return null;
+        } else if ( id >= 1 && id <= 14) {
+            return new Brick(x, y, Brick.byId(id));
+        } else if ( id == 15) {
+            return createRandomBrick(x, y);
+        } else {
+            throw new IllegalArgumentException("Invalid brick ID: " + id);
         }
     }
 
@@ -49,26 +37,14 @@ public class BrickFactory {
      * @return A new entities.Brick instance with random color
      */
     public static Brick createRandomBrick(int x, int y) {
-        // Dùng java.util.List và java.util.ArrayList
-        List<Brick.BrickType> randomTypes = new ArrayList<>();
-
-        // Lọc ra các gạch "thường"
-        for (Brick.BrickType type : Brick.BrickType.values()) {
-            // Chỉ thêm gạch CÓ THỂ VỠ (isBreakable() == true)
-            // VÀ KHÔNG PHẢI GẠCH BẠC
-            if (type.isBreakable() && type != Brick.BrickType.SILVER) {
-                randomTypes.add(type);
-            }
+        int randomIndex = (int) (Math.random() * Brick.BrickType.values().length) + 1;
+        while ( Brick.byId(randomIndex) == Brick.BrickType.SILVER ||
+                !Brick.byId(randomIndex).isBreakable() ||
+                randomIndex == 14 ||
+                randomIndex == 13 ) {
+            randomIndex = (int) (Math.random() * Brick.BrickType.values().length) + 1;
         }
-
-        // Nếu list rỗng (lỗi gì đó), trả về gạch WHITE
-        if (randomTypes.isEmpty()) {
-            return createBrick(Brick.BrickType.WHITE, x, y);
-        }
-
-        // Random từ list gạch thường đó
-        int randomIndex = (int) (Math.random() * randomTypes.size());
-        return createBrick(randomTypes.get(randomIndex), x, y);
+        return createBrick(randomIndex, x, y);
     }
 
     /**
@@ -78,6 +54,6 @@ public class BrickFactory {
      * @return A new silver entities.Brick instance
      */
     public static Brick createSilverBrick(int x, int y) {
-        return createBrick(Brick.BrickType.SILVER, x, y);
+        return createBrick(11, x, y);
     }
 }

@@ -15,196 +15,328 @@ public class LevelManager {
     public static ArrayList<Brick> loadLevel(int level) {
         ArrayList<Brick> bricks = new ArrayList<>();
 
+        bricks = createLevel(level);
+
+        return bricks;
+    }
+
+    /**
+     * Create level based on predefined layouts
+     */
+    private static ArrayList<Brick> createLevel(int level) {
+        ArrayList<Brick> bricks = new ArrayList<>();
+        int startX = GameBounds.PLAY_LEFT + 7;
+        int startY = GameBounds.PLAY_TOP + 40;
+
+        int[][] levelMap;
         switch (level) {
-            case 1:
-                bricks = createLevel1();
+            case 1: // Đơn giản
+                levelMap = new int[][] {
+                        { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }, // floor 1
+                        { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 }, // floor 2
+                        { 11,0, 0, 0, 0, 0, 0, 0, 0, 0, 0,12 }, // floor 3 :khối di chuyển
+                        { 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 }, // floor 4
+                        { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 }, // floor 5
+                        { 5, 5, 5, 5, 5,10,10, 5, 5, 5, 5, 5 }, // floor 6
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 7
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 8
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 9
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 10
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+                };
                 break;
-            case 2:
-                bricks = createLevel2();
+            case 2: // Kim tự tháp ngược.
+                levelMap = new int[][] {
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }, // floor 1
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }, // floor 2
+                        { 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 }, // floor 3
+                        { 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0 }, // floor 4
+                        { 0, 0, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0 }, // floor 5
+                        { 0, 0, 8, 8, 8, 8, 8, 8, 8, 8, 0, 0 }, // floor 6
+                        { 0, 0, 0, 4, 4, 4, 4, 4, 4, 0, 0, 0 }, // floor 7
+                        { 0, 0, 0, 4, 4, 4, 4, 4, 4, 0, 0, 0 }, // floor 8
+                        { 0, 0, 0, 0, 6, 6, 6, 6, 0, 0, 0, 0 }, // floor 9
+                        { 0, 0, 0, 0, 6, 6, 6, 6, 0, 0, 0, 0 }, // floor 10
+                        { 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0 }, // floor 11
+                        { 0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0 }  // floor 12
+                };
                 break;
-            case 3:
-                bricks = createLevel3();
+            case 3: // kim cương
+                levelMap = new int[][] {
+                        { 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0 }, // floor 1
+                        { 0, 0, 0, 0, 5, 2, 5, 0, 0, 0, 0, 0 }, // floor 2
+                        { 0, 0, 0, 5, 2, 9, 2, 5, 0, 0, 0, 0 }, // floor 3
+                        { 0, 0, 5, 2, 8, 4, 8, 2, 5, 0, 0, 0 }, // floor 4
+                        { 0, 5, 2, 8, 4, 9, 4, 8, 2, 5, 0, 0 }, // floor 5
+                        { 5, 2, 9, 4, 9, 9, 9, 4, 9, 2, 5, 0 }, // floor 6
+                        { 0, 5, 2, 8, 4, 9, 4, 8, 2, 5, 0, 0 }, // floor 7
+                        { 0, 0, 5, 2, 8, 4, 8, 2, 5, 0, 0, 0 }, // floor 8
+                        { 0, 0, 0, 5, 2, 9, 2, 5, 0, 0, 0, 0 }, // floor 9
+                        { 0, 0, 0, 0, 5, 2, 5, 0, 0, 0, 0, 0 }, // floor 10
+                        { 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+                };
                 break;
             case 4:
-                bricks = createLevel4();
+                levelMap = new int[][] {
+                        { 6, 0, 4, 0, 8, 0, 2, 0, 6, 0, 4, 0 }, // floor 1
+                        { 0, 2, 0, 6, 0, 4, 0, 8, 0, 2, 0, 6 }, // floor 2
+                        { 6, 0, 4, 0, 8, 0, 2, 0, 6, 0, 4, 0 }, // floor 3
+                        { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 }, // floor 4 (silver center)
+                        { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 }, // floor 5 (silver center)
+                        { 6, 0, 4, 0, 8, 0, 2, 0, 6, 0, 4, 0 }, // floor 6
+                        { 0, 2, 0, 6, 0, 4, 0, 8, 0, 2, 0, 6 }, // floor 7
+                        { 6, 0, 4, 0, 8, 0, 2, 0, 6, 0, 4, 0 }, // floor 8
+                        { 0, 2, 0, 6, 0, 4, 0, 8, 0, 2, 0, 6 }, // floor 9
+                        { 6, 0, 4, 0, 8, 0, 2, 0, 6, 0, 4, 0 }, // floor 10
+                        { 0, 2, 0, 6, 0, 4, 0, 8, 0, 2, 0, 6 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+                };
                 break;
             case 5:
-                bricks = createLevel5();
+                levelMap = new int[][] {
+                        { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 }, // floor 1 (top silver)
+                        { 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9 }, // floor 2
+                        { 9, 0, 5, 5, 5, 5, 5, 5, 5, 5, 0, 9 }, // floor 3
+                        { 9, 0, 5, 0, 0, 0, 0, 0, 0, 5, 0, 9 }, // floor 4
+                        { 9, 0, 5, 0, 5, 5, 5, 5, 0, 5, 0, 9 }, // floor 5
+                        { 9, 0, 5, 0, 5, 0, 0, 5, 0, 5, 0, 9 }, // floor 6
+                        { 9, 0, 5, 0, 5, 5, 5, 5, 0, 5, 0, 9 }, // floor 7
+                        { 9, 0, 5, 0, 0, 0, 0, 0, 0, 5, 0, 9 }, // floor 8
+                        { 9, 0, 5, 5, 5, 5, 5, 5, 5, 5, 0, 9 }, // floor 9
+                        { 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9 }, // floor 10
+                        { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+                };
+                break;
+            case 6: // rainbow
+                levelMap = new int[][] {
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 1
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 2
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 3
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 4
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 5
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 6
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 7
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 8
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 9
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 10
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }, // floor 11
+                        { 15,15,15,15,15,15,15,15,15,15,15,15 }  // floor 12
+                };
+                break;
+            case 7: // moving bricks
+                levelMap = new int[][] {
+                        {13, 0, 0,13, 0, 0, 0, 0,14, 0, 0,14}, // floor 1
+                        { 0,13, 0, 0,13, 0, 0,14, 0, 0,14, 0}, // floor 2
+                        { 0, 0,13, 0, 0,13,14, 0, 0,14, 0, 0}, // floor 3
+                        {13, 0, 0,13, 0,14,13, 0,14, 0, 0,14}, // floor 4
+                        { 0,13, 0, 0,13, 0, 0,14, 0, 0,14, 0}, // floor 5
+                        { 0, 0,13, 0, 0,13,14, 0, 0,14, 0, 0}, // floor 6
+                        { 0, 0,13, 0, 0,14,13, 0, 0,14, 0, 0}, // floor 7
+                        { 0,13, 0, 0,14, 0, 0,13, 0, 0,14, 0}, // floor 8
+                        {13, 0, 0,14, 0,13,14, 0,13, 0, 0,14}, // floor 9
+                        { 0, 0,14, 0, 0,14,13, 0, 0,13, 0, 0}, // floor 10
+                        { 0,14, 0, 0,14, 0, 0,13, 0, 0,13, 0}, // floor 11
+                        {14, 0, 0,14, 0, 0, 0, 0,13, 0, 0,13}  // floor 12
+                };
+                break;
+            case 8: // magic moving
+                levelMap = new int[][] {
+                        {13,15,15,13,15,15,15,15,14,15,15,14}, // floor 1
+                        {15,13,15,15,13,15,15,14,15,15,14,15}, // floor 2
+                        {15,15,13,15,15,13,14,15,15,14,15,15}, // floor 3
+                        {13,15,15,13,15,14,13,15,14,15,15,14}, // floor 4
+                        {15,13,15,15,13,15,15,14,15,15,14,15}, // floor 5
+                        {15,15,13,15,15,13,14,15,15,14,15,15}, // floor 6
+                        {15,15,13,15,15,14,13,15,15,14,15,15}, // floor 7
+                        {15,13,15,15,14,15,15,13,15,15,14,15}, // floor 8
+                        {13,15,15,14,15,13,14,15,13,15,15,14}, // floor 9
+                        {15,15,14,15,15,14,13,15,15,13,15,15}, // floor 10
+                        {15,14,15,15,14,15,15,13,15,15,13,15}, // floor 11
+                        {14,15,15,14,15,15,15,15,13,15,15,13}
+
+                };
+                break;
+            case 9: // hình trái tim :)
+                levelMap = new int[][] {
+                        { 0, 0, 5, 5, 0, 0, 0, 0, 5, 5, 0, 0 }, // floor 1
+                        { 0, 5, 5, 5, 5, 0, 0, 5, 5, 5, 5, 0 }, // floor 2
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }, // floor 3
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }, // floor 4
+                        { 0, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 0 }, // floor 5
+                        { 0, 0, 5, 5, 5, 5, 5, 5, 5, 5, 0, 0 }, // floor 6
+                        { 0, 0, 0, 5, 5, 5, 5, 5, 5, 0, 0, 0 }, // floor 7
+                        { 0, 0, 0, 0, 5, 5, 5, 5, 0, 0, 0, 0 }, // floor 8
+                        { 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0 }, // floor 9
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 10
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+                };
+                break;
+            case 10: //t có khiênnn
+                levelMap = new int[][] {
+                        { 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 }, // floor 1
+                        { 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1 }, // floor 2
+                        { 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 }, // floor 3
+                        { 2, 1, 2, 1, 9, 9, 9, 9, 2, 1, 2, 1 }, // floor 4
+                        { 1, 2, 1, 9, 9, 9, 9, 9, 9, 2, 1, 2 }, // floor 5
+                        { 2, 1, 9, 9, 9, 9, 9, 9, 9, 9, 1, 2 }, // floor 6
+                        { 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1 }, // floor 7
+                        { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9 }, // floor 8
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 9
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 10
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+                };
+                break;
+            case 11: // zigzag nhưng nó lạ lắm :)
+                levelMap = new int[][] {
+                        {10, 0,10, 0,10, 0,10, 0,10, 0,10, 0 }, // floor 1
+                        { 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9 }, // floor 2
+                        {10, 0,10, 0,10, 0,10, 0,10, 0,10, 0 }, // floor 3
+                        { 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9 }, // floor 4
+                        {10, 0,10, 0,10, 0,10, 0,10, 0,10, 0 }, // floor 5
+                        { 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9 }, // floor 6
+                        {10, 0,10, 0,10, 0,10, 0,10, 0,10, 0 }, // floor 7
+                        { 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9 }, // floor 8
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 9
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 10
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+                };
+                break;
+            case 12:  //mắt nè :3
+                levelMap = new int[][] {
+                        {0, 0, 0, 0, 5, 5, 5, 5, 0, 0, 0, 0}, // floor 1
+                        {0, 0, 0, 5, 0, 0, 0, 0, 5, 0, 0, 0}, // floor 2
+                        {0, 0, 5, 0, 0, 0, 0, 0, 0, 5, 0, 0}, // floor 3
+                        {0, 5, 0, 0, 9, 0, 0, 9, 0, 0, 5, 0}, // floor 4
+                        {5, 0, 0, 9, 0, 0, 0, 0, 9, 0, 0, 5}, // floor 5
+                        {5, 0, 0, 9, 0,10,10, 0, 9, 0, 0, 5}, // floor 6
+                        {5, 0, 0, 9, 0, 0, 0, 0, 9, 0, 0, 5}, // floor 7
+                        {0, 5, 0, 0, 9, 0, 0, 9, 0, 0, 5, 0}, // floor 8
+                        {0, 0, 5, 0, 0, 0, 0, 0, 0, 5, 0, 0}, // floor 9
+                        {0, 0, 0, 5, 0, 0, 0, 0, 5, 0, 0, 0}, // floor 10
+                        {0, 0, 0, 0, 5, 5, 5, 5, 0, 0, 0, 0}, // floor 11
+                        {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // floor 12
+                };
+                break;
+            case 13: //Việt Nam vô địch
+                levelMap = new int[][] {
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }, // floor 1
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }, // floor 2
+                        { 5, 5, 5, 5, 5, 8, 5, 5, 5, 5, 5, 5 }, // floor 3
+                        { 5, 5, 5, 5, 8, 8, 8, 5, 5, 5, 5, 5 }, // floor 4
+                        { 5, 8, 8, 8, 8, 8, 8, 8, 8, 8, 5, 5 }, // floor 5
+                        { 5, 5, 8, 8, 8, 8, 8, 8, 8, 5, 5, 5 }, // floor 6
+                        { 5, 5, 5, 8, 8, 8, 8, 8, 5, 5, 5, 5 }, // floor 7
+                        { 5, 5, 8, 8, 8, 5, 8, 8, 8, 5, 5, 5 }, // floor 8
+                        { 5, 8, 8, 8, 5, 5, 5, 8, 8, 8, 5, 5 }, // floor 9
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }, // floor 10
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+                };
+                break;
+            case 14: //super star
+                levelMap = new int[][] {
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 1
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 2
+                        { 0, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 0 }, // floor 3
+                        { 0, 0, 0, 0, 9, 8, 9, 0, 0, 0, 0, 0 }, // floor 4
+                        { 0, 9, 9, 9, 8, 8, 8, 9, 9, 9, 0, 0 }, // floor 0
+                        { 0, 0, 9, 8, 8, 8, 8, 8, 9, 0, 0, 0 }, // floor 6
+                        { 0, 0, 0, 9, 8, 9, 8, 9, 0, 0, 0, 0 }, // floor 7
+                        { 0, 0, 9, 8, 9, 0, 9, 8, 9, 0, 0, 0 }, // floor 8
+                        { 0, 9, 9, 9, 0, 0, 0, 9, 9, 9, 0, 0 }, // floor 9
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 10
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }  // floor 12
+
+
+                };
+                break;
+            case 15: //?
+                levelMap = new int[][] {
+                        {10,15,10,15,10,15,10,15,10,15,10,15}, // floor 1
+                        {9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9}, // floor 2
+                        {10, 0,15, 0,15, 0,15, 0,15, 0, 0,10}, // floor 3
+                        {15, 0, 0, 9, 0, 9, 0, 9, 0, 0, 0,15}, // floor 4
+                        {10, 0,15, 0,15, 0,15, 0,15, 0, 0,10}, // floor 5
+                        {9, 0, 0, 0, 0, 9, 0, 0, 0, 0, 0, 9}, // floor 6
+                        {10, 0,15, 0,15, 0,15, 0,15, 0, 0,10}, // floor 7
+                        {15, 0, 0, 9, 0, 9, 0, 9, 0, 0, 0,15}, // floor 8
+                        {10, 0,15, 0,15, 0,15, 0,15, 0, 0,10}, // floor 9
+                        {9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9}, // floor 10
+                        {10,15,10,15,10,15,10,15,10,15,10,15}, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // floor 12
+                };
+                break;
+            case 16: //hòn dái vàng
+                levelMap = new int[][] {
+                        { 0, 0, 9, 9, 9, 0, 0, 9, 9, 9, 0, 0}, // floor 1
+                        { 0, 9, 8, 8, 8, 9, 9, 8, 8, 8, 9, 0}, // floor 2
+                        { 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9}, // floor 3
+                        { 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9}, // floor 4
+                        { 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9}, // floor 5
+                        { 0, 9, 8, 8, 8, 9, 9, 8, 8, 8, 9, 0}, // floor 6
+                        { 0, 0, 9, 9, 9, 0, 0, 9, 9, 9, 0, 0}, // floor 7
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // floor 8
+                        {10,10, 0, 0, 0, 0, 0, 0, 0, 0,10,10}, // floor 9
+                        { 0,11, 0, 0,10,10,10,10, 0, 0,12, 0}, // floor 10
+                        { 0, 0,11, 0, 0, 0, 0, 0, 0,12, 0, 0}, // floor 11
+                        { 0, 0, 0,11, 0, 0, 0, 0,12, 0, 0, 0} // floor 12
+                };
+                break;
+            case 17: //LGBT
+                levelMap = new int[][] {
+                        { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}, // floor 1
+                        { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5}, // RED
+                        { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}, // ORANGE
+                        { 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8}, // YELLOW
+                        { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, // GREEN
+                        { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6}, // BLUE
+                        { 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7}, // PURPLE
+                        { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}, // floor 8
+                        {10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10}, // floor 9
+                        {11,10, 0, 0, 0, 0, 0, 0, 0, 0,10,12}, // floor 10
+                        { 0,11,10, 0, 0, 0, 0, 0, 0,10,12, 0}, // floor 11
+                        { 0, 0,11,10, 0, 0, 0, 0,10,12, 0, 0}, // floor 12
+                };
+                break;
+            case 18: //36
+                levelMap = new int[][] {
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, // floor 1
+                        { 0, 9, 9, 9, 9, 0, 0, 9, 9, 9, 9, 0}, // floor 2
+                        { 0, 9, 9, 9, 9, 0, 0, 9, 9, 9, 9, 0}, // floor 3
+                        { 0, 0, 0, 0, 9, 0, 0, 9, 0, 0, 0, 0}, // floor 4
+                        { 0, 0, 0, 0, 9, 0, 0, 9, 0, 0, 0, 0}, // floor 5
+                        { 0, 9, 9, 9, 9, 0, 0, 9, 9, 9, 9, 0}, // floor 6
+                        { 0, 9, 9, 9, 9, 0, 0, 9, 9, 9, 9, 0}, // floor 7
+                        { 0, 0, 0, 0, 9, 0, 0, 9, 0, 0, 9, 0}, // floor 8
+                        { 0, 0, 0, 0, 9, 0, 0, 9, 0, 0, 9, 0}, // floor 9
+                        { 0, 9, 9, 9, 9, 0, 0, 9, 9, 9, 9, 0}, // floor 10
+                        { 0, 9, 9, 9, 9, 0, 0, 9, 9, 9, 9, 0}, // floor 11
+                        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}  // floor 12
+                };
                 break;
             default:
-                bricks = createLevel1();
+                return bricks;
         }
 
-        return bricks;
-    }
-
-    /**
-     * Level 1: Simple rows
-     */
-    private static ArrayList<Brick> createLevel1() {
-        ArrayList<Brick> bricks = new ArrayList<>();
-        int startX = GameBounds.PLAY_LEFT + 5;
-        int startY = GameBounds.PLAY_TOP + 40;
-        int cols = 11;
-        int rows = 6;
-
-        Brick.BrickType[] colors = {
-                Brick.BrickType.RED,
-                Brick.BrickType.ORANGE,
-                Brick.BrickType.YELLOW, // Hàng này (row 2) sẽ bị thay thế
-                Brick.BrickType.GREEN,
-                Brick.BrickType.BLUE,
-                Brick.BrickType.PURPLE
-        };
-
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                int x = startX + col * 60;
-                int y = startY + row * 22;
-
-                // HÀNG 2 (index 2): Gạch di chuyển ở giữa, gạch YELLOW bao quanh
-                if (row == 2) {
-                    if (col == 5) {
-                        // Gạch di chuyển bất tử ở giữa hàng
-                        bricks.add(BrickFactory.createBrick(Brick.BrickType.MOVING_UNBREAKABLE, x, y));
-                    } else {
-                        // Các vị trí khác vẫn có gạch YELLOW bình thường
-                        bricks.add(BrickFactory.createBrick(colors[row], x, y));
-                    }
-                }
-                // HÀNG CUỐI (row 5): 2 gạch GOLD ở giữa, còn lại là gạch PURPLE
-                else if (row == rows - 1) {
-                    if (col == 4 || col == 5 || col == 6) {
-                        // 3 gạch GOLD ở giữa hàng cuối (tăng độ khó)
-                        bricks.add(BrickFactory.createBrick(Brick.BrickType.GOLD, x, y));
-                    } else {
-                        bricks.add(BrickFactory.createBrick(colors[row], x, y));
-                    }
-                }
-                // CÁC HÀNG BÌNH THƯỜNG KHÁC
-                else {
-                    bricks.add(BrickFactory.createBrick(colors[row], x, y));
-                }
-            }
-        }
-
-        return bricks;
-    }
-
-    /**
-     * Level 2: Pyramid pattern
-     */
-    private static ArrayList<Brick> createLevel2() {
-        // ... (code level 2 giữ nguyên)
-        ArrayList<Brick> bricks = new ArrayList<>();
-        int startX = GameBounds.PLAY_LEFT + 60;
-        int startY = GameBounds.PLAY_TOP + 60;
-        Brick.BrickType[] colors = {
-                Brick.BrickType.WHITE, Brick.BrickType.ORANGE, Brick.BrickType.LIGHT_BLUE,
-                Brick.BrickType.GREEN, Brick.BrickType.RED, Brick.BrickType.BLUE,
-                Brick.BrickType.PURPLE, Brick.BrickType.YELLOW
-        };
-        for (int row = 0; row < 8; row++) {
-            int bricksInRow = 10 - row;
-            for (int col = 0; col < bricksInRow; col++) {
-                int x = startX + row * 30 + col * 60;
-                int y = startY + row * 22;
-                bricks.add(BrickFactory.createBrick(colors[row], x, y));
-            }
-        }
-        return bricks;
-    }
-
-    /**
-     * Level 3: Diamond pattern with silver bricks
-     */
-    private static ArrayList<Brick> createLevel3() {
-        // ... (code level 3 giữ nguyên)
-        ArrayList<Brick> bricks = new ArrayList<>();
-        int centerX = GameBounds.PLAY_LEFT + GameBounds.PLAY_WIDTH / 2;
-        int centerY = GameBounds.PLAY_TOP + 160;
-        int[] rowWidths = {1, 3, 5, 7, 9, 7, 5, 3, 1};
-        Brick.BrickType[] colors = {
-                Brick.BrickType.RED, Brick.BrickType.ORANGE, Brick.BrickType.YELLOW,
-                Brick.BrickType.GREEN, Brick.BrickType.SILVER, Brick.BrickType.GREEN,
-                Brick.BrickType.YELLOW, Brick.BrickType.ORANGE, Brick.BrickType.RED
-        };
-        for (int row = 0; row < rowWidths.length; row++) {
-            int width = rowWidths[row];
-            int startX = centerX - (width * 60) / 2;
-            int y = centerY - 100 + row * 22;
-            for (int col = 0; col < width; col++) {
-                int x = startX + col * 60;
-                bricks.add(BrickFactory.createBrick(colors[row], x, y));
-            }
-        }
-        return bricks;
-    }
-
-    /**
-     * Level 4: Checkerboard pattern
-     */
-    private static ArrayList<Brick> createLevel4() {
-        // ... (code level 4 giữ nguyên)
-        ArrayList<Brick> bricks = new ArrayList<>();
-        int startX = GameBounds.PLAY_LEFT + 5;
-        int startY = GameBounds.PLAY_TOP + 20;
-        int cols = 11;
-        int rows = 8;
-        for (int row = 0; row < rows; row++) {
-            for (int col = 0; col < cols; col++) {
-                if ((row + col) % 2 == 0) {
-                    int x = startX + col * 60;
-                    int y = startY + row * 22;
-                    Brick.BrickType type;
-                    if (row >= 3 && row <= 4 && col >= 4 && col <= 7) {
-                        type = Brick.BrickType.SILVER;
-                    } else {
-                        Brick.BrickType[] colors = { Brick.BrickType.BLUE, Brick.BrickType.GREEN, Brick.BrickType.YELLOW, Brick.BrickType.ORANGE };
-                        type = colors[(row + col) % colors.length];
-                    }
-                    bricks.add(BrickFactory.createBrick(type, x, y));
-                }
-            }
-        }
-        return bricks;
-    }
-
-    /**
-     * Level 5: Complex pattern (final level)
-     */
-    private static ArrayList<Brick> createLevel5() {
-        // ... (code level 5 giữ nguyên)
-        ArrayList<Brick> bricks = new ArrayList<>();
-        int startX = GameBounds.PLAY_LEFT + 5;
-        int startY = GameBounds.PLAY_TOP + 20;
-        for (int row = 0; row < 2; row++) {
+        for (int row = 0; row < 12; row++) {
             for (int col = 0; col < 12; col++) {
                 int x = startX + col * 60;
-                int y = startY + row * 22;
-                bricks.add(BrickFactory.createSilverBrick(x, y));
-            }
-        }
-        int[][] spiralPattern = {
-                {1,1,1,1,1,1,1,1,1,1,1,1}, {1,0,0,0,0,0,0,0,0,0,0,1}, {1,0,1,1,1,1,1,1,1,1,0,1},
-                {1,0,1,0,0,0,0,0,0,1,0,1}, {1,0,1,0,1,1,1,1,0,1,0,1}, {1,0,1,0,1,0,0,1,0,1,0,1},
-                {1,0,1,0,1,1,1,1,0,1,0,1}, {1,0,1,0,0,0,0,0,0,1,0,1}, {1,0,1,1,1,1,1,1,1,1,0,1},
-                {1,0,0,0,0,0,0,0,0,0,0,1}, {1,1,1,1,1,1,1,1,1,1,1,1}
-        };
-        Brick.BrickType[] colors = {
-                Brick.BrickType.RED, Brick.BrickType.ORANGE, Brick.BrickType.YELLOW,
-                Brick.BrickType.GREEN, Brick.BrickType.BLUE, Brick.BrickType.PURPLE
-        };
-        for (int row = 0; row < spiralPattern.length; row++) {
-            for (int col = 0; col < spiralPattern[row].length; col++) {
-                if (spiralPattern[row][col] == 1) {
-                    int x = startX + col * 60;
-                    int y = startY + 50 + row * 22;
-                    Brick.BrickType color = colors[(row + col) % colors.length];
-                    bricks.add(BrickFactory.createBrick(color, x, y));
+                int y = startY + row * 20;
+
+                Brick brick = BrickFactory.createBrick(levelMap[row][col], x, y);
+                if (brick != null) {
+                    bricks.add(brick);
                 }
             }
         }
+
         return bricks;
     }
 }

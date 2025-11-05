@@ -42,8 +42,8 @@ public class Ball extends MovableObject {
      */
     public Ball(double x, double y, int level) {
         this(x, y);
-        // Increase speed by 9% per level (level 1 = 100%, level 2 = 109%, level 3 = 118%, etc.)
-        this.levelSpeedBonus = (level - 1) * 0.09;
+        // Increase speed by 10% per level (level 1 = 100%, level 2 = 110%, level 3 = 120%, etc.)
+        this.levelSpeedBonus = (level - 1) * 0.1;
     }
     
     private void loadImage() {
@@ -170,9 +170,13 @@ public class Ball extends MovableObject {
     
     public void slow() {
         if (speedMultiplier == 1.0) { // Only slow if not already slowed
-            speedMultiplier = 0.6;
-            setVelocityX(getVelocityX() * 0.6);
-            setVelocityY(getVelocityY() * 0.6);
+            speedMultiplier = 0.5;
+            setVelocityX(getVelocityX() * speedMultiplier);
+            setVelocityY(getVelocityY() * speedMultiplier);
+        } else if (speedMultiplier == 0.5) {
+            speedMultiplier = 0.375;
+            setVelocityX(getVelocityX() / 0.5  * speedMultiplier);
+            setVelocityY(getVelocityY() / 0.5 * speedMultiplier);
         }
     }
     
@@ -246,4 +250,6 @@ public class Ball extends MovableObject {
             this.attachedPaddle = null;
         }
     }
+
+    public int getRadius() { return radius;}
 }

@@ -24,23 +24,29 @@ public class Brick extends GameObject {
     private BufferedImage brickImage;
     private double dx; // <-- THÊM BIẾN TỐC ĐỘ NGANG
 
+    public int getHits() {return hits;}
+
     /**
      * Polymorphism: Enum for type-safe brick types
      * Each type has different properties (hits, points, image)
      */
     public enum BrickType {
-        WHITE(1, 50, "Sprites/Walls/WhiteWall.png", true),
-        ORANGE(1, 60, "Sprites/Walls/OrangeWall.png", true),
-        LIGHT_BLUE(1, 70, "Sprites/Walls/LightBlueWall.png", true),
-        GREEN(1, 80, "Sprites/Walls/GreenWall.png", true),
-        RED(1, 90, "Sprites/Walls/RedWall.png", true),
-        BLUE(1, 100, "Sprites/Walls/BlueWall.png", true),
-        PURPLE(1, 110, "Sprites/Walls/PurpleWall.png", true),
-        YELLOW(1, 120, "Sprites/Walls/YellowWall.png", true),
-        SILVER(3, 50, "Sprites/Walls/SilverWall.png", true), // Gạch Bạc VỠ ĐƯỢC
-        GOLD(1, 0, "Sprites/Walls/GoldWall.png", false), // Gạch Vàng BẤT TỬ
-        MOVING_UNBREAKABLE(1, 0, "Sprites/Walls/MovingWall.png", false, 1.5); // Gạch di chuyển bất tử, tốc độ 1.5
+        WHITE(1, 1, 50, "Sprites/Walls/WhiteWall.png", true),
+        ORANGE(2, 1, 60, "Sprites/Walls/OrangeWall.png", true),
+        LIGHT_BLUE(3, 1, 70, "Sprites/Walls/LightBlueWall.png", true),
+        GREEN(4, 1, 80, "Sprites/Walls/GreenWall.png", true),
+        RED(5, 1, 90, "Sprites/Walls/RedWall.png", true),
+        BLUE(6, 1, 100, "Sprites/Walls/BlueWall.png", true),
+        PURPLE(7, 1, 110, "Sprites/Walls/PurpleWall.png", true),
+        YELLOW(8, 1, 120, "Sprites/Walls/YellowWall.png", true),
+        SILVER(9, 3, 150, "Sprites/Walls/SilverWall.png", true), // Gạch Bạc VỠ ĐƯỢC
+        GOLD(10, 1, 0, "Sprites/Walls/GoldWall.png", false), // Gạch Vàng BẤT TỬ
+        MOVING_UNBREAKABLE_RF(11, 1, 0, "Sprites/Walls/MovingWall.png", false, 2.0), // GẠCH MỚI, TỐC ĐỘ 2.0, sang phải trước
+        MOVING_UNBREAKABLE_LF(12, 1, 0, "Sprites/Walls/MovingWall.png", false, 2.0), // GẠCH MỚI, TỐC ĐỘ 2.0, sang trái trước
+        MOVING_RF(13, 1, 100, "Sprites/Walls/SilverWall", true, 2.0), // GẠCH MỚI, TỐC ĐỘ 2.0, sang phải trước
+        MOVING_LF(14, 1, 100, "Sprites/Walls/SilverWall", true, 2.0); // GẠCH MỚI, TỐC ĐỘ 2.0, sang trái trước
 
+        private final int id;
         private final int maxHits;
         private final int points;
         private final String imagePath;
@@ -48,12 +54,13 @@ public class Brick extends GameObject {
         private final double initialSpeed; // <-- THÊM BIẾN NÀY
 
         // Constructor cho gạch thường (không di chuyển)
-        BrickType(int maxHits, int points, String imagePath, boolean isBreakable) {
-            this(maxHits, points, imagePath, isBreakable, 0.0); // Gọi constructor mới với tốc độ 0
+        BrickType(int id, int maxHits, int points, String imagePath, boolean isBreakable) {
+            this(id, maxHits, points, imagePath, isBreakable, 0.0); // Gọi constructor mới với tốc độ 0
         }
 
         // Constructor MỚI (có tốc độ)
-        BrickType(int maxHits, int points, String imagePath, boolean isBreakable, double initialSpeed) {
+        BrickType(int id, int maxHits, int points, String imagePath, boolean isBreakable, double initialSpeed) {
+            this.id = id;
             this.maxHits = maxHits;
             this.points = points;
             this.imagePath = imagePath;
@@ -61,13 +68,13 @@ public class Brick extends GameObject {
             this.initialSpeed = initialSpeed;
         }
 
+        public int getId() {return id;}
         public boolean isBreakable() { return isBreakable; } // <-- THÊM HÀM NÀY
         public double getInitialSpeed() { return initialSpeed; } // <-- THÊM HÀM NÀY
         public int getMaxHits() { return maxHits; }
         public int getPoints() { return points; }
         public String getImagePath() { return imagePath; }
     }
-
     /**
      * Constructor: Create brick at position with specific type
      * Encapsulation: Initializes all private fields properly
@@ -78,6 +85,13 @@ public class Brick extends GameObject {
         this.hits = type.getMaxHits();
         loadImage();
         this.dx = type.getInitialSpeed(); // <-- GÁN TỐC ĐỘ BAN ĐẦU
+    }
+
+    public static BrickType byId(int id) {
+        for (BrickType type : BrickType.values()) {
+            if (type.getId() == id) return type;
+        }
+        return null;
     }
 
     private void loadImage() {
@@ -116,8 +130,16 @@ public class Brick extends GameObject {
      */
     @Override
     public void update() {
-        if (type == BrickType.MOVING_UNBREAKABLE) {
-            setX(getX() + dx); // Di chuyển gạch
+        if (type == BrickType.MOVING_UNBREAKABLE_LF ||
+            type == BrickType.MOVING_UNBREAKABLE_RF ||
+            type == BrickType.MOVING_LF ||
+            type == BrickType.MOVING_RF) {
+            // Di chuyển gạch
+            if (type == BrickType.MOVING_UNBREAKABLE_RF || type == BrickType.MOVING_RF) {
+                setX(getX() + dx);
+            } else {
+                setX(getX() - dx);
+            }
 
             // Đổi hướng khi chạm biên
             if (getX() <= GameBounds.PLAY_LEFT || getX() + getWidth() >= GameBounds.PLAY_RIGHT) {
@@ -166,7 +188,8 @@ public class Brick extends GameObject {
             case YELLOW: return Color.YELLOW;
             case SILVER: return Color.LIGHT_GRAY;
             case GOLD: return Color.YELLOW.darker(); // <-- THÊM VÀNG
-            case MOVING_UNBREAKABLE: return Color.DARK_GRAY.brighter(); // <-- THÊM DI CHUYỂN
+            case MOVING_UNBREAKABLE_LF: return Color.DARK_GRAY.brighter(); // <-- THÊM DI CHUYỂN
+            case MOVING_UNBREAKABLE_RF: return Color.DARK_GRAY.brighter();
             default: return Color.GRAY;
         }
     }
