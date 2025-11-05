@@ -39,7 +39,7 @@ public class LevelManager {
     }
 
     /**
-     * Level 1: Simple rows (ĐÃ SỬA ĐỂ TEST)
+     * Level 1: Simple rows
      */
     private static ArrayList<Brick> createLevel1() {
         ArrayList<Brick> bricks = new ArrayList<>();
@@ -62,25 +62,29 @@ public class LevelManager {
                 int x = startX + col * 60;
                 int y = startY + row * 22;
 
-                // === LOGIC MỚI ĐỂ TEST ===
-
-                // HÀNG 2 (index 2) LÀ HÀNG TEST GẠCH DI CHUYỂN
+                // HÀNG 2 (index 2): Gạch di chuyển ở giữa, gạch YELLOW bao quanh
                 if (row == 2) {
-                    // Chỉ tạo 1 viên gạch di chuyển ở giữa hàng (cột 5)
                     if (col == 5) {
+                        // Gạch di chuyển bất tử ở giữa hàng
                         bricks.add(BrickFactory.createBrick(Brick.BrickType.MOVING_UNBREAKABLE, x, y));
+                    } else {
+                        // Các vị trí khác vẫn có gạch YELLOW bình thường
+                        bricks.add(BrickFactory.createBrick(colors[row], x, y));
                     }
-                    // Bỏ qua các cột khác -> hàng này sẽ trống
                 }
-                // HÀNG GẠCH GOLD (hàng 5 / hàng dưới cùng)
-                else if (row == rows - 1 && (col == 4 || col == 5)) {
-                    bricks.add(BrickFactory.createBrick(Brick.BrickType.GOLD, x, y));
+                // HÀNG CUỐI (row 5): 2 gạch GOLD ở giữa, còn lại là gạch PURPLE
+                else if (row == rows - 1) {
+                    if (col == 4 || col == 5 || col == 6) {
+                        // 3 gạch GOLD ở giữa hàng cuối (tăng độ khó)
+                        bricks.add(BrickFactory.createBrick(Brick.BrickType.GOLD, x, y));
+                    } else {
+                        bricks.add(BrickFactory.createBrick(colors[row], x, y));
+                    }
                 }
-                // CÁC HÀNG BÌNH THƯỜNG KHÁC (0, 1, 3, 4)
+                // CÁC HÀNG BÌNH THƯỜNG KHÁC
                 else {
                     bricks.add(BrickFactory.createBrick(colors[row], x, y));
                 }
-                // =========================
             }
         }
 

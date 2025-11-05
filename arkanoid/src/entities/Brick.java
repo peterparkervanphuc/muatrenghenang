@@ -39,7 +39,7 @@ public class Brick extends GameObject {
         YELLOW(1, 120, "Sprites/Walls/YellowWall.png", true),
         SILVER(3, 50, "Sprites/Walls/SilverWall.png", true), // Gạch Bạc VỠ ĐƯỢC
         GOLD(1, 0, "Sprites/Walls/GoldWall.png", false), // Gạch Vàng BẤT TỬ
-        MOVING_UNBREAKABLE(1, 0, "Sprites/Walls/MovingWall.png", false, 2.0); // GẠCH MỚI, TỐC ĐỘ 2.0
+        MOVING_UNBREAKABLE(1, 0, "Sprites/Walls/MovingWall.png", false, 1.5); // Gạch di chuyển bất tử, tốc độ 1.5
 
         private final int maxHits;
         private final int points;
