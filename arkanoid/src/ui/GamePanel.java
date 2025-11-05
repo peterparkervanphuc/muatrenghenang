@@ -434,7 +434,7 @@ public class GamePanel extends JPanel implements KeyListener {
         gameTimer.stop();
         gameManager.nextLevel();
 
-        if (gameManager.getCurrentLevel() <= 5) {
+        if (gameManager.getCurrentLevel() <= 18) {
             Timer delayTimer = new Timer(2000, e -> {
                 balls.clear();
                 powerups.clear();

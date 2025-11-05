@@ -41,10 +41,10 @@ public class Brick extends GameObject {
         YELLOW(8, 1, 120, "Sprites/Walls/YellowWall.png", true),
         SILVER(9, 3, 150, "Sprites/Walls/SilverWall.png", true), // Gạch Bạc VỠ ĐƯỢC
         GOLD(10, 1, 0, "Sprites/Walls/GoldWall.png", false), // Gạch Vàng BẤT TỬ
-        MOVING_UNBREAKABLE_RF(11, 1, 0, "Sprites/Walls/MovingWall.png", false, 2.0), // GẠCH MỚI, TỐC ĐỘ 2.0, sang phải trước
-        MOVING_UNBREAKABLE_LF(12, 1, 0, "Sprites/Walls/MovingWall.png", false, 2.0), // GẠCH MỚI, TỐC ĐỘ 2.0, sang trái trước
-        MOVING_RF(13, 1, 100, "Sprites/Walls/SilverWall", true, 2.0), // GẠCH MỚI, TỐC ĐỘ 2.0, sang phải trước
-        MOVING_LF(14, 1, 100, "Sprites/Walls/SilverWall", true, 2.0); // GẠCH MỚI, TỐC ĐỘ 2.0, sang trái trước
+        MOVING_UNBREAKABLE_RF(11, 1, 0, "Sprites/Walls/MovingWall.png", false, 1.5), // Gạch di chuyển bất tử, sang phải, tốc độ 1.5
+        MOVING_UNBREAKABLE_LF(12, 1, 0, "Sprites/Walls/MovingWall.png", false, 1.5), // Gạch di chuyển bất tử, sang trái, tốc độ 1.5
+        MOVING_RF(13, 1, 100, "Sprites/Walls/SilverWall.png", true, 1.5), // Gạch di chuyển vỡ được, sang phải, tốc độ 1.5
+        MOVING_LF(14, 1, 100, "Sprites/Walls/SilverWall.png", true, 1.5); // Gạch di chuyển vỡ được, sang trái, tốc độ 1.5
 
         private final int id;
         private final int maxHits;
@@ -126,19 +126,19 @@ public class Brick extends GameObject {
 
     /**
      * Polymorphism: Override abstract update() method
-     * SỬA LẠI: Gạch di chuyển sẽ update()
+     * Gạch có tốc độ > 0 sẽ di chuyển
      */
     @Override
     public void update() {
-        if (type == BrickType.MOVING_UNBREAKABLE_LF ||
-            type == BrickType.MOVING_UNBREAKABLE_RF ||
-            type == BrickType.MOVING_LF ||
-            type == BrickType.MOVING_RF) {
+        if (type.getInitialSpeed() > 0) {
+            // Xác định hướng di chuyển dựa vào type
+            boolean moveRight = (type == BrickType.MOVING_UNBREAKABLE_RF || type == BrickType.MOVING_RF);
+
             // Di chuyển gạch
-            if (type == BrickType.MOVING_UNBREAKABLE_RF || type == BrickType.MOVING_RF) {
-                setX(getX() + dx);
+            if (moveRight) {
+                setX(getX() + Math.abs(dx));
             } else {
-                setX(getX() - dx);
+                setX(getX() - Math.abs(dx));
             }
 
             // Đổi hướng khi chạm biên
@@ -149,7 +149,7 @@ public class Brick extends GameObject {
                 if (getX() + getWidth() >= GameBounds.PLAY_RIGHT) setX(GameBounds.PLAY_RIGHT - getWidth());
             }
         }
-        // Gạch khác không làm gì
+        // Gạch không di chuyển (initialSpeed = 0) không làm gì
     }
 
     /**

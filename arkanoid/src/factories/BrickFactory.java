@@ -31,20 +31,17 @@ public class BrickFactory {
     }
 
     /**
-     * Create a random colored brick (CHỈ CÁC LOẠI GẠCH THƯỜNG)
+     * Create a random colored brick (CHỈ CÁC LOẠI GẠCH THƯỜNG VỠ ĐƯỢC)
      * @param x The x-coordinate
      * @param y The y-coordinate
      * @return A new entities.Brick instance with random color
      */
     public static Brick createRandomBrick(int x, int y) {
-        int randomIndex = (int) (Math.random() * Brick.BrickType.values().length) + 1;
-        while ( Brick.byId(randomIndex) == Brick.BrickType.SILVER ||
-                !Brick.byId(randomIndex).isBreakable() ||
-                randomIndex == 14 ||
-                randomIndex == 13 ) {
-            randomIndex = (int) (Math.random() * Brick.BrickType.values().length) + 1;
-        }
-        return createBrick(randomIndex, x, y);
+        // Danh sách ID gạch thường vỡ được (không bao gồm SILVER, GOLD, MOVING)
+        int[] validIds = {1, 2, 3, 4, 5, 6, 7, 8}; // WHITE, ORANGE, LIGHT_BLUE, GREEN, RED, BLUE, PURPLE, YELLOW
+
+        int randomIndex = (int) (Math.random() * validIds.length);
+        return createBrick(validIds[randomIndex], x, y);
     }
 
     /**
@@ -54,6 +51,6 @@ public class BrickFactory {
      * @return A new silver entities.Brick instance
      */
     public static Brick createSilverBrick(int x, int y) {
-        return createBrick(11, x, y);
+        return createBrick(9, x, y);  // SILVER brick ID = 9
     }
 }
