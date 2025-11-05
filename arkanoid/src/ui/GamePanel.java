@@ -355,17 +355,14 @@ public class GamePanel extends JPanel implements KeyListener {
     private void applyPowerup(Powerup powerup) {
         switch (powerup.getType()) {
             case Powerup.PowerupType.ENLARGE:
-                if (paddle.hasLaser()) break;
+                // Removed conflict check - Allow ENLARGE + LASER stacking
                 paddle.enlarge();
                 gameManager.setPaddleEnlarged(true);
                 SoundManager.getInstance().playEnlargePowerupSound();
                 break;
 
             case Powerup.PowerupType.LASER:
-                if (paddle.isEnlarged()) {
-                    paddle.shrink();
-                    gameManager.setPaddleEnlarged(false);
-                }
+                // Removed conflict - Allow LASER + ENLARGE stacking
                 laserPowerupActive = true;
                 laserPowerupEndTime = System.currentTimeMillis() + LASER_POWERUP_DURATION;
                 paddle.enableLaser();

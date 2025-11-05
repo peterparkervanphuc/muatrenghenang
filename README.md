@@ -18,7 +18,7 @@ Game phá gạch cổ điển được xây dựng bằng Java Swing với kiế
 - [Kiến trúc OOP](#-kiến-trúc-oop)
 - [Cấu trúc project](#-cấu-trúc-project)
 - [Công nghệ](#-công-nghệ)
-- [Tài liệu](#-tài-liệu)
+- [Team](#-team)
 
 ---
 
@@ -270,78 +270,9 @@ arkanoid/
 
 ---
 
-## 📚 TÀI LIỆU
-
-### Trong thư mục `docs/`
-
-| File | Mô tả |
-|------|-------|
-| `CLASS_DIAGRAM.puml` | UML class diagram |
-| `DEVELOPMENT.md` | Hướng dẫn phát triển |
-| `SAVE_GAME.md` | Hệ thống lưu game |
-| `COMBO_SYSTEM.md` | Tính năng combo (NEW) |
-| `SPEED_SYSTEM_ANALYSIS.md` | Phân tích speed |
-| `GAME_BALANCE_ANALYSIS.md` | Cân bằng gameplay |
-| `PROJECT_EVALUATION.md` | Đánh giá 10.9/11 |
-
----
-
-## 🎯 HIGHLIGHTS
-
-### ✅ Điểm Mạnh
-
-1. **OOP Design Xuất Sắc**
-   - Cây kế thừa rõ ràng
-   - 4 tính chất OOP đầy đủ
-   - 2 Design Patterns
-
-2. **Features Phong Phú**
-   - 18 levels
-   - Combo system độc đáo
-   - Save/Load game
-   - 7 powerups
-
-3. **Code Quality Cao**
-   - Clean code
-   - Java conventions
-   - Well-documented
-   - Unit tests
-
-4. **Polish Chuyên Nghiệp**
-   - 60 FPS stable
-   - Sound effects
-   - Visual feedback
-   - Camera shake
-
-### 📈 Đánh Giá
-
-```
-Thiết kế OOP:        0.5/0.5  ⭐⭐⭐⭐⭐
-Tính năng game:      6.0/6.0  ⭐⭐⭐⭐⭐
-Code quality:        1.0/1.0  ⭐⭐⭐⭐⭐
-Unit tests:          0.4/0.5  ⭐⭐⭐⭐
-Documentation:       3.0/3.0  ⭐⭐⭐⭐⭐
-─────────────────────────────
-TỔNG:                9.9/10   (99%)
-BONUS (Combo):       +1.0
-─────────────────────────────
-KẾT QUẢ:            10.9/11   (99%)
-XẾP LOẠI:           A+ (XUẤT SẮC)
-```
-
----
-
 ## 👥 TEAM
 
-- **Developer:** [Your Name]
-- **Instructor:** [Instructor Name]
-- **Course:** Object-Oriented Programming with Java
-
----
-
-## 📄 LICENSE
-
-MIT License - Free to use for educational purposes
+- **Developers:** Duy, An, Bình, Giang
 
 ---
 
@@ -350,13 +281,6 @@ MIT License - Free to use for educational purposes
 - **Original Game:** Taito Corporation (1986)
 - **Font:** Emulogic by Freaky Fonts
 - **Sprites & Sounds:** Custom created for educational purposes
-
----
-
-## 📞 CONTACT
-
-- GitHub: [Your GitHub]
-- Email: [Your Email]
 
 ---
 
