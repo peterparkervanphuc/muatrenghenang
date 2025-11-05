@@ -159,7 +159,12 @@ public class SoundManager {
         stopAllMusic();
         playSound("gameOver");
     }
-    
+
+    public void playWinSound() {
+        stopAllMusic();
+        playSound("win");
+    }
+
     public void playWallHitSound() {
         playSound("wallHit");
     }

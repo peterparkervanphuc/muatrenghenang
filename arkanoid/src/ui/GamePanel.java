@@ -284,9 +284,8 @@ public class GamePanel extends JPanel implements KeyListener {
                         SoundManager.getInstance().playWallHitSound();
                     }
                 } else {
-                    // GẠCH BẤT TỬ (GOLD, MOVING)
-                    cameraShake.shake(4, 8);
-                    SoundManager.getInstance().playSilverWallHitSound();
+                    // GẠCH BẤT TỬ (GOLD, MOVING) - Chỉ phát âm thanh bật lại mạnh, không rung
+                    SoundManager.getInstance().playShipHitSound();
                 }
                 // ===================================
 
@@ -316,9 +315,9 @@ public class GamePanel extends JPanel implements KeyListener {
                             SoundManager.getInstance().playLaserBeamHitSound();
                         }
                     } else {
-                        // GẠCH BẤT TỬ (GOLD, MOVING)
+                        // GẠCH BẤT TỬ (GOLD, MOVING) - Âm thanh bật lại mạnh
                         laser.setActive(false);
-                        SoundManager.getInstance().playSilverWallHitSound();
+                        SoundManager.getInstance().playShipHitSound();
                     }
                     // =====================================
                     break;
@@ -401,17 +400,15 @@ public class GamePanel extends JPanel implements KeyListener {
                 .max()
                 .orElse(0);
 
-        // === SỬA removeIf ĐỂ CẬP NHẬT BIẾN ĐẾM ===
+        // Chỉ xóa gạch VỠ ĐƯỢC ở hàng dưới cùng
+        // Gạch bất tử (GOLD, MOVING) sẽ được giữ lại
         bricks.removeIf(brick -> {
-            if (brick.getY() == maxY) {
-                if (brick.isBreakable()) {
-                    breakableBricksCount--;
-                }
-                return true;
+            if (brick.getY() == maxY && brick.isBreakable()) {
+                breakableBricksCount--;
+                return true; // Xóa gạch này
             }
-            return false;
+            return false; // Giữ lại gạch bất tử hoặc gạch không phải hàng dưới
         });
-        // ======================================
     }
 
     private void resetAllPowerups() {
@@ -469,6 +466,9 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     private void showVictoryDialog() {
+        // Play victory sound
+        SoundManager.getInstance().playWinSound();
+
         Timer delayTimer = new Timer(1000, e -> {
             int score = gameManager.getScore();
             String name = JOptionPane.showInputDialog(this,
