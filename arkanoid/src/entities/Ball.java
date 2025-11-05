@@ -18,7 +18,8 @@ public class Ball extends MovableObject {
     // Encapsulation: Private constants
     private static final int BALL_SIZE = 16; // diameter (radius * 2)
     private static final double INITIAL_SPEED = 5.0;
-    
+    private static final double MAX_SPEED = 10.0; // Máy khỏe = chơi nhanh hơn! Cap to maintain skill-based gameplay
+
     // Encapsulation: Private fields
     private int radius = 8;
     private boolean attached = false;
@@ -39,11 +40,13 @@ public class Ball extends MovableObject {
     
     /**
      * Constructor with level-based speed bonus
+     * BALANCED: +7% per level, capped at 70% (level 11+)
      */
     public Ball(double x, double y, int level) {
         this(x, y);
-        // Increase speed by 10% per level (level 1 = 100%, level 2 = 110%, level 3 = 120%, etc.)
-        this.levelSpeedBonus = (level - 1) * 0.1;
+        // OLD: (level - 1) × 0.1 → Level 18 = +170% (TOO FAST!)
+        // NEW: (level - 1) × 0.07, max 70% → Level 18 = +70% (BALANCED)
+        this.levelSpeedBonus = Math.min((level - 1) * 0.07, 0.7);
     }
     
     private void loadImage() {
@@ -70,6 +73,10 @@ public class Ball extends MovableObject {
             // Random angle between -45 and 45 degrees
             double angle = Math.toRadians(-90 + (Math.random() * 30 - 15));
             double totalSpeed = INITIAL_SPEED * (1.0 + levelSpeedBonus) * speedMultiplier;
+
+            // Cap maximum speed to prevent unplayable gameplay
+            totalSpeed = Math.min(totalSpeed, MAX_SPEED);
+
             setVelocity(totalSpeed * Math.cos(angle), totalSpeed * Math.sin(angle));
             attachedPaddle = null;
         }
@@ -169,15 +176,13 @@ public class Ball extends MovableObject {
     }
     
     public void slow() {
-        if (speedMultiplier == 1.0) { // Only slow if not already slowed
+        // Chỉ slow nếu chưa bị slow (tránh slow nhiều lần làm ball quá chậm)
+        if (speedMultiplier == 1.0) {
             speedMultiplier = 0.5;
-            setVelocityX(getVelocityX() * speedMultiplier);
-            setVelocityY(getVelocityY() * speedMultiplier);
-        } else if (speedMultiplier == 0.5) {
-            speedMultiplier = 0.375;
-            setVelocityX(getVelocityX() / 0.5  * speedMultiplier);
-            setVelocityY(getVelocityY() / 0.5 * speedMultiplier);
+            setVelocityX(getVelocityX() * 0.5);
+            setVelocityY(getVelocityY() * 0.5);
         }
+        // Nếu đã slow rồi, không làm gì thêm (tránh bug khi ăn nhiều slow powerup)
     }
     
     public void restoreNormalSpeed() {

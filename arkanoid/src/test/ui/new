@@ -1,2 +1,0 @@
-game chạy đc thì ui không cần test, vì ta đã test logic các hàm khác rồi, ui chỉ tập hợp nó lại thôi, trường hợp gặp lỗi
-khi chơi game thì nó là do ui, mà ui đã lỗi thì game còn không chạy được nữa :V (mà nhìn cái ui toàn vài trăm dòng là chết mịa rồi

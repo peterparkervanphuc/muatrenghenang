@@ -16,7 +16,6 @@ import managers.HighScoreManager;
 import managers.SaveGameManager;
 import managers.SoundManager;
 import utils.GameLogger;
-import utils.PerformanceMonitor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,33 +29,41 @@ import java.util.Iterator;
  * Main game panel where the Arkanoid gameplay happens
  */
 public class GamePanel extends JPanel implements KeyListener {
-    private ArkanoidGame mainFrame;
-    private GameManager gameManager;
-    private Timer gameTimer;
+    private final ArkanoidGame mainFrame;
+    private final GameManager gameManager;
+    private final Timer gameTimer;
 
     private Paddle paddle;
-    private ArrayList<Ball> balls;
+    private final ArrayList<Ball> balls;
     private ArrayList<Brick> bricks;
-    private ArrayList<Powerup> powerups;
+    private final ArrayList<Powerup> powerups;
     private int breakableBricksCount; // <-- BIẾN ĐẾM MỚI
     private BufferedImage backgroundImage;
     private boolean leftPressed = false;
     private boolean rightPressed = false;
     private boolean spacePressed = false;
 
-    // entities.Powerup timers
+    // Powerup timers
     private long slowPowerupEndTime = 0;
     private boolean slowPowerupActive = false;
     private long laserPowerupEndTime = 0;
     private boolean laserPowerupActive = false;
 
+    // Combo system
+    private int comboCounter = 0;
+    private int comboMultiplier = 1;
+    private long lastBrickHitTime = 0;
+    private static final long COMBO_TIMEOUT = 1000; // 1 second window
+    private String comboText = "";
+    private int comboTextAlpha = 0;
+
     // Camera shake effect
-    private CameraShake cameraShake;
+    private final CameraShake cameraShake;
 
     private static final int FPS = 60;
     private static final int DELAY = 1000 / FPS;
     private static final long SLOW_POWERUP_DURATION = 10000;
-    private static final long LASER_POWERUP_DURATION = 15000;
+    private static final long LASER_POWERUP_DURATION = 20000; // Tăng từ 15s lên 20s
 
     public GamePanel(ArkanoidGame mainFrame) {
         this.mainFrame = mainFrame;
@@ -147,6 +154,19 @@ public class GamePanel extends JPanel implements KeyListener {
 
         cameraShake.update();
 
+        // === COMBO TIMEOUT CHECK ===
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - lastBrickHitTime > COMBO_TIMEOUT && comboCounter > 0) {
+            resetCombo();
+        }
+
+        // Fade combo text
+        if (comboTextAlpha > 0) {
+            comboTextAlpha -= 3; // Fade out gradually
+            if (comboTextAlpha < 0) comboTextAlpha = 0;
+        }
+        // ===========================
+
         // === CẬP NHẬT GẠCH (ĐỂ GẠCH DI CHUYỂN) ===
         for (Brick brick : bricks) {
             brick.update();
@@ -214,6 +234,7 @@ public class GamePanel extends JPanel implements KeyListener {
             cameraShake.shake(8, 20);
             spacePressed = false;
             resetAllPowerups();
+            resetCombo(); // Reset combo khi chết
 
             if (gameManager.getLives() > 0) {
                 Ball newBall = new Ball(paddle.getX() + paddle.getWidth() / 2, paddle.getY() - 10, gameManager.getCurrentLevel());
@@ -251,7 +272,6 @@ public class GamePanel extends JPanel implements KeyListener {
         // === SỬA LOGIC QUA MÀN ===
         if (breakableBricksCount <= 0) { // <-- SỬA TỪ bricks.isEmpty()
             levelCompleted();
-            return;
         }
     }
 
@@ -270,7 +290,13 @@ public class GamePanel extends JPanel implements KeyListener {
 
                     if (brick.isDestroyed()) {
                         breakableBricksCount--; // <-- TRỪ BIẾN ĐẾM
-                        gameManager.addScore(brick.getPoints());
+
+                        // === COMBO SYSTEM ===
+                        updateCombo();
+                        int points = brick.getPoints() * comboMultiplier;
+                        gameManager.addScore(points);
+                        // ====================
+
                         brickIterator.remove();
 
                         Powerup powerup = PowerUpFactory.createPowerUpFromBrick(brick.getX(), brick.getY(), 0.45);
@@ -430,6 +456,54 @@ public class GamePanel extends JPanel implements KeyListener {
         laserPowerupEndTime = 0;
     }
 
+    // === COMBO SYSTEM METHODS ===
+    private void updateCombo() {
+        long currentTime = System.currentTimeMillis();
+
+        // Reset combo if timeout (> 1 second since last hit)
+        if (currentTime - lastBrickHitTime > COMBO_TIMEOUT) {
+            comboCounter = 0;
+            comboMultiplier = 1;
+        }
+
+        // Increment combo
+        comboCounter++;
+        lastBrickHitTime = currentTime;
+
+        // Update multiplier based on combo count
+        if (comboCounter >= 20) {
+            comboMultiplier = 5;
+            comboText = "AMAZING! x5";
+            comboTextAlpha = 255;
+            cameraShake.shake(6, 15);
+        } else if (comboCounter >= 15) {
+            comboMultiplier = 4;
+            comboText = "AWESOME! x4";
+            comboTextAlpha = 255;
+            cameraShake.shake(5, 12);
+        } else if (comboCounter >= 10) {
+            comboMultiplier = 3;
+            comboText = "GREAT! x3";
+            comboTextAlpha = 255;
+            cameraShake.shake(4, 10);
+        } else if (comboCounter >= 5) {
+            comboMultiplier = 2;
+            comboText = "COMBO! x2";
+            comboTextAlpha = 255;
+        } else {
+            comboMultiplier = 1;
+        }
+    }
+
+    private void resetCombo() {
+        comboCounter = 0;
+        comboMultiplier = 1;
+        lastBrickHitTime = 0;
+        comboText = "";
+        comboTextAlpha = 0;
+    }
+    // ============================
+
     private void levelCompleted() {
         gameTimer.stop();
         gameManager.nextLevel();
@@ -553,6 +627,44 @@ public class GamePanel extends JPanel implements KeyListener {
             g2d.setColor(Color.YELLOW);
             g2d.drawString(message, x, y);
         }
+
+        // === DRAW COMBO ===
+        if (comboCounter >= 5 && comboTextAlpha > 0) {
+            try {
+                Font comboFont = FontManager.getGameFont(36);
+                g2d.setFont(comboFont);
+            } catch (Exception e) {
+                g2d.setFont(new Font("Arial", Font.BOLD, 36));
+            }
+
+            // Draw combo text with fade effect
+            g2d.setColor(new Color(255, 215, 0, comboTextAlpha)); // Gold color with alpha
+            String displayText = comboText + " (" + comboCounter + ")";
+            FontMetrics fm = g2d.getFontMetrics();
+            int x = (getWidth() - fm.stringWidth(displayText)) / 2;
+            int y = getHeight() / 2 - 50;
+
+            // Shadow effect
+            g2d.setColor(new Color(0, 0, 0, comboTextAlpha));
+            g2d.drawString(displayText, x + 3, y + 3);
+
+            // Main text
+            g2d.setColor(new Color(255, 215, 0, comboTextAlpha));
+            g2d.drawString(displayText, x, y);
+        }
+
+        // Display current multiplier if active
+        if (comboMultiplier > 1) {
+            try {
+                Font multiplierFont = FontManager.getGameFont(14);
+                g2d.setFont(multiplierFont);
+            } catch (Exception e) {
+                g2d.setFont(new Font("Arial", Font.BOLD, 14));
+            }
+            g2d.setColor(Color.ORANGE);
+            g2d.drawString("x" + comboMultiplier + " MULTIPLIER", getWidth() - 180, 50);
+        }
+        // ==================
     }
 
     private SaveGameManager.GameState createGameState() {
@@ -663,11 +775,128 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     public void saveGame(int slot) {
-        // ... (code saveGame giữ nguyên)
+        gameTimer.stop(); // Pause game while saving
+
+        SaveGameManager.GameState state = createGameState();
+        boolean success = SaveGameManager.getInstance().saveGame(slot, state);
+
+        if (success) {
+            JOptionPane.showMessageDialog(this,
+                "Game saved to slot " + slot + " successfully!",
+                "Save Game",
+                JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "Failed to save game to slot " + slot,
+                "Save Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+
+        gameTimer.start(); // Resume game
     }
 
     public void loadGame(int slot) {
-        // ... (code loadGame giữ nguyên)
+        gameTimer.stop(); // Pause game
+
+        SaveGameManager.GameState state = SaveGameManager.getInstance().loadGame(slot);
+
+        if (state != null) {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "Load game from slot " + slot + "?\n" +
+                "Level: " + state.currentLevel + " | Score: " + state.score + " | Lives: " + state.lives,
+                "Load Game",
+                JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                restoreGameState(state);
+                JOptionPane.showMessageDialog(this,
+                    "Game loaded successfully!",
+                    "Load Game",
+                    JOptionPane.INFORMATION_MESSAGE);
+                gameTimer.start();
+            } else {
+                gameTimer.start(); // Resume current game
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                "No save data found in slot " + slot,
+                "Load Error",
+                JOptionPane.WARNING_MESSAGE);
+            gameTimer.start();
+        }
+    }
+
+    private void showSaveLoadMenu() {
+        gameTimer.stop(); // Pause game
+
+        String[] options = {"Save Game", "Load Game", "Cancel"};
+        int choice = JOptionPane.showOptionDialog(this,
+            "Save/Load Game\n\n" +
+            "F5 - Quick Save (Slot 1)\n" +
+            "F9 - Quick Load (Slot 1)\n" +
+            "F6 - This Menu",
+            "Save/Load Menu",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.INFORMATION_MESSAGE,
+            null,
+            options,
+            options[0]);
+
+        if (choice == 0) { // Save
+            String slotStr = JOptionPane.showInputDialog(this,
+                "Enter save slot (1-3):",
+                "1");
+            if (slotStr != null) {
+                try {
+                    int slot = Integer.parseInt(slotStr);
+                    if (slot >= 1 && slot <= 3) {
+                        saveGame(slot);
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "Invalid slot! Must be 1-3",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                        gameTimer.start();
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this,
+                        "Invalid input!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    gameTimer.start();
+                }
+            } else {
+                gameTimer.start();
+            }
+        } else if (choice == 1) { // Load
+            String slotStr = JOptionPane.showInputDialog(this,
+                "Enter load slot (1-3):",
+                "1");
+            if (slotStr != null) {
+                try {
+                    int slot = Integer.parseInt(slotStr);
+                    if (slot >= 1 && slot <= 3) {
+                        loadGame(slot);
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "Invalid slot! Must be 1-3",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                        gameTimer.start();
+                    }
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this,
+                        "Invalid input!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    gameTimer.start();
+                }
+            } else {
+                gameTimer.start();
+            }
+        } else { // Cancel
+            gameTimer.start();
+        }
     }
 
     @Override
@@ -708,10 +937,19 @@ public class GamePanel extends JPanel implements KeyListener {
             }
         }
 
-        // ... (code phím F5, F9, F6 giữ nguyên) ...
-        if (key == KeyEvent.VK_F5) { /* ... */ }
-        if (key == KeyEvent.VK_F9) { /* ... */ }
-        if (key == KeyEvent.VK_F6) { /* ... */ }
+        // Save/Load game functionality
+        if (key == KeyEvent.VK_F5) {
+            // Quick Save to slot 1
+            saveGame(1);
+        }
+        if (key == KeyEvent.VK_F9) {
+            // Quick Load from slot 1
+            loadGame(1);
+        }
+        if (key == KeyEvent.VK_F6) {
+            // Show save/load menu
+            showSaveLoadMenu();
+        }
     }
 
     @Override

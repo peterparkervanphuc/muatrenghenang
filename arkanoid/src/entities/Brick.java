@@ -84,7 +84,13 @@ public class Brick extends GameObject {
         this.type = type;
         this.hits = type.getMaxHits();
         loadImage();
-        this.dx = type.getInitialSpeed(); // <-- GÁN TỐC ĐỘ BAN ĐẦU
+
+        // Gán tốc độ ban đầu - LF types di chuyển sang trái (dx âm)
+        if (type == BrickType.MOVING_UNBREAKABLE_LF || type == BrickType.MOVING_LF) {
+            this.dx = -type.getInitialSpeed(); // Âm = đi trái
+        } else {
+            this.dx = type.getInitialSpeed(); // Dương = đi phải
+        }
     }
 
     public static BrickType byId(int id) {
@@ -131,22 +137,19 @@ public class Brick extends GameObject {
     @Override
     public void update() {
         if (type.getInitialSpeed() > 0) {
-            // Xác định hướng di chuyển dựa vào type
-            boolean moveRight = (type == BrickType.MOVING_UNBREAKABLE_RF || type == BrickType.MOVING_RF);
-
-            // Di chuyển gạch
-            if (moveRight) {
-                setX(getX() + Math.abs(dx));
-            } else {
-                setX(getX() - Math.abs(dx));
-            }
+            // Di chuyển gạch (dx đã tự động có dấu âm/dương)
+            setX(getX() + dx);
 
             // Đổi hướng khi chạm biên
             if (getX() <= GameBounds.PLAY_LEFT || getX() + getWidth() >= GameBounds.PLAY_RIGHT) {
                 dx *= -1; // Đổi hướng
-                // Chống kẹt
-                if (getX() <= GameBounds.PLAY_LEFT) setX(GameBounds.PLAY_LEFT);
-                if (getX() + getWidth() >= GameBounds.PLAY_RIGHT) setX(GameBounds.PLAY_RIGHT - getWidth());
+                // Chống kẹt - đẩy gạch ra khỏi tường
+                if (getX() <= GameBounds.PLAY_LEFT) {
+                    setX(GameBounds.PLAY_LEFT);
+                }
+                if (getX() + getWidth() >= GameBounds.PLAY_RIGHT) {
+                    setX(GameBounds.PLAY_RIGHT - getWidth());
+                }
             }
         }
         // Gạch không di chuyển (initialSpeed = 0) không làm gì

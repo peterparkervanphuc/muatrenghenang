@@ -20,6 +20,7 @@ public class SoundManager {
     private static final String GAME_START = "Sounds/Game Start.wav";
     private static final String GAME_OVER = "Sounds/Game Over.wav";
     private static final String HIGH_SCORES_MUSIC = "Sounds/High Scores.wav";
+    private static final String WIN = "Sounds/Win.wav";
     private static final String WALL_HIT = "Sounds/Wall Hit.wav";
     private static final String SILVER_WALL_HIT = "Sounds/Silver Wall Hit.wav";
     private static final String SHIP_HIT = "Sounds/Ship Hit.wav";
@@ -49,6 +50,7 @@ public class SoundManager {
         loadSound("menu", MENU_MUSIC);
         loadSound("gameStart", GAME_START);
         loadSound("gameOver", GAME_OVER);
+        loadSound("win", WIN);
         loadSound("highScores", HIGH_SCORES_MUSIC);
         loadSound("wallHit", WALL_HIT);
         loadSound("silverWallHit", SILVER_WALL_HIT);

@@ -22,7 +22,12 @@ public class BallTest {
     @Test
     public void tesBallInit2() {
         Ball ball = new Ball(100, 200, 12);
-        assertEquals(1.1, ball.getLevelSpeedBonus());
+        // Level 12: (12-1) × 0.07 = 0.77, but capped at 0.7
+        assertEquals(0.7, ball.getLevelSpeedBonus(), 0.001);
+
+        Ball ball2 = new Ball(100, 200, 5);
+        // Level 5: (5-1) × 0.07 = 0.28 (28%)
+        assertEquals(0.28, ball2.getLevelSpeedBonus(), 0.001);
     }
 
     @Test
@@ -100,10 +105,13 @@ public class BallTest {
         ball.slow();
         assertEquals(5, ball.getVelocityX());
         assertEquals(5, ball.getVelocityY());
+        assertEquals(0.5, ball.getSpeedMultiplier());
 
+        // Slow lần 2 KHÔNG có tác dụng (để tránh ball quá chậm)
         ball.slow();
-        assertEquals(3.75, ball.getVelocityX());
-        assertEquals(3.75, ball.getVelocityY());
+        assertEquals(5, ball.getVelocityX()); // Vẫn là 5, không phải 3.75
+        assertEquals(5, ball.getVelocityY());
+        assertEquals(0.5, ball.getSpeedMultiplier()); // Vẫn là 0.5
     }
 
     @Test
@@ -114,14 +122,16 @@ public class BallTest {
         ball.restoreNormalSpeed();
         assertEquals(10, ball.getVelocityX());
         assertEquals(10, ball.getVelocityY());
-        assertEquals(1, ball.getSpeedMultiplier());
+        assertEquals(1.0, ball.getSpeedMultiplier());
 
+        // Test slow 2 lần (lần 2 không có tác dụng) rồi restore
+        ball.setVelocity(10, 10);
         ball.slow();
-        ball.slow();
+        ball.slow(); // Lần 2 không có tác dụng
         ball.restoreNormalSpeed();
         assertEquals(10, ball.getVelocityX());
         assertEquals(10, ball.getVelocityY());
-        assertEquals(1, ball.getSpeedMultiplier());
+        assertEquals(1.0, ball.getSpeedMultiplier());
     }
 
     @Test
