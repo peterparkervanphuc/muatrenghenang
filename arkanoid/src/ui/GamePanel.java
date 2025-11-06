@@ -355,14 +355,22 @@ public class GamePanel extends JPanel implements KeyListener {
     private void applyPowerup(Powerup powerup) {
         switch (powerup.getType()) {
             case Powerup.PowerupType.ENLARGE:
-                // Removed conflict check - Allow ENLARGE + LASER stacking
+                // Don't enlarge if has laser (no sprite for laser+enlarge)
+                if (paddle.hasLaser()) {
+                    SoundManager.getInstance().playEnlargePowerupSound();
+                    break;
+                }
                 paddle.enlarge();
                 gameManager.setPaddleEnlarged(true);
                 SoundManager.getInstance().playEnlargePowerupSound();
                 break;
 
             case Powerup.PowerupType.LASER:
-                // Removed conflict - Allow LASER + ENLARGE stacking
+                // If enlarged, shrink to normal (no sprite for laser+enlarge)
+                if (paddle.isEnlarged()) {
+                    paddle.shrink();
+                    gameManager.setPaddleEnlarged(false);
+                }
                 laserPowerupActive = true;
                 laserPowerupEndTime = System.currentTimeMillis() + LASER_POWERUP_DURATION;
                 paddle.enableLaser();
@@ -696,7 +704,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
         restoreGameManagerState(state);
 
-        paddle = new Paddle((int)state.paddleX, (int)state.paddleY, state.paddleEnlarged);
+        // If both laser and enlarged are true, prioritize laser (no sprite for both)
+        boolean shouldEnlarge = state.paddleEnlarged && !state.paddleHasLaser;
+        paddle = new Paddle((int)state.paddleX, (int)state.paddleY, shouldEnlarge);
         if (state.paddleHasLaser) paddle.enableLaser();
         if (state.paddleHasCatch) paddle.enableCatch();
 

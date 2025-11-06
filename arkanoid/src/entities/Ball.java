@@ -21,7 +21,7 @@ public class Ball extends MovableObject {
     private static final double MAX_SPEED = 10.0; // Máy khỏe = chơi nhanh hơn! Cap to maintain skill-based gameplay
 
     // Encapsulation: Private fields
-    private int radius = 8;
+    private final int radius = 8;
     private boolean attached = false;
     private Paddle attachedPaddle;
     private BufferedImage ballImage;
@@ -186,10 +186,13 @@ public class Ball extends MovableObject {
     }
     
     public void restoreNormalSpeed() {
-        if (speedMultiplier != 1.0 && !attached) {
-            // Restore to normal speed
-            setVelocityX(getVelocityX() / speedMultiplier);
-            setVelocityY(getVelocityY() / speedMultiplier);
+        if (speedMultiplier != 1.0) {
+            if (!attached) {
+                // Restore velocity for moving ball
+                setVelocityX(getVelocityX() / speedMultiplier);
+                setVelocityY(getVelocityY() / speedMultiplier);
+            }
+            // Always reset multiplier (even if attached) to prevent slow launch
             speedMultiplier = 1.0;
         }
     }
