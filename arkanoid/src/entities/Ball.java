@@ -155,22 +155,25 @@ public class Ball extends MovableObject {
         double minOverlap = Math.min(Math.min(overlapLeft, overlapRight), 
                                      Math.min(overlapTop, overlapBottom));
         
+        // Tăng khoảng cách đẩy bóng ra để tránh va chạm lại
+        double pushDistance = 2.0;
+
         // Bounce based on collision side
         if (minOverlap == overlapLeft || minOverlap == overlapRight) {
             setVelocityX(-getVelocityX());
-            // Adjust position to prevent sticking
+            // Adjust position to prevent sticking - đẩy xa hơn
             if (minOverlap == overlapLeft) {
-                setX(brickBounds.x - radius - 1);
+                setX(brickBounds.x - radius - pushDistance);
             } else {
-                setX(brickBounds.x + brickBounds.width + radius + 1);
+                setX(brickBounds.x + brickBounds.width + radius + pushDistance);
             }
         } else {
             setVelocityY(-getVelocityY());
-            // Adjust position to prevent sticking
+            // Adjust position to prevent sticking - đẩy xa hơn
             if (minOverlap == overlapTop) {
-                setY(brickBounds.y - radius - 1);
+                setY(brickBounds.y - radius - pushDistance);
             } else {
-                setY(brickBounds.y + brickBounds.height + radius + 1);
+                setY(brickBounds.y + brickBounds.height + radius + pushDistance);
             }
         }
     }

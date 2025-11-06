@@ -27,8 +27,8 @@ public class PowerUpFactory {
      * Create a random power-up at given position with balanced drop rates
      * Drop rates based on power tier system:
      * - Tier S (Rare): PLAYER 8%, BREAK 7% = 15% total
-     * - Tier A (Uncommon): DUPLICATE 15%, SLOW 15% = 30% total
-     * - Tier B (Common): LASER 20%, CATCH 18%, ENLARGE 17% = 55% total
+     * - Tier A (Uncommon): SLOW 20%, DUPLICATE 15% = 35% total
+     * - Tier B (Common): LASER 19%, CATCH 16%, ENLARGE 15% = 50% total
      *
      * @param x The x-coordinate
      * @param y The y-coordinate
@@ -37,17 +37,17 @@ public class PowerUpFactory {
     public static Powerup createRandomPowerUp(double x, double y) {
         double random = Math.random() * 100; // 0-100 for percentage calculation
 
-        // Tier B - Common (55% total)
-        if (random < 17) {
-            return createPowerUp(Powerup.PowerupType.ENLARGE, x, y); // 17%
-        } else if (random < 35) {
-            return createPowerUp(Powerup.PowerupType.CATCH, x, y); // 18%
-        } else if (random < 55) {
-            return createPowerUp(Powerup.PowerupType.LASER, x, y); // 20%
+        // Tier B - Common (50% total)
+        if (random < 15) {
+            return createPowerUp(Powerup.PowerupType.ENLARGE, x, y); // 15%
+        } else if (random < 31) {
+            return createPowerUp(Powerup.PowerupType.CATCH, x, y); // 16%
+        } else if (random < 50) {
+            return createPowerUp(Powerup.PowerupType.LASER, x, y); // 19%
         }
-        // Tier A - Uncommon (30% total)
+        // Tier A - Uncommon (35% total)
         else if (random < 70) {
-            return createPowerUp(Powerup.PowerupType.SLOW, x, y); // 15%
+            return createPowerUp(Powerup.PowerupType.SLOW, x, y); // 20%
         } else if (random < 85) {
             return createPowerUp(Powerup.PowerupType.DUPLICATE, x, y); // 15%
         }

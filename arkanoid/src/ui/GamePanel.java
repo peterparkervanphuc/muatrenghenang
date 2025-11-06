@@ -276,47 +276,62 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     private void checkBallBrickCollision(Ball ball) {
-        Iterator<Brick> brickIterator = bricks.iterator();
-        while (brickIterator.hasNext()) {
-            Brick brick = brickIterator.next();
+        // Xử lý nhiều lần để đảm bảo bóng không xuyên qua nhiều gạch cùng lúc
+        int maxIterations = 3; // Giới hạn để tránh vòng lặp vô hạn
+        int iterations = 0;
 
-            if (ball.intersects(brick.getBounds())) {
-                ball.bounceOffBrick(brick);
+        while (iterations < maxIterations) {
+            Brick hitBrick = null;
 
-                // === SỬA LOGIC VA CHẠM GẠCH MỚI ===
-                if (brick.isBreakable()) {
-                    // GẠCH CÓ THỂ VỠ (Normal, Silver)
-                    brick.hit();
-
-                    if (brick.isDestroyed()) {
-                        breakableBricksCount--; // <-- TRỪ BIẾN ĐẾM
-
-                        // === COMBO SYSTEM ===
-                        updateCombo();
-                        int points = brick.getPoints() * comboMultiplier;
-                        gameManager.addScore(points);
-                        // ====================
-
-                        brickIterator.remove();
-
-                        Powerup powerup = PowerUpFactory.createPowerUpFromBrick(brick.getX(), brick.getY(), 0.45);
-                        if (powerup != null) powerups.add(powerup);
-                        SoundManager.getInstance().playWallHitSound();
-
-                    } else if (brick.isSilver()) {
-                        cameraShake.shake(4, 8);
-                        SoundManager.getInstance().playSilverWallHitSound();
-                    } else {
-                        SoundManager.getInstance().playWallHitSound();
-                    }
-                } else {
-                    // GẠCH BẤT TỬ (GOLD, MOVING) - Chỉ phát âm thanh bật lại mạnh, không rung
-                    SoundManager.getInstance().playShipHitSound();
+            // Tìm gạch đang va chạm với bóng
+            for (Brick brick : bricks) {
+                if (ball.intersects(brick.getBounds())) {
+                    hitBrick = brick;
+                    break;
                 }
-                // ===================================
+            }
 
+            // Nếu không còn va chạm nào, thoát
+            if (hitBrick == null) {
                 break;
             }
+
+            // Xử lý va chạm
+            ball.bounceOffBrick(hitBrick);
+
+            // === SỬA LOGIC VA CHẠM GẠCH MỚI ===
+            if (hitBrick.isBreakable()) {
+                // GẠCH CÓ THỂ VỠ (Normal, Silver)
+                hitBrick.hit();
+
+                if (hitBrick.isDestroyed()) {
+                    breakableBricksCount--; // <-- TRỪ BIẾN ĐẾM
+
+                    // === COMBO SYSTEM ===
+                    updateCombo();
+                    int points = hitBrick.getPoints() * comboMultiplier;
+                    gameManager.addScore(points);
+                    // ====================
+
+                    bricks.remove(hitBrick);
+
+                    Powerup powerup = PowerUpFactory.createPowerUpFromBrick(hitBrick.getX(), hitBrick.getY(), 0.45);
+                    if (powerup != null) powerups.add(powerup);
+                    SoundManager.getInstance().playWallHitSound();
+
+                } else if (hitBrick.isSilver()) {
+                    cameraShake.shake(4, 8);
+                    SoundManager.getInstance().playSilverWallHitSound();
+                } else {
+                    SoundManager.getInstance().playWallHitSound();
+                }
+            } else {
+                // GẠCH BẤT TỬ (GOLD, MOVING) - Chỉ phát âm thanh bật lại mạnh, không rung
+                SoundManager.getInstance().playShipHitSound();
+            }
+            // ===================================
+
+            iterations++;
         }
     }
 
