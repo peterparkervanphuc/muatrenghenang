@@ -689,15 +689,21 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private SaveGameManager.GameState createGameState() {
         SaveGameManager.GameState state = new SaveGameManager.GameState();
+
+        // Basic game state
         state.score = gameManager.getScore();
         state.lives = gameManager.getLives();
         state.currentLevel = gameManager.getCurrentLevel();
         state.gameOver = gameManager.isGameOver();
         state.paddleEnlarged = gameManager.isPaddleEnlarged();
+
+        // Paddle state
         state.paddleX = paddle.getX();
         state.paddleY = paddle.getY();
         state.paddleHasLaser = paddle.hasLaser();
         state.paddleHasCatch = paddle.hasCatch();
+
+        // Entity states
         for (Ball ball : balls) {
             state.balls.add(new SaveGameManager.BallState(ball));
         }
@@ -707,10 +713,30 @@ public class GamePanel extends JPanel implements KeyListener {
         for (Powerup powerup : powerups) {
             state.powerups.add(new SaveGameManager.PowerupState(powerup));
         }
-        state.slowPowerupEndTime = slowPowerupEndTime;
+
+        // Laser beams (NEW)
+        if (paddle.hasLaser()) {
+            for (LaserBeam laser : paddle.getLasers()) {
+                state.laserBeams.add(new SaveGameManager.LaserBeamState(laser));
+            }
+        }
+
+        // Powerup timers - FIXED: Save remaining time instead of absolute time
+        long currentTime = System.currentTimeMillis();
+        state.slowPowerupTimeRemaining = slowPowerupActive ?
+            Math.max(0, slowPowerupEndTime - currentTime) : 0;
         state.slowPowerupActive = slowPowerupActive;
-        state.laserPowerupEndTime = laserPowerupEndTime;
+
+        state.laserPowerupTimeRemaining = laserPowerupActive ?
+            Math.max(0, laserPowerupEndTime - currentTime) : 0;
         state.laserPowerupActive = laserPowerupActive;
+
+        // Combo system (NEW)
+        state.comboCounter = comboCounter;
+        state.comboMultiplier = comboMultiplier;
+        state.comboTimeRemaining = (comboCounter > 0) ?
+            Math.max(0, COMBO_TIMEOUT - (currentTime - lastBrickHitTime)) : 0;
+
         return state;
     }
 
@@ -744,6 +770,12 @@ public class GamePanel extends JPanel implements KeyListener {
                 Brick.BrickType type = Brick.BrickType.valueOf(brickState.brickType);
                 Brick brick = new Brick((int)brickState.x, (int)brickState.y, type);
                 brick.setHitsRemaining(brickState.hitsRemaining);
+
+                // Restore brick velocity (NEW) - Critical for moving bricks
+                if (state.saveFormatVersion >= 2) {
+                    brick.setDx(brickState.velocityX);
+                }
+
                 bricks.add(brick);
             } catch (IllegalArgumentException e) {
                 GameLogger.error("Invalid brick type: " + brickState.brickType);
@@ -764,19 +796,71 @@ public class GamePanel extends JPanel implements KeyListener {
             try {
                 Powerup.PowerupType type = Powerup.PowerupType.valueOf(powerupState.powerupType);
                 Powerup powerup = new Powerup((int)powerupState.x, (int)powerupState.y, type);
+
+                // Restore powerup velocity (NEW)
+                if (state.saveFormatVersion >= 2) {
+                    powerup.restoreVelocity(powerupState.velocityY);
+                }
+
                 powerups.add(powerup);
             } catch (IllegalArgumentException e) {
                 GameLogger.error("Invalid powerup type: " + powerupState.powerupType);
             }
         }
 
-        slowPowerupEndTime = state.slowPowerupEndTime;
-        slowPowerupActive = state.slowPowerupActive;
-        laserPowerupEndTime = state.laserPowerupEndTime;
-        laserPowerupActive = state.laserPowerupActive;
+        // Restore laser beams (NEW)
+        if (state.saveFormatVersion >= 2 && state.paddleHasLaser && state.laserBeams != null) {
+            paddle.getLasers().clear();
+            for (SaveGameManager.LaserBeamState laserState : state.laserBeams) {
+                LaserBeam laser = new LaserBeam((int)laserState.x, (int)laserState.y);
+                laser.restoreVelocity(laserState.velocityY);
+                laser.setActive(laserState.active);
+                paddle.getLasers().add(laser);
+            }
+        }
+
+        // Restore powerup timers - FIXED: Use relative time
+        long currentTime = System.currentTimeMillis();
+
+        if (state.saveFormatVersion >= 2) {
+            // Version 2: Relative time (correct!)
+            slowPowerupActive = state.slowPowerupActive && state.slowPowerupTimeRemaining > 0;
+            slowPowerupEndTime = slowPowerupActive ?
+                currentTime + state.slowPowerupTimeRemaining : 0;
+
+            laserPowerupActive = state.laserPowerupActive && state.laserPowerupTimeRemaining > 0;
+            laserPowerupEndTime = laserPowerupActive ?
+                currentTime + state.laserPowerupTimeRemaining : 0;
+        } else {
+            // Version 1: No timer support - reset
+            slowPowerupActive = false;
+            slowPowerupEndTime = 0;
+            laserPowerupActive = false;
+            laserPowerupEndTime = 0;
+            GameLogger.warning("Loading old save format (v1) - powerup timers reset");
+        }
+
+        // Restore combo system (NEW)
+        if (state.saveFormatVersion >= 2) {
+            comboCounter = state.comboCounter;
+            comboMultiplier = state.comboMultiplier;
+
+            if (state.comboTimeRemaining > 0) {
+                lastBrickHitTime = currentTime - (COMBO_TIMEOUT - state.comboTimeRemaining);
+            } else {
+                lastBrickHitTime = 0;
+                comboCounter = 0;
+                comboMultiplier = 1;
+            }
+        } else {
+            // Version 1: No combo support - reset
+            comboCounter = 0;
+            comboMultiplier = 1;
+            lastBrickHitTime = 0;
+        }
 
         loadBackground();
-        GameLogger.info("Game state restored successfully");
+        GameLogger.info("Game state restored successfully (format version: " + state.saveFormatVersion + ")");
     }
 
     private void restoreGameManagerState(SaveGameManager.GameState state) {
@@ -798,6 +882,26 @@ public class GamePanel extends JPanel implements KeyListener {
 
     public void saveGame(int slot) {
         gameTimer.stop(); // Pause game while saving
+
+        // Check if slot already has data and ask for confirmation (NEW)
+        if (SaveGameManager.getInstance().hasSaveData(slot)) {
+            SaveGameManager.SaveInfo info = SaveGameManager.getInstance().getSaveInfo(slot);
+            String existingInfo = (info != null) ?
+                String.format("\nExisting save: Level %d | Score %d | Lives %d",
+                        info.level(), info.score(), info.lives()) : "";
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                "Slot " + slot + " already has saved data!" + existingInfo +
+                "\n\nDo you want to OVERWRITE it?",
+                "Confirm Overwrite",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+            if (confirm != JOptionPane.YES_OPTION) {
+                gameTimer.start(); // Resume game
+                return; // Cancel save
+            }
+        }
 
         SaveGameManager.GameState state = createGameState();
         boolean success = SaveGameManager.getInstance().saveGame(slot, state);

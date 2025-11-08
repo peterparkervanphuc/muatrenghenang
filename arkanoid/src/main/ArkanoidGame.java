@@ -86,7 +86,7 @@ public class ArkanoidGame extends JFrame {
             if (info != null) {
                 hasAnySave = true;
                 message.append(String.format("Slot %d: Level %d | Score %d | Lives %d\n",
-                    i, info.level, info.score, info.lives));
+                    i, info.level(), info.score(), info.lives()));
             } else {
                 message.append(String.format("Slot %d: Empty\n", i));
             }

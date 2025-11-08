@@ -19,7 +19,7 @@ public class Powerup extends MovableObject {
     private static final int FALL_SPEED = 3;
     
     // Encapsulation: Private fields
-    private PowerupType type;
+    private final PowerupType type;
     private BufferedImage powerupImage;
     
     public enum PowerupType {
@@ -82,12 +82,7 @@ public class Powerup extends MovableObject {
             System.err.println("Could not load powerup image: " + e.getMessage());
         }
     }
-    
-    /**
-     * Polymorphism: Uses inherited update() method from entities.MovableObject
-     * Movement (falling) is automatically handled by velocity set in constructor
-     */
-    
+
     /**
      * Polymorphism: Override abstract render() method
      * Abstraction: Hides complex drawing logic
@@ -137,4 +132,9 @@ public class Powerup extends MovableObject {
     
     // Encapsulation: Public getter for powerup type
     public PowerupType getType() { return type; }
+
+    // Public method to restore velocity from save state
+    public void restoreVelocity(double vy) {
+        setVelocity(0, vy);
+    }
 }

@@ -3,8 +3,6 @@ package managers;
 import entities.Ball;
 import entities.Brick;
 import entities.Powerup;
-import entities.Paddle;
-import core.GameManager;
 import utils.GameLogger;
 
 import java.io.*;
@@ -142,31 +140,22 @@ public class SaveGameManager {
     }
 
     /**
-     * Inner class to hold save file information
-     */
-    public static class SaveInfo implements Serializable {
-        private static final long serialVersionUID = 1L;
+         * Inner class to hold save file information
+         */
+        public record SaveInfo(int slot, int score, int lives, int level, long timestamp) implements Serializable {
+            private static final long serialVersionUID = 1L;
 
-        public final int slot;
-        public final int score;
-        public final int lives;
-        public final int level;
-        public final long timestamp;
-
-        public SaveInfo(int slot, int score, int lives, int level, long timestamp) {
-            this.slot = slot;
-            this.score = score;
-            this.lives = lives;
-            this.level = level;
-            this.timestamp = timestamp;
-        }
     }
 
     /**
      * Inner class representing complete game state
+     * VERSION 2: Added laser beams, combo system, relative timers
      */
     public static class GameState implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
+
+        // Save format version for backward compatibility
+        public int saveFormatVersion = 2;
 
         // GameManager state
         public int score;
@@ -181,20 +170,22 @@ public class SaveGameManager {
         public boolean paddleHasLaser;
         public boolean paddleHasCatch;
 
-        // Ball states (support multiple balls)
+        // Entity states
         public List<BallState> balls;
-
-        // Brick states
         public List<BrickState> bricks;
-
-        // Powerup states (falling powerups)
         public List<PowerupState> powerups;
+        public List<LaserBeamState> laserBeams; // NEW
 
-        // Powerup timers
-        public long slowPowerupEndTime;
+        // Powerup timers - FIXED: Relative time instead of absolute time
+        public long slowPowerupTimeRemaining; // NEW: Milliseconds remaining
         public boolean slowPowerupActive;
-        public long laserPowerupEndTime;
+        public long laserPowerupTimeRemaining; // NEW: Milliseconds remaining
         public boolean laserPowerupActive;
+
+        // Combo system state - NEW
+        public int comboCounter;
+        public int comboMultiplier;
+        public long comboTimeRemaining; // Milliseconds remaining
 
         // Timestamp when saved
         public long saveTimestamp;
@@ -203,6 +194,7 @@ public class SaveGameManager {
             balls = new ArrayList<>();
             bricks = new ArrayList<>();
             powerups = new ArrayList<>();
+            laserBeams = new ArrayList<>(); // NEW
             saveTimestamp = System.currentTimeMillis();
         }
     }
@@ -234,37 +226,63 @@ public class SaveGameManager {
 
     /**
      * Represents a brick's state
+     * VERSION 2: Added velocityX for moving bricks
      */
     public static class BrickState implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
 
         public double x;
         public double y;
         public String brickType; // Store as String for serialization
         public int hitsRemaining;
+        public double velocityX; // NEW: Velocity for moving bricks
 
         public BrickState(Brick brick) {
             this.x = brick.getX();
             this.y = brick.getY();
             this.brickType = brick.getType().name();
             this.hitsRemaining = brick.getHitsRemaining();
+            this.velocityX = brick.getDx(); // Save velocity
         }
     }
 
     /**
      * Represents a powerup's state
+     * VERSION 2: Added velocityY for falling powerups
      */
     public static class PowerupState implements Serializable {
-        private static final long serialVersionUID = 1L;
+        private static final long serialVersionUID = 2L;
 
         public double x;
         public double y;
         public String powerupType; // Store as String for serialization
+        public double velocityY; // NEW: Falling velocity
 
         public PowerupState(Powerup powerup) {
             this.x = powerup.getX();
             this.y = powerup.getY();
             this.powerupType = powerup.getType().name();
+            this.velocityY = powerup.getVelocityY(); // Save velocity
+        }
+    }
+
+    /**
+     * Represents a laser beam's state
+     * NEW in VERSION 2
+     */
+    public static class LaserBeamState implements Serializable {
+        private static final long serialVersionUID = 1L;
+
+        public double x;
+        public double y;
+        public double velocityY;
+        public boolean active;
+
+        public LaserBeamState(entities.LaserBeam laser) {
+            this.x = laser.getX();
+            this.y = laser.getY();
+            this.velocityY = laser.getVelocityY();
+            this.active = laser.isActive();
         }
     }
 }

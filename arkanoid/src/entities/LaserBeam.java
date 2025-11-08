@@ -46,12 +46,7 @@ public class LaserBeam extends MovableObject {
             System.err.println("Could not load laser beam image: " + e.getMessage());
         }
     }
-    
-    /**
-     * Polymorphism: Uses inherited update() method from entities.MovableObject
-     * Movement (upward) is automatically handled by velocity
-     */
-    
+
     /**
      * Polymorphism: Override abstract render() method
      * Abstraction: Hides rendering complexity
@@ -85,4 +80,9 @@ public class LaserBeam extends MovableObject {
     // Removed: getY() is inherited from entities.GameObject (returns double)
     public boolean isActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
+
+    // Public method to restore velocity from save state
+    public void restoreVelocity(double vy) {
+        setVelocity(0, vy);
+    }
 }

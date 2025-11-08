@@ -19,7 +19,7 @@ public class Brick extends GameObject {
     private static final int BRICK_HEIGHT = 20;
 
     // Encapsulation: Private fields
-    private BrickType type;
+    private final BrickType type;
     private int hits;
     private BufferedImage brickImage;
     private double dx; // <-- THÊM BIẾN TỐC ĐỘ NGANG
@@ -205,5 +205,14 @@ public class Brick extends GameObject {
     // Setter for restoring game state
     public void setHitsRemaining(int hits) {
         this.hits = hits;
+    }
+
+    // Getter/Setter for velocity - needed for save/load moving bricks
+    public double getDx() {
+        return dx;
+    }
+
+    public void setDx(double dx) {
+        this.dx = dx;
     }
 }
