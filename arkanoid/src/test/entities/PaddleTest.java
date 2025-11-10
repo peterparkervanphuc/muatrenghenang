@@ -93,7 +93,7 @@ public class PaddleTest {
         paddle.fireLaser();
 
         assertFalse(paddle.getLasers().isEmpty());
-        paddle.getLasers().get(0).setY(-5);
+        paddle.getLasers().getFirst().setY(-5);
         paddle.update();
 
         assertTrue(paddle.getLasers().size() <= 2, "các tia laser bên ngoaif phải được loại");

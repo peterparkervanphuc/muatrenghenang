@@ -18,7 +18,7 @@ public class HighScoreManagerTest {
 
         assertNotNull(scores);
         assertEquals(10, scores.size());
-        assertEquals("TAITO", scores.get(0).name);
+        assertEquals("TAITO", scores.getFirst().name);
     }
 
     @Test
@@ -52,6 +52,6 @@ public class HighScoreManagerTest {
             scores = new ArrayList<>(scores.subList(0, maxScores));
 
         assertEquals(3, scores.size());
-        assertEquals("D", scores.get(0).name);
+        assertEquals("D", scores.getFirst().name);
     }
 }
