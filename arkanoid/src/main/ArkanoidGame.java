@@ -146,6 +146,7 @@ public class ArkanoidGame extends JFrame {
             } else {
                 // Load mode
                 if (SaveGameManager.getInstance().hasSaveData(slot)) {
+                    SoundManager.getInstance().stopMenuMusic(); // Stop menu music when loading game
                     cardLayout.show(mainPanel, "GAME");
                     gamePanel.loadGame(slot);
                     gamePanel.requestFocusInWindow();
