@@ -6,19 +6,29 @@
 
 Game phá gạch cổ điển được xây dựng bằng Java Swing với kiến trúc OOP chuyên nghiệp.
 
-**🏆 Điểm đánh giá:** 10.9/11 (99%) - Xuất sắc (A+)
+
+---
+
+## 👥 TEAM
+
+| Developer | GitHub |
+|-----------|--------|
+| **Duy** | [@peterparkervanphuc](https://github.com/peterparkervanphuc) |
+| **An** | [@SZKMZT](https://github.com/SZKMZT) |
+| **Bình** | [@TBinh24022617](https://github.com/TBinh24022617) |
+| **Giang** | [@Lilwrx201206](https://github.com/Lilwrx201206) |
 
 ---
 
 ## 📋 MỤC LỤC
 
+- [Team](#-team)
 - [Tính năng](#-tính-năng)
 - [Cách chạy game](#-cách-chạy-game)
 - [Điều khiển](#-điều-khiển)
 - [Kiến trúc OOP](#-kiến-trúc-oop)
 - [Cấu trúc project](#-cấu-trúc-project)
 - [Công nghệ](#-công-nghệ)
-- [Team](#-team)
 
 ---
 
@@ -270,11 +280,6 @@ arkanoid/
 
 ---
 
-## 👥 TEAM
-
-- **Developers:** Duy, An, Bình, Giang
-
----
 
 ## 🙏 CREDITS
 
