@@ -213,7 +213,13 @@ public class Ball extends MovableObject {
         double distanceX = getX() - closestX;
         double distanceY = getY() - closestY;
         
-        return (distanceX * distanceX + distanceY * distanceY) < (radius * radius);
+        // Add small collision margin (1 pixel) to ensure accurate collision detection
+        // when paddle size/position changes (e.g., when enlarged)
+        // This fixes issue with catch powerup when paddle is enlarged
+        double collisionMargin = 1.0;
+        double effectiveRadius = radius + collisionMargin;
+
+        return (distanceX * distanceX + distanceY * distanceY) < (effectiveRadius * effectiveRadius);
     }
     
     /**
