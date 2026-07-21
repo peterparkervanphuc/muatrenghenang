@@ -24,7 +24,6 @@ Game phá gạch cổ điển được xây dựng bằng Java Swing với kiế
 
 - [Team](#-team)
 - [Tính năng](#-tính-năng)
-- [Cách chạy game](#-cách-chạy-game)
 - [Điều khiển](#-điều-khiển)
 - [Cấu trúc project](#-cấu-trúc-project)
 - [Công nghệ](#-công-nghệ)
@@ -56,7 +55,7 @@ Game phá gạch cổ điển được xây dựng bằng Java Swing với kiế
 | B | BREAK | Phá hàng dưới cùng | Instant |
 | P | PLAYER | +1 mạng | Instant |
 
-### 🎯 Combo System (MỚI!)
+### 🎯 Combo System 
 - 5+ hits trong 1 giây → **x2 multiplier** "COMBO!"
 - 10+ hits → **x3 multiplier** "GREAT!"
 - 15+ hits → **x4 multiplier** "AWESOME!"
@@ -79,41 +78,6 @@ Game phá gạch cổ điển được xây dựng bằng Java Swing với kiế
 - 18 stage backgrounds
 - Custom retro font (emulogic.ttf)
 - Sprites cho tất cả entities
-
----
-
-## 🚀 CÁCH CHẠY GAME
-
-### Phương án 1: Sử dụng file BAT (Khuyến nghị)
-
-```bash
-cd arkanoid
-run.bat
-```
-
-### Phương án 2: Maven
-
-```bash
-cd arkanoid
-mvn clean compile
-mvn exec:java -Dexec.mainClass="main.ArkanoidGame"
-```
-
-### Phương án 3: IntelliJ IDEA
-
-1. Mở project `arkanoid/`
-2. Đánh dấu thư mục:
-   - `src/` → **Sources Root**
-   - `assets/` → **Resources Root**
-3. Run `main.ArkanoidGame.java`
-
-### Phương án 4: Command Line
-
-```bash
-cd arkanoid
-javac -d bin -sourcepath src src/main/ArkanoidGame.java
-java -cp "bin;assets" main.ArkanoidGame
-```
 
 ---
 
@@ -206,7 +170,7 @@ arkanoid/
 - **Build Tool:** Maven
 - **Testing:** JUnit 5
 - **Version Control:** Git
-- **IDE:** IntelliJ IDEA / Eclipse / VS Code
+- **IDE:** IntelliJ IDEA 
 
 ### Dependencies
 
@@ -227,11 +191,11 @@ arkanoid/
 
 - **Original Game:** Taito Corporation (1986)
 - **Font:** Emulogic by Freaky Fonts
-- **Sprites & Sounds:** Custom created for educational purposes
+- **Sprites & Sounds:** Custom 
 
 ---
 
 **🎮 ENJOY THE GAME! 🚀**
 
-Made with ❤️ using Java & OOP principles
+Made with Love ❤️ 
 
